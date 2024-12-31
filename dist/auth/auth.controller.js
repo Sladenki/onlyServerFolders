@@ -27,6 +27,8 @@ let AuthController = class AuthController {
     googleAuth() { }
     async googleAuthRedirect(req, res) {
         const user = req.user;
+        const isCapacitor = req.query.isCapacitor === 'true';
+        console.log('isCapacitor', isCapacitor);
         console.log('User после успешной авторизации:', user);
         try {
             let userId;
@@ -53,7 +55,12 @@ let AuthController = class AuthController {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 sameSite: 'strict',
             });
-            res.redirect(`intent://profile?accessToken=${accessToken}#Intent;scheme=myapp;package=com.example.myapp;end`);
+            if (isCapacitor) {
+                res.redirect(`intent://profile?accessToken=${accessToken}#Intent;scheme=myapp;package=com.example.myapp;end;`);
+            }
+            else {
+                res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
+            }
         }
         catch (error) {
             console.error('Ошибка при поиске/создании пользователя:', error);
