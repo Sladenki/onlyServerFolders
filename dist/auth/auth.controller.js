@@ -55,7 +55,7 @@ let AuthController = class AuthController {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 sameSite: 'strict',
             });
-            res.redirect(`intent://profile?accessToken=${accessToken}#Intent;scheme=myapp;package=com.example.myapp;end;`);
+            res.redirect(`myapp://profile?accessToken=${accessToken}`);
         }
         catch (error) {
             console.error('Ошибка при поиске/создании пользователя:', error);
