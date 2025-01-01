@@ -54,12 +54,7 @@ let AuthController = class AuthController {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 sameSite: 'strict',
             });
-            if (isCapacitor) {
-                res.redirect(`com.mycompany.myapp://profile?accessToken=${accessToken}`);
-            }
-            else {
-                res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
-            }
+            res.redirect(`com.mycompany.myapp://profile?accessToken=${accessToken}`);
         }
         catch (error) {
             console.error('Ошибка при поиске/создании пользователя:', error);
