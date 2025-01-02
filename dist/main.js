@@ -8,7 +8,10 @@ async function bootstrap() {
     app.setGlobalPrefix('api');
     app.use(cookieParser());
     app.enableCors({
-        origin: [process.env.CLIENT_URL],
+        origin: [
+            process.env.CLIENT_URL,
+            'capacitor://localhost',
+        ],
         credentials: true,
         exposedHeaders: 'set-cookie',
         allowedHeaders: ['Content-Type', 'Authorization'],
