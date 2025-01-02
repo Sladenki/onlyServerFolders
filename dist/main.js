@@ -11,6 +11,9 @@ async function bootstrap() {
         origin: [
             process.env.CLIENT_URL,
             'capacitor://localhost',
+            'ionic://localhost',
+            'http://localhost',
+            'https://graphon.up.railway.app'
         ],
         credentials: true,
         exposedHeaders: 'set-cookie',
