@@ -114,6 +114,7 @@ let PostService = class PostService {
                 };
             }));
             const postIsReacted = reactionsWithUserStatus.some((reaction) => reaction.isReacted);
+            console.log('post', post);
             return {
                 ...post,
                 reactions: reactionsWithUserStatus,
