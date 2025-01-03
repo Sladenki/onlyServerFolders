@@ -12,18 +12,36 @@ const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const graph_controller_1 = require("./graph.controller");
 const graph_model_1 = require("./graph.model");
 const graph_service_1 = require("./graph.service");
+const jwt_strategy_1 = require("../user/jwt.strategy");
+const google_strategy_1 = require("../strategies/google.strategy");
+const config_1 = require("@nestjs/config");
+const user_model_1 = require("../user/user.model");
+const jwt_1 = require("@nestjs/jwt");
+const jwt_config_1 = require("../config/jwt.config");
 let GraphModule = class GraphModule {
 };
 exports.GraphModule = GraphModule;
 exports.GraphModule = GraphModule = __decorate([
     (0, common_1.Module)({
         controllers: [graph_controller_1.GraphController],
-        providers: [graph_service_1.GraphService],
+        providers: [jwt_strategy_1.JwtStrategy, google_strategy_1.GoogleStrategy, graph_service_1.GraphService],
         imports: [
+            config_1.ConfigModule,
+            jwt_1.JwtModule.registerAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: jwt_config_1.getJwtConfig,
+            }),
             nestjs_typegoose_1.TypegooseModule.forFeature([
                 {
                     typegooseClass: graph_model_1.GraphModel,
                     schemaOptions: { collection: 'Graph' },
+                },
+            ]),
+            nestjs_typegoose_1.TypegooseModule.forFeature([
+                {
+                    typegooseClass: user_model_1.UserModel,
+                    schemaOptions: { collection: 'User' },
                 },
             ]),
         ],

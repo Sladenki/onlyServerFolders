@@ -20,6 +20,9 @@ const python_module_1 = require("../microservice/python.module");
 const s3_module_1 = require("../s3/s3.module");
 const postReaction_module_1 = require("../postReaction/postReaction.module");
 const userPostReaction_module_1 = require("../userPostReaction/userPostReaction.module");
+const jwt_1 = require("@nestjs/jwt");
+const config_1 = require("@nestjs/config");
+const jwt_config_1 = require("../config/jwt.config");
 let PostModule = class PostModule {
 };
 exports.PostModule = PostModule;
@@ -28,6 +31,12 @@ exports.PostModule = PostModule = __decorate([
         controllers: [post_controller_1.PostController],
         providers: [post_service_1.PostService],
         imports: [
+            config_1.ConfigModule,
+            jwt_1.JwtModule.registerAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: jwt_config_1.getJwtConfig,
+            }),
             nestjs_typegoose_1.TypegooseModule.forFeature([
                 {
                     typegooseClass: post_model_1.PostModel,

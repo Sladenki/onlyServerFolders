@@ -15,14 +15,25 @@ const postReaction_model_1 = require("../postReaction/postReaction.model");
 const userPostReaction_service_1 = require("./userPostReaction.service");
 const userPostReaction_model_1 = require("./userPostReaction.model");
 const postReaction_module_1 = require("../postReaction/postReaction.module");
+const jwt_strategy_1 = require("../user/jwt.strategy");
+const google_strategy_1 = require("../strategies/google.strategy");
+const config_1 = require("@nestjs/config");
+const jwt_1 = require("@nestjs/jwt");
+const jwt_config_1 = require("../config/jwt.config");
 let UserPostReactionModule = class UserPostReactionModule {
 };
 exports.UserPostReactionModule = UserPostReactionModule;
 exports.UserPostReactionModule = UserPostReactionModule = __decorate([
     (0, common_1.Module)({
         controllers: [userPostReaction_controller_1.UserPostReactionController],
-        providers: [userPostReaction_service_1.UserPostReactionService],
+        providers: [jwt_strategy_1.JwtStrategy, google_strategy_1.GoogleStrategy, userPostReaction_service_1.UserPostReactionService],
         imports: [
+            config_1.ConfigModule,
+            jwt_1.JwtModule.registerAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: jwt_config_1.getJwtConfig,
+            }),
             nestjs_typegoose_1.TypegooseModule.forFeature([
                 {
                     typegooseClass: userPostReaction_model_1.UserPostReactionModel,

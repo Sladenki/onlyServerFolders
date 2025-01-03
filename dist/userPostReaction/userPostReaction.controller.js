@@ -23,6 +23,7 @@ let UserPostReactionController = class UserPostReactionController {
         this.userPostReactionPostService = userPostReactionPostService;
     }
     async createUserAndReactionConnection(userId, dto) {
+        console.log('dto', dto, userId);
         return this.userPostReactionPostService.createUserAndReactionConnection(userId, dto.reactionId, dto.postId, dto.isReacted);
     }
     async checkUserReaction(dto) {
