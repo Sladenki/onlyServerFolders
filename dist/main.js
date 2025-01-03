@@ -13,7 +13,7 @@ async function bootstrap() {
             'capacitor://localhost',
             'ionic://localhost',
             'http://localhost',
-            'https://graphon.up.railway.app'
+            'https://graphon.up.railway.app',
         ],
         credentials: true,
         exposedHeaders: 'set-cookie',
