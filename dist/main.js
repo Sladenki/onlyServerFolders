@@ -14,6 +14,7 @@ async function bootstrap() {
             'ionic://localhost',
             'http://localhost',
             'https://graphon.up.railway.app',
+            'http://31.192.132.196:3000'
         ],
         credentials: true,
         exposedHeaders: 'set-cookie',
