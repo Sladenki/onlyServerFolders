@@ -26,8 +26,9 @@ let AuthController = class AuthController {
     }
     googleAuth() { }
     async googleAuthRedirect(req, res) {
+        console.log('req.query.isCapacitor', req.query.isCapacitor);
         const user = req.user;
-        const isCapacitor = req.query.isCapacitor === 'true';
+        const isCapacitor = true;
         console.log('isCapacitor', isCapacitor);
         try {
             let userId;

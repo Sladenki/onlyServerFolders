@@ -53,6 +53,8 @@ let PostService = class PostService {
         const redisUserKey = `/user/getById/${userId}`;
         const keyWordsPromise = this.pythonService.extractKeywords(dto.content);
         let postIncrementPromise;
+        postIncrementPromise = this.UserModel.findByIdAndUpdate(creatorId, { $inc: { postsNum: 1 } }, { new: true })
+            .exec();
         let imgPathUrl = undefined;
         if (dto.imgPath) {
             imgPathUrl = '123';
@@ -61,8 +63,6 @@ let PostService = class PostService {
             keyWordsPromise,
             postIncrementPromise,
         ]);
-        const createdTags = await this.postTagService.createPostTag(keyWords);
-        console.log('createdTags', createdTags);
         const newPost = await this.PostModel.create({
             content: dto.content,
             keywords: keyWords,
@@ -70,7 +70,6 @@ let PostService = class PostService {
             ...(childGraphId && { graphId: childGraphId }),
             ...(imgPathUrl && { imgPath: imgPathUrl.key }),
         });
-        await Promise.all(createdTags.map((tag) => this.taggedPostService.createTaggedPost(newPost._id, tag._id)));
         if (reactionObject) {
             const emoji = reactionObject.emoji || postReaction_model_1.Emoji.LOVE;
             const reactionDto = {
@@ -99,6 +98,7 @@ let PostService = class PostService {
         const postsWithReactions = await Promise.all(posts.map(async (post) => {
             const reactions = await this.postReactionService.findReactionsByPostId(post._id);
             const reactionsWithUserStatus = await Promise.all(reactions.map(async (reaction) => {
+                console.log('reactionsWithUserStatus', 'called', userId);
                 const isReacted = userId
                     ? await this.userPostReactionService.isUserReactionExists(reaction._id.toString(), userId.toString())
                     : false;
@@ -114,7 +114,6 @@ let PostService = class PostService {
                 };
             }));
             const postIsReacted = reactionsWithUserStatus.some((reaction) => reaction.isReacted);
-            console.log('post', post);
             return {
                 ...post,
                 reactions: reactionsWithUserStatus,

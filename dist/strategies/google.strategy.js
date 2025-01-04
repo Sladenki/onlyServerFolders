@@ -21,11 +21,13 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
             clientSecret: configService.get('GOOGLE_SECRET'),
             callbackURL: configService.get('GOOGLE_CALLBACK_URL'),
             scope: ['email', 'profile'],
+            passReqToCallback: true,
         });
         this.configService = configService;
     }
-    async validate(accessToken, refreshToken, profile, done) {
+    async validate(req, accessToken, refreshToken, profile, done) {
         const { id, name, emails, photos } = profile;
+        const isCapacitor = req.query.isCapacitor === 'true';
         const user = {
             provider: 'google',
             providerId: id,
@@ -33,6 +35,7 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
             name: name.givenName + ' ' + name.familyName,
             picture: photos[0].value,
             accessToken,
+            isCapacitor
         };
         done(null, user);
     }

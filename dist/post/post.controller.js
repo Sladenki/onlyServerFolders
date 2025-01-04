@@ -20,6 +20,7 @@ const currentUser_decorator_1 = require("../decorators/currentUser.decorator");
 const mongoose_1 = require("mongoose");
 const create_post_dto_1 = require("./dto/create-post.dto");
 const platform_express_1 = require("@nestjs/platform-express");
+const passport_1 = require("@nestjs/passport");
 let PostController = class PostController {
     constructor(postService) {
         this.postService = postService;
@@ -28,7 +29,6 @@ let PostController = class PostController {
         return this.postService.getPosts(skip, userId);
     }
     async createPost(userId, dto, imgPath) {
-        console.log('dto', dto);
         dto.imgPath = imgPath;
         return this.postService.createPost(dto, userId);
     }
@@ -47,7 +47,7 @@ __decorate([
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.HttpCode)(200),
     (0, common_1.Post)('create'),
-    (0, auth_decorator_1.Auth)(),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('imgPath')),
     __param(0, (0, currentUser_decorator_1.CurrentUser)('_id')),
     __param(1, (0, common_1.Body)()),
