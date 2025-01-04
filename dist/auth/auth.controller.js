@@ -28,7 +28,7 @@ let AuthController = class AuthController {
     async googleAuthRedirect(req, res) {
         console.log('req.query.isCapacitor', req.query.isCapacitor);
         const user = req.user;
-        const isCapacitor = true;
+        const isCapacitor = `${process.env.CAPACITOR}`;
         console.log('isCapacitor', isCapacitor);
         try {
             let userId;
