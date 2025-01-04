@@ -60,8 +60,8 @@ let AuthController = class AuthController {
                 sameSite: 'none',
             });
             if (isCapacitor) {
-                res.redirect(`com.mycompany.myapp://profile?accessToken=${accessToken}`);
-                console.log('перенаправил на com.mycompany.myapp://profile?accessToken');
+                console.log('Отправляем просто токен');
+                return res.json({ accessToken });
             }
             else {
                 res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);

@@ -9,7 +9,7 @@ export declare class AuthController {
     private supportsCapacitor;
     constructor(jwtService: JwtService, UserModel: ModelType<UserModel>, configService: ConfigService);
     googleAuth(): void;
-    googleAuthRedirect(req: any, res: any): Promise<void>;
+    googleAuthRedirect(req: any, res: any): Promise<any>;
     logout(req: Request, res: any): Promise<void>;
     refresh(req: any, res: any): Promise<void>;
 }
