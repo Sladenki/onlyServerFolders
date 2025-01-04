@@ -54,9 +54,10 @@ let AuthController = class AuthController {
             await this.UserModel.findByIdAndUpdate(userId, { refreshToken });
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
                 path: '/',
                 maxAge: 30 * 24 * 60 * 60 * 1000,
-                sameSite: 'strict',
+                sameSite: 'none',
             });
             if (isCapacitor) {
                 res.redirect(`com.mycompany.myapp://profile?accessToken=${accessToken}`);
