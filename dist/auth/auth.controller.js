@@ -19,16 +19,19 @@ const jwt_1 = require("@nestjs/jwt");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const user_model_1 = require("../user/user.model");
 const uuid_1 = require("uuid");
+const config_1 = require("@nestjs/config");
 let AuthController = class AuthController {
-    constructor(jwtService, UserModel) {
+    constructor(jwtService, UserModel, configService) {
         this.jwtService = jwtService;
         this.UserModel = UserModel;
+        this.configService = configService;
+        const supportsCapacitorString = this.configService.get('SUPPORTS_CAPACITOR');
+        this.supportsCapacitor = supportsCapacitorString === 'true';
     }
     googleAuth() { }
     async googleAuthRedirect(req, res) {
-        console.log('req.query.isCapacitor', req.query.isCapacitor);
         const user = req.user;
-        const isCapacitor = `${process.env.CAPACITOR}`;
+        const isCapacitor = this.supportsCapacitor;
         console.log('isCapacitor', isCapacitor);
         try {
             let userId;
@@ -57,9 +60,11 @@ let AuthController = class AuthController {
             });
             if (isCapacitor) {
                 res.redirect(`com.mycompany.myapp://profile?accessToken=${accessToken}`);
+                console.log('перенаправил на com.mycompany.myapp://profile?accessToken');
             }
             else {
                 res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
+                console.log('перенаправил на localhost');
             }
         }
         catch (error) {
@@ -146,6 +151,6 @@ __decorate([
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
-    __metadata("design:paramtypes", [jwt_1.JwtService, Object])
+    __metadata("design:paramtypes", [jwt_1.JwtService, Object, config_1.ConfigService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

@@ -98,7 +98,6 @@ let PostService = class PostService {
         const postsWithReactions = await Promise.all(posts.map(async (post) => {
             const reactions = await this.postReactionService.findReactionsByPostId(post._id);
             const reactionsWithUserStatus = await Promise.all(reactions.map(async (reaction) => {
-                console.log('reactionsWithUserStatus', 'called', userId);
                 const isReacted = userId
                     ? await this.userPostReactionService.isUserReactionExists(reaction._id.toString(), userId.toString())
                     : false;
