@@ -40,9 +40,7 @@ let AuthController = class AuthController {
             const refreshToken = (0, uuid_1.v4)();
             await this.UserModel.findByIdAndUpdate(userId, { refreshToken });
             if (isCapacitor) {
-                const appScheme = 'com.mycompany.myapp://auth/callback';
-                const redirectUrl = `${appScheme}?accessToken=${accessToken}`;
-                return res.redirect(redirectUrl);
+                return res.json({ accessToken });
             }
             else {
                 res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
