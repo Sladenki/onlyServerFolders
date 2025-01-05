@@ -34,44 +34,37 @@ let AuthController = class AuthController {
         const isCapacitor = this.supportsCapacitor;
         console.log('isCapacitor', isCapacitor);
         try {
-            let userId;
-            const existingUser = await this.UserModel.findOne({
-                email: user.email,
-            }).lean();
-            if (existingUser) {
-                console.log('Пользователь найден в базе данных:', existingUser);
-                userId = existingUser._id.toString();
-            }
-            else {
-                console.log('Пользователь не найден, создаем нового');
-                const newUser = new this.UserModel(user);
-                const savedUser = await newUser.save();
-                userId = savedUser._id.toString();
-            }
+            const userId = await this.findOrCreateUser(user);
             const payload = { sub: userId };
             const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
             const refreshToken = (0, uuid_1.v4)();
             await this.UserModel.findByIdAndUpdate(userId, { refreshToken });
-            res.cookie('refreshToken', refreshToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                path: '/',
-                maxAge: 30 * 24 * 60 * 60 * 1000,
-                sameSite: 'none',
-            });
             if (isCapacitor) {
-                console.log('Отправляем просто токен');
                 return res.json({ accessToken });
             }
             else {
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'none',
+                    maxAge: 30 * 24 * 60 * 60 * 1000,
+                });
                 res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
-                console.log('перенаправил на localhost');
             }
         }
         catch (error) {
             console.error('Ошибка при поиске/создании пользователя:', error);
             res.redirect(`${process.env.CLIENT_URL}/error?message=Ошибка авторизации`);
         }
+    }
+    async findOrCreateUser(user) {
+        const existingUser = await this.UserModel.findOne({ email: user.email }).lean();
+        if (existingUser) {
+            return existingUser._id.toString();
+        }
+        const newUser = new this.UserModel(user);
+        const savedUser = await newUser.save();
+        return savedUser._id.toString();
     }
     async logout(req, res) {
         console.log('logount hit');
