@@ -42,7 +42,7 @@ let AuthController = class AuthController {
             if (isCapacitor) {
                 const appScheme = 'com.mycompany.myapp://auth/callback';
                 const redirectUrl = `${appScheme}?accessToken=${accessToken}`;
-                return res.json({ accessToken, redirectUrl });
+                return res.redirect(redirectUrl);
             }
             else {
                 res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
