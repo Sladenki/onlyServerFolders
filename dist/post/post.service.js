@@ -13,32 +13,34 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostService = void 0;
-const taggedPost_service_1 = require("../taggedPost/taggedPost.service");
-const postTag_service_1 = require("./../postTag/postTag.service");
 const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const post_model_1 = require("./post.model");
 const user_model_1 = require("../user/user.model");
+const mongoose_1 = require("mongoose");
 const posts_1 = require("../constants/posts");
 const graph_service_1 = require("../graph/graph.service");
-const python_service_1 = require("../microservice/python.service");
 const s3_service_1 = require("../s3/s3.service");
 const postReaction_service_1 = require("../postReaction/postReaction.service");
 const userPostReaction_service_1 = require("../userPostReaction/userPostReaction.service");
 const postReaction_model_1 = require("../postReaction/postReaction.model");
+const graphSubs_service_1 = require("../graphSubs/graphSubs.service");
+const userPostReaction_model_1 = require("../userPostReaction/userPostReaction.model");
+const graphSubs_model_1 = require("../graphSubs/graphSubs.model");
 let PostService = class PostService {
-    constructor(PostModel, UserModel, graphService, postTagService, taggedPostService, pythonService, s3Service, postReactionService, userPostReactionService) {
+    constructor(PostModel, UserModel, userPostReactionModel, graphSubsModel, graphService, s3Service, postReactionService, userPostReactionService, graphSubsService) {
         this.PostModel = PostModel;
         this.UserModel = UserModel;
+        this.userPostReactionModel = userPostReactionModel;
+        this.graphSubsModel = graphSubsModel;
         this.graphService = graphService;
-        this.postTagService = postTagService;
-        this.taggedPostService = taggedPostService;
-        this.pythonService = pythonService;
         this.s3Service = s3Service;
         this.postReactionService = postReactionService;
         this.userPostReactionService = userPostReactionService;
+        this.graphSubsService = graphSubsService;
     }
     async createPost(dto, creatorId) {
+        console.log('createPost', dto);
         const childrenTopic = dto.childrenTopic;
         console.log('childrenTopic', childrenTopic);
         const selectedTopicId = dto.selectedTopic;
@@ -49,27 +51,19 @@ let PostService = class PostService {
             childGraphId = childGraph._id;
         }
         const reactionObject = JSON.parse(dto.reaction);
-        const userId = creatorId.toString();
-        const redisUserKey = `/user/getById/${userId}`;
-        const keyWordsPromise = this.pythonService.extractKeywords(dto.content);
-        let postIncrementPromise;
-        postIncrementPromise = this.UserModel.findByIdAndUpdate(creatorId, { $inc: { postsNum: 1 } }, { new: true })
+        this.UserModel.findByIdAndUpdate(creatorId, { $inc: { postsNum: 1 } }, { new: true })
             .exec();
         let imgPathUrl = undefined;
         if (dto.imgPath) {
-            imgPathUrl = '123';
+            imgPathUrl = await this.s3Service.uploadFile(dto.imgPath);
         }
-        const [keyWords] = await Promise.all([
-            keyWordsPromise,
-            postIncrementPromise,
-        ]);
         const newPost = await this.PostModel.create({
             content: dto.content,
-            keywords: keyWords,
             user: creatorId,
-            ...(childGraphId && { graphId: childGraphId }),
+            graphId: new mongoose_1.Types.ObjectId(selectedTopicId),
             ...(imgPathUrl && { imgPath: imgPathUrl.key }),
         });
+        let reactionId = undefined;
         if (reactionObject) {
             const emoji = reactionObject.emoji || postReaction_model_1.Emoji.LOVE;
             const reactionDto = {
@@ -78,45 +72,171 @@ let PostService = class PostService {
                 post: newPost._id.toString(),
             };
             try {
-                await this.postReactionService.createPostReaction(reactionDto);
+                const reaction = await this.postReactionService.createPostReaction(reactionDto);
+                reactionId = reaction._id;
                 console.log('Reaction created successfully');
             }
             catch (error) {
                 console.error('Error creating reaction:', error);
             }
         }
+        if (reactionId) {
+            await this.PostModel.findByIdAndUpdate(newPost._id, { $push: { reactions: reactionId } }, { new: true });
+        }
         return newPost;
     }
-    async getPosts(skip, userId) {
+    async getPostsNoAuth(skip) {
         const skipPosts = skip ? Number(skip) : 0;
-        const posts = await this.PostModel.find()
+        try {
+            const posts = await this.PostModel.aggregate([
+                { $sort: { createdAt: -1 } },
+                { $skip: skipPosts },
+                { $limit: posts_1.DEFAULTLIMIT_POSTS },
+                {
+                    $lookup: {
+                        from: 'User',
+                        localField: 'user',
+                        foreignField: '_id',
+                        as: 'user',
+                    },
+                },
+                { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+                {
+                    $project: {
+                        _id: 1,
+                        user: {
+                            _id: 1,
+                            email: 1,
+                            avaPath: 1,
+                            name: 1,
+                        },
+                        graphId: 1,
+                        content: 1,
+                        imgPath: 1,
+                        reactions: 1,
+                        createdAt: 1,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'PostReaction',
+                        localField: 'reactions',
+                        foreignField: '_id',
+                        as: 'reactions',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'Graph',
+                        localField: 'graphId',
+                        foreignField: '_id',
+                        as: 'graphId',
+                    },
+                },
+                { $unwind: { path: '$graphId', preserveNullAndEmptyArrays: true } },
+            ]);
+            return posts;
+        }
+        catch (error) {
+            if (error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            throw new common_1.InternalServerErrorException('Could not fetch posts');
+        }
+    }
+    async getPostsAuth(skip, userId) {
+        const skipPosts = skip ? Number(skip) : 0;
+        try {
+            const posts = await this.PostModel.aggregate([
+                { $sort: { createdAt: -1 } },
+                { $skip: skipPosts },
+                { $limit: posts_1.DEFAULTLIMIT_POSTS },
+                {
+                    $lookup: {
+                        from: 'User',
+                        localField: 'user',
+                        foreignField: '_id',
+                        as: 'user',
+                    },
+                },
+                { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+                {
+                    $lookup: {
+                        from: 'PostReaction',
+                        localField: 'reactions',
+                        foreignField: '_id',
+                        as: 'reactions',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'Graph',
+                        localField: 'graphId',
+                        foreignField: '_id',
+                        as: 'graphId',
+                    },
+                },
+                { $unwind: { path: '$graphId', preserveNullAndEmptyArrays: true } },
+                {
+                    $project: {
+                        _id: 1,
+                        user: { _id: 1, name: 1, avaPath: 1 },
+                        graphId: { _id: 1, name: 1 },
+                        content: 1,
+                        imgPath: 1,
+                        reactions: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                    },
+                },
+            ]);
+            const postsWithReactionsAndSubs = await Promise.all(posts.map(async (post) => {
+                const reactionsWithStatus = await Promise.all(post.reactions.map(async (reaction) => {
+                    const isReacted = await this.userPostReactionService.isUserReactionExists(reaction._id.toString(), userId.toString());
+                    return {
+                        ...reaction,
+                        isReacted,
+                    };
+                }));
+                const isSubscribed = await this.graphSubsService.isUserSubsExists(post.graphId._id.toString(), userId.toString());
+                return {
+                    ...post,
+                    reactions: reactionsWithStatus,
+                    isSubscribed,
+                };
+            }));
+            return postsWithReactionsAndSubs;
+        }
+        catch (error) {
+            if (error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            throw new common_1.InternalServerErrorException('Could not fetch posts');
+        }
+    }
+    async getPostsFromSubscribedGraphs(skip, subscribedGraphs, userId) {
+        const posts = await this.PostModel
+            .find({ graphId: { $in: subscribedGraphs } })
             .populate('user', 'name avaPath')
-            .skip(skipPosts)
+            .populate('reactions', '_id text emoji clickNum')
+            .populate('graphId', 'name')
+            .skip(skip)
             .limit(posts_1.DEFAULTLIMIT_POSTS)
             .sort({ createdAt: -1 })
             .lean();
         const postsWithReactions = await Promise.all(posts.map(async (post) => {
-            const reactions = await this.postReactionService.findReactionsByPostId(post._id);
-            const reactionsWithUserStatus = await Promise.all(reactions.map(async (reaction) => {
+            const reactionsWithStatus = await Promise.all(post.reactions.map(async (reaction) => {
                 const isReacted = userId
                     ? await this.userPostReactionService.isUserReactionExists(reaction._id.toString(), userId.toString())
                     : false;
                 return {
-                    _id: reaction._id,
-                    text: reaction.text,
-                    emoji: reaction.emoji,
-                    clickNum: reaction.clickNum,
-                    post: reaction.post,
-                    createdAt: reaction.createdAt,
-                    updatedAt: reaction.updatedAt,
+                    ...reaction,
                     isReacted,
                 };
             }));
-            const postIsReacted = reactionsWithUserStatus.some((reaction) => reaction.isReacted);
             return {
                 ...post,
-                reactions: reactionsWithUserStatus,
-                isReacted: postIsReacted,
+                reactions: reactionsWithStatus,
             };
         }));
         return postsWithReactions;
@@ -127,12 +247,12 @@ exports.PostService = PostService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_typegoose_1.InjectModel)(post_model_1.PostModel)),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
-    __metadata("design:paramtypes", [Object, Object, graph_service_1.GraphService,
-        postTag_service_1.PostTagService,
-        taggedPost_service_1.TaggedPostService,
-        python_service_1.PythonService,
+    __param(2, (0, nestjs_typegoose_1.InjectModel)(userPostReaction_model_1.UserPostReactionModel)),
+    __param(3, (0, nestjs_typegoose_1.InjectModel)(graphSubs_model_1.GraphSubsModel)),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, graph_service_1.GraphService,
         s3_service_1.S3Service,
         postReaction_service_1.PostReactionService,
-        userPostReaction_service_1.UserPostReactionService])
+        userPostReaction_service_1.UserPostReactionService,
+        graphSubs_service_1.GraphSubsService])
 ], PostService);
 //# sourceMappingURL=post.service.js.map

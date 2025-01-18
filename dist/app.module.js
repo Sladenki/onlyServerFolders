@@ -15,8 +15,6 @@ const user_module_1 = require("./user/user.module");
 const post_module_1 = require("./post/post.module");
 const logging_middleware_1 = require("./logging.middleware");
 const graph_module_1 = require("./graph/graph.module");
-const postTag_module_1 = require("./postTag/postTag.module");
-const taggedPost_module_1 = require("./taggedPost/taggedPost.module");
 const s3_module_1 = require("./s3/s3.module");
 const postReaction_module_1 = require("./postReaction/postReaction.module");
 const userPostReaction_module_1 = require("./userPostReaction/userPostReaction.module");
@@ -24,6 +22,8 @@ const auth_module_1 = require("./auth/auth.module");
 const passport_1 = require("@nestjs/passport");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const graphSubs_module_1 = require("./graphSubs/graphSubs.module");
+const schedule_module_1 = require("./schedule/schedule.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(logging_middleware_1.LogginMiddleware).forRoutes('*');
@@ -44,11 +44,11 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             user_module_1.UserModule,
             post_module_1.PostModule,
-            postTag_module_1.PostTagModule,
-            taggedPost_module_1.TaggedPostModule,
             graph_module_1.GraphModule,
             postReaction_module_1.PostReactionModule,
             userPostReaction_module_1.UserPostReactionModule,
+            graphSubs_module_1.GraphSubsModule,
+            schedule_module_1.ScheduleModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

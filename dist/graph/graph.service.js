@@ -35,6 +35,7 @@ let GraphService = class GraphService {
         return this.GraphModel.find({ parentGraphId }).exec();
     }
     async createChildGraph(name, parentGraphId) {
+        console.log('createChildGraph', name, parentGraphId);
         const childGraph = await this.GraphModel.create({ name, parentGraphId });
         await this.GraphModel.findByIdAndUpdate(parentGraphId, {
             $inc: { childGraphNum: 1 },

@@ -39,8 +39,4 @@ export declare class UserPostReactionController {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    checkUserReaction(dto: {
-        reactionId: string;
-        userId: string;
-    }): Promise<boolean>;
 }

@@ -32,7 +32,7 @@ let AuthController = class AuthController {
     async googleAuthRedirect(req, res) {
         const user = req.user;
         const isCapacitor = this.supportsCapacitor;
-        console.log('isCapacitor', isCapacitor);
+        console.log('isCapacitor ?', isCapacitor);
         try {
             const userId = await this.findOrCreateUser(user);
             const payload = { sub: userId };

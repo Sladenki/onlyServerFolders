@@ -12,7 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostModel = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
 const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
+const mongoose_1 = require("mongoose");
 const graph_model_1 = require("../graph/graph.model");
+const postReaction_model_1 = require("../postReaction/postReaction.model");
 const user_model_1 = require("../user/user.model");
 let PostModel = class PostModel extends defaultClasses_1.TimeStamps {
 };
@@ -22,6 +24,10 @@ __decorate([
     __metadata("design:type", Object)
 ], PostModel.prototype, "user", void 0);
 __decorate([
+    (0, typegoose_1.prop)({ ref: () => graph_model_1.GraphModel, index: true }),
+    __metadata("design:type", Object)
+], PostModel.prototype, "graphId", void 0);
+__decorate([
     (0, typegoose_1.prop)({ index: true }),
     __metadata("design:type", String)
 ], PostModel.prototype, "content", void 0);
@@ -30,9 +36,9 @@ __decorate([
     __metadata("design:type", String)
 ], PostModel.prototype, "imgPath", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ ref: () => graph_model_1.GraphModel, index: true }),
-    __metadata("design:type", Object)
-], PostModel.prototype, "graphId", void 0);
+    (0, typegoose_1.prop)({ type: [mongoose_1.Types.ObjectId], ref: () => postReaction_model_1.PostReactionModel }),
+    __metadata("design:type", Array)
+], PostModel.prototype, "reactions", void 0);
 exports.PostModel = PostModel = __decorate([
     (0, typegoose_1.modelOptions)({
         schemaOptions: {

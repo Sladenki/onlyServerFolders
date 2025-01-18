@@ -23,10 +23,6 @@ let PostReactionService = class PostReactionService {
     async createPostReaction(dto) {
         return await this.postReactionModel.create(dto);
     }
-    async findReactionsByPostId(postId) {
-        const reactions = await this.postReactionModel.find({ post: postId });
-        return reactions;
-    }
     async incrementClickNum(postId) {
         const reaction = await this.postReactionModel.findOneAndUpdate({ post: postId }, { $inc: { clickNum: 1 } }, { new: true });
         if (!reaction) {

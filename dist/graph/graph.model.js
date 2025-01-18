@@ -20,6 +20,10 @@ __decorate([
     __metadata("design:type", String)
 ], GraphModel.prototype, "name", void 0);
 __decorate([
+    (0, typegoose_1.prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], GraphModel.prototype, "subsNum", void 0);
+__decorate([
     (0, typegoose_1.prop)({ ref: () => GraphModel, index: true }),
     __metadata("design:type", Object)
 ], GraphModel.prototype, "parentGraphId", void 0);

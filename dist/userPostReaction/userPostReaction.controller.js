@@ -23,11 +23,7 @@ let UserPostReactionController = class UserPostReactionController {
         this.userPostReactionPostService = userPostReactionPostService;
     }
     async createUserAndReactionConnection(userId, dto) {
-        console.log('dto', dto, userId);
         return this.userPostReactionPostService.createUserAndReactionConnection(userId, dto.reactionId, dto.postId, dto.isReacted);
-    }
-    async checkUserReaction(dto) {
-        return this.userPostReactionPostService.isUserReactionExists(dto.reactionId, dto.userId);
     }
 };
 exports.UserPostReactionController = UserPostReactionController;
@@ -42,13 +38,6 @@ __decorate([
     __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, Object]),
     __metadata("design:returntype", Promise)
 ], UserPostReactionController.prototype, "createUserAndReactionConnection", null);
-__decorate([
-    (0, common_1.Get)('checkUserReaction'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], UserPostReactionController.prototype, "checkUserReaction", null);
 exports.UserPostReactionController = UserPostReactionController = __decorate([
     (0, common_1.Controller)('userPostReactionPost'),
     __metadata("design:paramtypes", [userPostReaction_service_1.UserPostReactionService])

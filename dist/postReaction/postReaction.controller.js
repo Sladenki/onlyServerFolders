@@ -25,9 +25,6 @@ let PostReactionController = class PostReactionController {
     async createPost(dto) {
         return this.postReactionService.createPostReaction(dto);
     }
-    async getReactionsByPostId(postId) {
-        return this.postReactionService.findReactionsByPostId(new mongoose_1.Types.ObjectId(postId));
-    }
     async incrementClickNum(postId) {
         return this.postReactionService.incrementClickNum(new mongoose_1.Types.ObjectId(postId));
     }
@@ -43,13 +40,6 @@ __decorate([
     __metadata("design:paramtypes", [createPostReaction_dto_1.CreatePostReactionDto]),
     __metadata("design:returntype", Promise)
 ], PostReactionController.prototype, "createPost", null);
-__decorate([
-    (0, common_1.Get)(':postId'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], PostReactionController.prototype, "getReactionsByPostId", null);
 __decorate([
     (0, common_1.Post)(':postId/increment'),
     (0, common_1.HttpCode)(200),

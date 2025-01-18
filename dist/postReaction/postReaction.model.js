@@ -38,7 +38,7 @@ __decorate([
     __metadata("design:type", Number)
 ], PostReactionModel.prototype, "clickNum", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ ref: () => post_model_1.PostModel }),
+    (0, typegoose_1.prop)({ ref: () => post_model_1.PostModel, index: true }),
     __metadata("design:type", Object)
 ], PostReactionModel.prototype, "post", void 0);
 exports.PostReactionModel = PostReactionModel = __decorate([
