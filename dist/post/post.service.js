@@ -181,7 +181,7 @@ let PostService = class PostService {
                     $project: {
                         _id: 1,
                         user: { _id: 1, name: 1, avaPath: 1 },
-                        graphId: { _id: 1, name: 1 },
+                        graphId: 1,
                         content: 1,
                         imgPath: 1,
                         reactions: 1,

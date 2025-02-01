@@ -44,7 +44,6 @@ let UserPostReactionService = class UserPostReactionService {
         }
     }
     async isUserReactionExists(reactionId, userId) {
-        console.log('isUserReactionExists', reactionId, userId);
         const reaction = await this.userPostReactionModel.findOne({
             postReaction: new mongoose_1.Types.ObjectId(reactionId),
             user: new mongoose_1.Types.ObjectId(userId),

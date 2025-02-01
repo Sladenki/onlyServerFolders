@@ -28,7 +28,7 @@ __decorate([
     __metadata("design:type", Object)
 ], PostModel.prototype, "graphId", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ index: true }),
+    (0, typegoose_1.prop)({ index: true, maxlength: 800 }),
     __metadata("design:type", String)
 ], PostModel.prototype, "content", void 0);
 __decorate([

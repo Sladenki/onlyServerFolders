@@ -29,6 +29,7 @@ let PostController = class PostController {
     }
     async getAllPostsWithInfo(skip, userId) {
         try {
+            console.log('userId', userId);
             return this.postService.getPostsAuth(skip, userId);
         }
         catch (error) {
