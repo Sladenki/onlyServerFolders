@@ -14,7 +14,8 @@ async function bootstrap() {
             'ionic://localhost',
             'http://localhost',
             'https://graphon.up.railway.app',
-            'http://localhost:8080'
+            'http://localhost:8080',
+            'https://graphon-client.onrender.com/',
         ],
         credentials: true,
         exposedHeaders: 'set-cookie',
