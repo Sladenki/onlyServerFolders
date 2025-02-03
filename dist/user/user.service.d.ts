@@ -38,7 +38,6 @@ export declare class UserService {
         email: string;
         name: string;
         avaPath: string;
-        followersNum: number;
         subsNum: number;
         postsNum: number;
         createdAt?: Date;

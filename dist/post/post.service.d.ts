@@ -35,19 +35,15 @@ import { S3Service } from 'src/s3/s3.service';
 import { PostReactionService } from 'src/postReaction/postReaction.service';
 import { UserPostReactionService } from 'src/userPostReaction/userPostReaction.service';
 import { GraphSubsService } from 'src/graphSubs/graphSubs.service';
-import { UserPostReactionModel } from 'src/userPostReaction/userPostReaction.model';
-import { GraphSubsModel } from 'src/graphSubs/graphSubs.model';
 export declare class PostService {
     private readonly PostModel;
     private readonly UserModel;
-    private readonly userPostReactionModel;
-    private readonly graphSubsModel;
     private readonly graphService;
     private readonly s3Service;
     private readonly postReactionService;
     private readonly userPostReactionService;
     private readonly graphSubsService;
-    constructor(PostModel: ModelType<PostModel>, UserModel: ModelType<UserModel>, userPostReactionModel: ModelType<UserPostReactionModel>, graphSubsModel: ModelType<GraphSubsModel>, graphService: GraphService, s3Service: S3Service, postReactionService: PostReactionService, userPostReactionService: UserPostReactionService, graphSubsService: GraphSubsService);
+    constructor(PostModel: ModelType<PostModel>, UserModel: ModelType<UserModel>, graphService: GraphService, s3Service: S3Service, postReactionService: PostReactionService, userPostReactionService: UserPostReactionService, graphSubsService: GraphSubsService);
     createPost(dto: CreatePostDto, creatorId: Types.ObjectId): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, PostModel> & Omit<PostModel & Required<{
         _id: Types.ObjectId;
     }> & {

@@ -33,7 +33,11 @@ let EventService = class EventService {
     }
     async getUpcomingEvents() {
         const today = new Date();
-        return this.EventModel.find({ eventDate: { $gte: today } }).sort({ eventDate: 1 }).populate("graphId", "name").lean();
+        return this.EventModel
+            .find({ eventDate: { $gte: today } })
+            .sort({ eventDate: 1 })
+            .populate("graphId", "name")
+            .lean();
     }
 };
 exports.EventService = EventService;

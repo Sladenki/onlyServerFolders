@@ -25,14 +25,10 @@ const postReaction_service_1 = require("../postReaction/postReaction.service");
 const userPostReaction_service_1 = require("../userPostReaction/userPostReaction.service");
 const postReaction_model_1 = require("../postReaction/postReaction.model");
 const graphSubs_service_1 = require("../graphSubs/graphSubs.service");
-const userPostReaction_model_1 = require("../userPostReaction/userPostReaction.model");
-const graphSubs_model_1 = require("../graphSubs/graphSubs.model");
 let PostService = class PostService {
-    constructor(PostModel, UserModel, userPostReactionModel, graphSubsModel, graphService, s3Service, postReactionService, userPostReactionService, graphSubsService) {
+    constructor(PostModel, UserModel, graphService, s3Service, postReactionService, userPostReactionService, graphSubsService) {
         this.PostModel = PostModel;
         this.UserModel = UserModel;
-        this.userPostReactionModel = userPostReactionModel;
-        this.graphSubsModel = graphSubsModel;
         this.graphService = graphService;
         this.s3Service = s3Service;
         this.postReactionService = postReactionService;
@@ -41,15 +37,7 @@ let PostService = class PostService {
     }
     async createPost(dto, creatorId) {
         console.log('createPost', dto);
-        const childrenTopic = dto.childrenTopic;
-        console.log('childrenTopic', childrenTopic);
         const selectedTopicId = dto.selectedTopic;
-        console.log('selectedTopicId', selectedTopicId);
-        let childGraphId;
-        if (childrenTopic && selectedTopicId) {
-            const childGraph = await this.graphService.createChildGraph(childrenTopic, selectedTopicId);
-            childGraphId = childGraph._id;
-        }
         const reactionObject = JSON.parse(dto.reaction);
         this.UserModel.findByIdAndUpdate(creatorId, { $inc: { postsNum: 1 } }, { new: true })
             .exec();
@@ -247,9 +235,7 @@ exports.PostService = PostService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_typegoose_1.InjectModel)(post_model_1.PostModel)),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
-    __param(2, (0, nestjs_typegoose_1.InjectModel)(userPostReaction_model_1.UserPostReactionModel)),
-    __param(3, (0, nestjs_typegoose_1.InjectModel)(graphSubs_model_1.GraphSubsModel)),
-    __metadata("design:paramtypes", [Object, Object, Object, Object, graph_service_1.GraphService,
+    __metadata("design:paramtypes", [Object, Object, graph_service_1.GraphService,
         s3_service_1.S3Service,
         postReaction_service_1.PostReactionService,
         userPostReaction_service_1.UserPostReactionService,

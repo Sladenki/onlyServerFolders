@@ -31,9 +31,9 @@ import { ModelType } from "@typegoose/typegoose/lib/types";
 export declare class EventService {
     private readonly EventModel;
     constructor(EventModel: ModelType<EventModel>);
-    createEvent(graphId: string, name: string, description: string, eventDate: Date, timeFrom: string, timeTo: string): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, EventModel> & Omit<EventModel & {
+    createEvent(graphId: string, name: string, description: string, eventDate: Date, timeFrom: string, timeTo: string): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, EventModel> & Omit<EventModel & Required<{
         _id: import("mongoose").Types.ObjectId;
-    } & {
+    }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
     getEventsByGraphId(graphId: string): Promise<({
@@ -45,9 +45,11 @@ export declare class EventService {
         timeTo: string;
         createdAt?: Date;
         updatedAt?: Date;
-    } & {
         _id: import("mongoose").Types.ObjectId;
-    } & {
+        id: string;
+    } & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
         __v: number;
     })[]>;
     getUpcomingEvents(): Promise<({
@@ -59,9 +61,11 @@ export declare class EventService {
         timeTo: string;
         createdAt?: Date;
         updatedAt?: Date;
-    } & {
         _id: import("mongoose").Types.ObjectId;
-    } & {
+        id: string;
+    } & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
         __v: number;
     })[]>;
 }

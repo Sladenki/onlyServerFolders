@@ -13,8 +13,8 @@ exports.EventModel = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
 const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
 const graph_model_1 = require("../graph/graph.model");
-class EventModel extends defaultClasses_1.TimeStamps {
-}
+let EventModel = class EventModel extends defaultClasses_1.TimeStamps {
+};
 exports.EventModel = EventModel;
 __decorate([
     (0, typegoose_1.prop)({ ref: () => graph_model_1.GraphModel, required: true, index: true }),
@@ -25,7 +25,7 @@ __decorate([
     __metadata("design:type", String)
 ], EventModel.prototype, "name", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ required: true }),
+    (0, typegoose_1.prop)({}),
     __metadata("design:type", String)
 ], EventModel.prototype, "description", void 0);
 __decorate([
@@ -37,7 +37,15 @@ __decorate([
     __metadata("design:type", String)
 ], EventModel.prototype, "timeFrom", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ required: true }),
+    (0, typegoose_1.prop)({}),
     __metadata("design:type", String)
 ], EventModel.prototype, "timeTo", void 0);
+exports.EventModel = EventModel = __decorate([
+    (0, typegoose_1.modelOptions)({
+        schemaOptions: {
+            timestamps: false,
+            versionKey: false
+        }
+    })
+], EventModel);
 //# sourceMappingURL=event.model.js.map

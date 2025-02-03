@@ -28,7 +28,8 @@ let AuthController = class AuthController {
         const supportsCapacitorString = this.configService.get('SUPPORTS_CAPACITOR');
         this.supportsCapacitor = supportsCapacitorString === 'true';
     }
-    googleAuth() { }
+    googleAuth() {
+    }
     async googleAuthRedirect(req, res) {
         const user = req.user;
         const isCapacitor = this.supportsCapacitor;
@@ -63,7 +64,6 @@ let AuthController = class AuthController {
         return savedUser._id.toString();
     }
     async logout(req, res) {
-        console.log('logount hit');
         try {
             const user = req['user'];
             if (user && user.sub) {

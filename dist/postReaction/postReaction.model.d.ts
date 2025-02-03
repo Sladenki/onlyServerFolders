@@ -6,10 +6,10 @@ export interface PostReactionModel extends Base {
 export declare enum Emoji {
     LIKE = "\uD83D\uDC4D",
     LOVE = "\u2764\uFE0F",
-    LAUGH = "\uD83D\uDE02",
+    SHARP = "\uD83D\uDE0E",
     WOW = "\uD83D\uDE2E",
-    SAD = "\uD83D\uDE22",
-    ANGRY = "\uD83D\uDE21"
+    SMILE = "\uD83D\uDE01",
+    EXOLIDING_HEAD = "\uD83E\uDD2F"
 }
 export declare class PostReactionModel extends TimeStamps {
     text?: string;

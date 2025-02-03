@@ -30,10 +30,6 @@ __decorate([
 __decorate([
     (0, typegoose_1.prop)({ default: 0 }),
     __metadata("design:type", Number)
-], UserModel.prototype, "followersNum", void 0);
-__decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
-    __metadata("design:type", Number)
 ], UserModel.prototype, "subsNum", void 0);
 __decorate([
     (0, typegoose_1.prop)({ default: 0 }),

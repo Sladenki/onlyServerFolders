@@ -37,9 +37,9 @@ export declare class EventController {
         eventDate: string;
         timeFrom: string;
         timeTo: string;
-    }): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("./event.model").EventModel> & Omit<import("./event.model").EventModel & {
+    }): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("./event.model").EventModel> & Omit<import("./event.model").EventModel & Required<{
         _id: import("mongoose").Types.ObjectId;
-    } & {
+    }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
     getEventsByGraphId(graphId: string): Promise<({
@@ -51,9 +51,11 @@ export declare class EventController {
         timeTo: string;
         createdAt?: Date;
         updatedAt?: Date;
-    } & {
         _id: import("mongoose").Types.ObjectId;
-    } & {
+        id: string;
+    } & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
         __v: number;
     })[]>;
     getUpcomingEvents(): Promise<({
@@ -65,9 +67,11 @@ export declare class EventController {
         timeTo: string;
         createdAt?: Date;
         updatedAt?: Date;
-    } & {
         _id: import("mongoose").Types.ObjectId;
-    } & {
+        id: string;
+    } & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
         __v: number;
     })[]>;
 }

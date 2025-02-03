@@ -37,23 +37,11 @@ export declare class ScheduleService {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    getWeekdaySchedulesByGraph(graphId: string): Promise<({
-        graphId: import("mongoose").Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-        name: string;
-        type: string;
-        roomNumber: number;
-        dayOfWeek: number;
-        timeFrom: string;
-        timeTo: string;
-        createdAt?: Date;
-        updatedAt?: Date;
-        _id: import("mongoose").Types.ObjectId;
-        id: string;
-    } & Required<{
+    getWeekdaySchedulesByGraph(graphId: string): Promise<(import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, ScheduleModel> & Omit<ScheduleModel & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;
-    })[]>;
+    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[]>;
     getWeekdaySchedulesByGraphs(graphIds: string[]): Promise<(import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, ScheduleModel> & Omit<ScheduleModel & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {

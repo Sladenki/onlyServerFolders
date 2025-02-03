@@ -17,10 +17,10 @@ var Emoji;
 (function (Emoji) {
     Emoji["LIKE"] = "\uD83D\uDC4D";
     Emoji["LOVE"] = "\u2764\uFE0F";
-    Emoji["LAUGH"] = "\uD83D\uDE02";
+    Emoji["SHARP"] = "\uD83D\uDE0E";
     Emoji["WOW"] = "\uD83D\uDE2E";
-    Emoji["SAD"] = "\uD83D\uDE22";
-    Emoji["ANGRY"] = "\uD83D\uDE21";
+    Emoji["SMILE"] = "\uD83D\uDE01";
+    Emoji["EXOLIDING_HEAD"] = "\uD83E\uDD2F";
 })(Emoji || (exports.Emoji = Emoji = {}));
 let PostReactionModel = class PostReactionModel extends defaultClasses_1.TimeStamps {
 };

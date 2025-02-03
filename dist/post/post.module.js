@@ -21,8 +21,6 @@ const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const jwt_config_1 = require("../config/jwt.config");
 const graphSubs_module_1 = require("../graphSubs/graphSubs.module");
-const userPostReaction_model_1 = require("../userPostReaction/userPostReaction.model");
-const graphSubs_model_1 = require("../graphSubs/graphSubs.model");
 let PostModule = class PostModule {
 };
 exports.PostModule = PostModule;
@@ -45,14 +43,6 @@ exports.PostModule = PostModule = __decorate([
                 {
                     typegooseClass: user_model_1.UserModel,
                     schemaOptions: { collection: 'User' },
-                },
-                {
-                    typegooseClass: userPostReaction_model_1.UserPostReactionModel,
-                    schemaOptions: { collection: 'UserPostReaction' },
-                },
-                {
-                    typegooseClass: graphSubs_model_1.GraphSubsModel,
-                    schemaOptions: { collection: 'GraphSubs' }
                 },
             ]),
             graph_module_1.GraphModule,
