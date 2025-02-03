@@ -24,6 +24,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const graphSubs_module_1 = require("./graphSubs/graphSubs.module");
 const schedule_module_1 = require("./schedule/schedule.module");
+const event_module_1 = require("./event/event.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(logging_middleware_1.LogginMiddleware).forRoutes('*');
@@ -48,7 +49,8 @@ exports.AppModule = AppModule = __decorate([
             postReaction_module_1.PostReactionModule,
             userPostReaction_module_1.UserPostReactionModule,
             graphSubs_module_1.GraphSubsModule,
-            schedule_module_1.ScheduleModule
+            schedule_module_1.ScheduleModule,
+            event_module_1.EventModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

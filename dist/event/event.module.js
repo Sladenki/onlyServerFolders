@@ -6,30 +6,28 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ScheduleModule = void 0;
+exports.EventModule = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
-const schedule_controller_1 = require("./schedule.controller");
-const schedule_service_1 = require("./schedule.service");
-const schedule_model_1 = require("./schedule.model");
-const event_module_1 = require("../event/event.module");
-let ScheduleModule = class ScheduleModule {
+const event_controller_1 = require("./event.controller");
+const event_service_1 = require("./event.service");
+const event_model_1 = require("./event.model");
+let EventModule = class EventModule {
 };
-exports.ScheduleModule = ScheduleModule;
-exports.ScheduleModule = ScheduleModule = __decorate([
+exports.EventModule = EventModule;
+exports.EventModule = EventModule = __decorate([
     (0, common_1.Module)({
-        controllers: [schedule_controller_1.ScheduleController],
-        providers: [schedule_service_1.ScheduleService],
+        controllers: [event_controller_1.EventController],
+        providers: [event_service_1.EventService],
         imports: [
             nestjs_typegoose_1.TypegooseModule.forFeature([
                 {
-                    typegooseClass: schedule_model_1.ScheduleModel,
-                    schemaOptions: { collection: 'Schedule' }
+                    typegooseClass: event_model_1.EventModel,
+                    schemaOptions: { collection: 'Event' }
                 },
             ]),
-            event_module_1.EventModule,
         ],
-        exports: [schedule_service_1.ScheduleService]
+        exports: [event_service_1.EventService]
     })
-], ScheduleModule);
-//# sourceMappingURL=schedule.module.js.map
+], EventModule);
+//# sourceMappingURL=event.module.js.map

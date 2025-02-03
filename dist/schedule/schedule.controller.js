@@ -16,9 +16,11 @@ exports.ScheduleController = void 0;
 const common_1 = require("@nestjs/common");
 const schedule_service_1 = require("./schedule.service");
 const create_schedule_dto_1 = require("./dto/create-schedule.dto");
+const event_service_1 = require("../event/event.service");
 let ScheduleController = class ScheduleController {
-    constructor(scheduleService) {
+    constructor(scheduleService, eventService) {
         this.scheduleService = scheduleService;
+        this.eventService = eventService;
     }
     async createSchedule(body) {
         return this.scheduleService.createSchedule(body);
@@ -26,6 +28,12 @@ let ScheduleController = class ScheduleController {
     async getWeeklyScheduleByGraphId(body) {
         const { graphId } = body;
         return this.scheduleService.getWeekdaySchedulesByGraph(graphId);
+    }
+    async getFullScheduleByGraphId(body) {
+        const { graphId } = body;
+        const schedule = await this.scheduleService.getWeekdaySchedulesByGraph(graphId);
+        const events = await this.eventService.getEventsByGraphId(graphId);
+        return { schedule, events };
     }
     async getWeekdaySchedulesByGraphs(body) {
         const { graphIds } = body;
@@ -48,6 +56,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ScheduleController.prototype, "getWeeklyScheduleByGraphId", null);
 __decorate([
+    (0, common_1.Post)("full-by-graph"),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ScheduleController.prototype, "getFullScheduleByGraphId", null);
+__decorate([
     (0, common_1.Get)('weekday-all'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -56,6 +71,7 @@ __decorate([
 ], ScheduleController.prototype, "getWeekdaySchedulesByGraphs", null);
 exports.ScheduleController = ScheduleController = __decorate([
     (0, common_1.Controller)('schedule'),
-    __metadata("design:paramtypes", [schedule_service_1.ScheduleService])
+    __metadata("design:paramtypes", [schedule_service_1.ScheduleService,
+        event_service_1.EventService])
 ], ScheduleController);
 //# sourceMappingURL=schedule.controller.js.map
