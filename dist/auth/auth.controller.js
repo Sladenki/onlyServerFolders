@@ -37,7 +37,7 @@ let AuthController = class AuthController {
         try {
             const userId = await this.findOrCreateUser(user);
             const payload = { sub: userId };
-            const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
+            const accessToken = this.jwtService.sign(payload, { expiresIn: '30d' });
             const refreshToken = (0, uuid_1.v4)();
             await this.UserModel.findByIdAndUpdate(userId, { refreshToken });
             if (isCapacitor) {

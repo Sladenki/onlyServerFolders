@@ -212,22 +212,22 @@ let PostService = class PostService {
             .limit(posts_1.DEFAULTLIMIT_POSTS)
             .sort({ createdAt: -1 })
             .lean();
-        const postsWithReactions = await Promise.all(posts.map(async (post) => {
+        const postsWithReactionsAndSubs = await Promise.all(posts.map(async (post) => {
             const reactionsWithStatus = await Promise.all(post.reactions.map(async (reaction) => {
-                const isReacted = userId
-                    ? await this.userPostReactionService.isUserReactionExists(reaction._id.toString(), userId.toString())
-                    : false;
+                const isReacted = await this.userPostReactionService.isUserReactionExists(reaction._id.toString(), userId.toString());
                 return {
                     ...reaction,
                     isReacted,
                 };
             }));
+            const isSubscribed = await this.graphSubsService.isUserSubsExists(post.graphId._id.toString(), userId.toString());
             return {
                 ...post,
                 reactions: reactionsWithStatus,
+                isSubscribed,
             };
         }));
-        return postsWithReactions;
+        return postsWithReactionsAndSubs;
     }
 };
 exports.PostService = PostService;
