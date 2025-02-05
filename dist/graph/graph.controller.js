@@ -16,14 +16,15 @@ exports.GraphController = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("mongoose");
 const auth_decorator_1 = require("../decorators/auth.decorator");
+const currentUser_decorator_1 = require("../decorators/currentUser.decorator");
 const create_graph_dto_1 = require("./dto/create-graph.dto");
 const graph_service_1 = require("./graph.service");
 let GraphController = class GraphController {
     constructor(graphService) {
         this.graphService = graphService;
     }
-    async createGraph(dto) {
-        return this.graphService.createGraph(dto);
+    async createGraph(userId, dto) {
+        return this.graphService.createGraph(dto, userId);
     }
     async getGraphById(id) {
         return this.graphService.getGraphById(new mongoose_1.Types.ObjectId(id));
@@ -41,9 +42,10 @@ __decorate([
     (0, common_1.HttpCode)(200),
     (0, common_1.Post)(),
     (0, auth_decorator_1.Auth)(),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, currentUser_decorator_1.CurrentUser)('_id')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_graph_dto_1.CreateGraphDto]),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, create_graph_dto_1.CreateGraphDto]),
     __metadata("design:returntype", Promise)
 ], GraphController.prototype, "createGraph", null);
 __decorate([

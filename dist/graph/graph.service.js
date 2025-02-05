@@ -20,8 +20,11 @@ let GraphService = class GraphService {
     constructor(GraphModel) {
         this.GraphModel = GraphModel;
     }
-    async createGraph(dto) {
-        const graph = await this.GraphModel.create(dto);
+    async createGraph(dto, userId) {
+        const graph = await this.GraphModel.create({
+            ...dto,
+            ownerUserId: userId,
+        });
         return graph;
     }
     async getGraphById(id) {

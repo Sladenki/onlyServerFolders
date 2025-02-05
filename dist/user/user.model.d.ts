@@ -5,6 +5,6 @@ export declare class UserModel extends TimeStamps {
     email: string;
     name: string;
     avaPath: string;
-    subsNum: number;
+    graphSubsNum: number;
     postsNum: number;
 }

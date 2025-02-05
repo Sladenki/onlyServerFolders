@@ -25,7 +25,7 @@ __decorate([
     __metadata("design:type", String)
 ], EventModel.prototype, "name", void 0);
 __decorate([
-    (0, typegoose_1.prop)({}),
+    (0, typegoose_1.prop)({ maxlength: 150 }),
     __metadata("design:type", String)
 ], EventModel.prototype, "description", void 0);
 __decorate([
@@ -37,7 +37,7 @@ __decorate([
     __metadata("design:type", String)
 ], EventModel.prototype, "timeFrom", void 0);
 __decorate([
-    (0, typegoose_1.prop)({}),
+    (0, typegoose_1.prop)(),
     __metadata("design:type", String)
 ], EventModel.prototype, "timeTo", void 0);
 exports.EventModel = EventModel = __decorate([

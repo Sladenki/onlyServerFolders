@@ -1,5 +1,5 @@
-/// <reference types="mongoose/types/document" />
 /// <reference types="mongoose/types/types" />
+/// <reference types="mongoose/types/document" />
 /// <reference types="mongoose/types/aggregate" />
 /// <reference types="mongoose/types/callback" />
 /// <reference types="mongoose/types/collection" />
@@ -32,7 +32,7 @@ import { Types } from 'mongoose';
 export declare class GraphService {
     private readonly GraphModel;
     constructor(GraphModel: ModelType<GraphModel>);
-    createGraph(dto: CreateGraphDto): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
+    createGraph(dto: CreateGraphDto, userId: Types.ObjectId): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
         _id: Types.ObjectId;
     }> & {
         __v: number;

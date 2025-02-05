@@ -38,7 +38,7 @@ export declare class UserService {
         email: string;
         name: string;
         avaPath: string;
-        subsNum: number;
+        graphSubsNum: number;
         postsNum: number;
         createdAt?: Date;
         updatedAt?: Date;
