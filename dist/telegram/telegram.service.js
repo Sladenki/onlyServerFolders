@@ -16,9 +16,13 @@ let TelegramBotService = class TelegramBotService {
     constructor() {
         const token = '7910385156:AAG-t9hxo7IpMme864JOwDta1CYS2_Qp2EE';
         this.bot = new TelegramBot(token, { polling: true });
+        console.log('Bot instance created');
     }
     onModuleInit() {
         console.log('Bot initialized');
+        setTimeout(() => {
+            this.handleStartCommand();
+        }, 1000);
     }
     async getUserProfilePhotos(id) {
         return await this.bot.getUserProfilePhotos(id);
