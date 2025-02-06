@@ -9,6 +9,6 @@ export declare class AuthController {
     private readonly configService;
     private supportsCapacitor;
     constructor(jwtService: JwtService, UserModel: ModelType<UserModel>, configService: ConfigService);
-    telegramAuthRedirect(req: Request, res: Response, query: any): Promise<void>;
+    telegramAuthRedirect(req: Request, res: Response, query: any): Promise<any>;
     private findOrCreateUser;
 }
