@@ -60,7 +60,7 @@ let AuthController = class AuthController {
             firstName: user.firstName,
             lastName: user.lastName,
             username: user.username,
-            avaPath: user.photoUrl,
+            avaPath: user.avaPath,
         });
         const savedUser = await newUser.save();
         return savedUser._id.toString();
