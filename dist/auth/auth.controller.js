@@ -55,11 +55,17 @@ let AuthController = class AuthController {
         }
     }
     async findOrCreateUser(user) {
+        console.log('user', user);
         const existingUser = await this.UserModel.findOne({ email: user.email }).lean();
         if (existingUser) {
             return existingUser._id.toString();
         }
-        const newUser = new this.UserModel(user);
+        const newUser = new this.UserModel({
+            email: user.email,
+            name: user.name,
+            avaPath: user.picture,
+        });
+        console.log('newUser', newUser);
         const savedUser = await newUser.save();
         return savedUser._id.toString();
     }
