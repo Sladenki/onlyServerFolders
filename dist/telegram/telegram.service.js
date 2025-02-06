@@ -18,8 +18,6 @@ let TelegramBotService = class TelegramBotService {
         this.bot = new TelegramBot(token, { polling: true });
     }
     onModuleInit() {
-        const graphonUrl = process.env.GRAPHON_URL;
-        console.log('graphonUrl', graphonUrl);
         this.bot.onText(/\/start/, (msg) => {
             const chatId = msg.chat.id;
             this.bot.sendMessage(chatId, 'Привет! Выберите действие:', {
@@ -29,7 +27,7 @@ let TelegramBotService = class TelegramBotService {
                             {
                                 text: 'Перейти на сайт',
                                 web_app: {
-                                    url: `${graphonUrl}/api/auth/telegram/callback`,
+                                    url: 'https://graphon-client.onrender.com/',
                                 },
                             },
                         ],
