@@ -18,6 +18,12 @@ let TelegramBotService = class TelegramBotService {
         this.bot = new TelegramBot(token, { polling: true });
     }
     onModuleInit() {
+        console.log('Bot initialized');
+    }
+    async getUserProfilePhotos(id) {
+        return await this.bot.getUserProfilePhotos(id);
+    }
+    handleStartCommand() {
         this.bot.onText(/\/start/, (msg) => {
             const chatId = msg.chat.id;
             this.bot.sendMessage(chatId, 'Привет! Выберите действие:', {
@@ -43,6 +49,9 @@ let TelegramBotService = class TelegramBotService {
                 },
             });
         });
+    }
+    sendMessage(chatId, message) {
+        this.bot.sendMessage(chatId, message);
     }
 };
 exports.TelegramBotService = TelegramBotService;

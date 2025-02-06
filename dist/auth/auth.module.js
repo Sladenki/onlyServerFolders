@@ -16,6 +16,7 @@ const auth_controller_1 = require("./auth.controller");
 const jwt_strategy_1 = require("../user/jwt.strategy");
 const user_model_1 = require("../user/user.model");
 const google_strategy_1 = require("../strategies/google.strategy");
+const telegram_module_1 = require("../telegram/telegram.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -25,6 +26,7 @@ exports.AuthModule = AuthModule = __decorate([
         providers: [jwt_strategy_1.JwtStrategy, google_strategy_1.GoogleStrategy],
         imports: [
             config_1.ConfigModule,
+            telegram_module_1.TelegramBotModule,
             jwt_1.JwtModule.registerAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],

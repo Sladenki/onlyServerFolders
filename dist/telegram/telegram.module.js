@@ -15,6 +15,7 @@ exports.TelegramBotModule = TelegramBotModule;
 exports.TelegramBotModule = TelegramBotModule = __decorate([
     (0, common_1.Module)({
         providers: [telegram_service_1.TelegramBotService],
+        exports: [telegram_service_1.TelegramBotService],
     })
 ], TelegramBotModule);
 //# sourceMappingURL=telegram.module.js.map
