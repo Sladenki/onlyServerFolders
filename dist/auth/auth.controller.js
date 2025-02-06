@@ -20,6 +20,7 @@ const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const user_model_1 = require("../user/user.model");
 const config_1 = require("@nestjs/config");
 const express_1 = require("express");
+const TelegramBot = require("node-telegram-bot-api");
 let AuthController = class AuthController {
     constructor(jwtService, UserModel, configService) {
         this.jwtService = jwtService;
@@ -27,16 +28,27 @@ let AuthController = class AuthController {
         this.configService = configService;
         const supportsCapacitorString = this.configService.get('SUPPORTS_CAPACITOR');
         this.supportsCapacitor = supportsCapacitorString === 'true';
+        const token = '7910385156:AAG-t9hxo7IpMme864JOwDta1CYS2_Qp2EE';
+        this.bot = new TelegramBot(token, { polling: true });
+    }
+    onModuleInit() {
+        console.log('Bot initialized');
     }
     async telegramAuthRedirect(req, res, query) {
         console.log('called TG');
-        const { id, first_name, last_name, username, photo_url } = query;
+        const { id, first_name, last_name, username } = query;
+        const userProfilePhotos = await this.bot.getUserProfilePhotos(id);
+        let photoUrl = null;
+        if (userProfilePhotos.total_count > 0) {
+            const photoFileId = userProfilePhotos.photos[0][0].file_id;
+            photoUrl = await this.bot.getFileLink(photoFileId);
+        }
         const userData = {
             telegramId: id,
             firstName: first_name,
             lastName: last_name,
             username: username,
-            avaPath: photo_url,
+            avaPath: photoUrl,
         };
         const userId = await this.findOrCreateUser(userData);
         const payload = { sub: userId };
