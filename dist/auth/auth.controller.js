@@ -35,12 +35,16 @@ let AuthController = class AuthController {
     }
     async telegramAuthRedirect(req, res, query) {
         console.log('called TG');
-        const { id, first_name, last_name, username } = query;
+        const { id, first_name, last_name, username, photo_url } = query;
+        console.log('photo_url', photo_url);
         const userProfilePhotos = await this.telegramBotService.getUserProfilePhotos(id);
+        console.log('userProfilePhotos', userProfilePhotos);
         let photoUrl = null;
         if (userProfilePhotos.total_count > 0) {
             const photoFileId = userProfilePhotos.photos[0][0].file_id;
+            console.log('photoFileId', photoFileId);
             photoUrl = await this.telegramBotService.bot.getFileLink(photoFileId);
+            console.log('photoUrl', photoUrl);
         }
         const userData = {
             telegramId: id,
