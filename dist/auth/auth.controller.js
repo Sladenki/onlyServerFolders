@@ -36,7 +36,7 @@ let AuthController = class AuthController {
             firstName: first_name,
             lastName: last_name,
             username: username,
-            photoUrl: photo_url,
+            avaPath: photo_url,
         };
         const userId = await this.findOrCreateUser(userData);
         const payload = { sub: userId };

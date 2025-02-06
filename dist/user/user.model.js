@@ -22,11 +22,23 @@ __decorate([
 __decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", String)
-], UserModel.prototype, "name", void 0);
+], UserModel.prototype, "firstName", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], UserModel.prototype, "lastName", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], UserModel.prototype, "username", void 0);
 __decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", String)
 ], UserModel.prototype, "avaPath", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", Number)
+], UserModel.prototype, "telegramId", void 0);
 __decorate([
     (0, typegoose_1.prop)({ default: 0 }),
     __metadata("design:type", Number)

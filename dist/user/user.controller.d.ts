@@ -36,8 +36,11 @@ export declare class UserController {
     auth(dto: AuthUserDto): Promise<any>;
     getUser(id: string): Promise<{
         email: string;
-        name: string;
+        firstName: string;
+        lastName: string;
+        username: string;
         avaPath: string;
+        telegramId: number;
         graphSubsNum: number;
         postsNum: number;
         createdAt?: Date;

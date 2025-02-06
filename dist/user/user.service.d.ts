@@ -36,8 +36,11 @@ export declare class UserService {
     auth(dto: AuthUserDto): Promise<any>;
     getUserById(_id: Types.ObjectId): Promise<{
         email: string;
-        name: string;
+        firstName: string;
+        lastName: string;
+        username: string;
         avaPath: string;
+        telegramId: number;
         graphSubsNum: number;
         postsNum: number;
         createdAt?: Date;
