@@ -25,6 +25,7 @@ const app_service_1 = require("./app.service");
 const graphSubs_module_1 = require("./graphSubs/graphSubs.module");
 const schedule_module_1 = require("./schedule/schedule.module");
 const event_module_1 = require("./event/event.module");
+const telegram_module_1 = require("./telegram/telegram.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(logging_middleware_1.LogginMiddleware).forRoutes('*');
@@ -51,6 +52,7 @@ exports.AppModule = AppModule = __decorate([
             graphSubs_module_1.GraphSubsModule,
             (0, common_1.forwardRef)(() => schedule_module_1.ScheduleModule),
             (0, common_1.forwardRef)(() => event_module_1.EventModule),
+            telegram_module_1.TelegramBotModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

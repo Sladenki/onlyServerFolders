@@ -14,11 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const user_model_1 = require("../user/user.model");
-const uuid_1 = require("uuid");
 const config_1 = require("@nestjs/config");
 let AuthController = class AuthController {
     constructor(jwtService, UserModel, configService) {
@@ -28,122 +26,47 @@ let AuthController = class AuthController {
         const supportsCapacitorString = this.configService.get('SUPPORTS_CAPACITOR');
         this.supportsCapacitor = supportsCapacitorString === 'true';
     }
-    googleAuth() {
-    }
-    async googleAuthRedirect(req, res) {
-        const user = req.user;
-        const isCapacitor = this.supportsCapacitor;
-        console.log('isCapacitor ?', isCapacitor);
-        try {
-            const userId = await this.findOrCreateUser(user);
-            const payload = { sub: userId };
-            const accessToken = this.jwtService.sign(payload, { expiresIn: '30d' });
-            const refreshToken = (0, uuid_1.v4)();
-            await this.UserModel.findByIdAndUpdate(userId, { refreshToken });
-            if (isCapacitor) {
-                const appScheme = 'com.mycompany.myapp://auth/callback';
-                const redirectUrl = `${appScheme}?accessToken=${accessToken}`;
-                return res.redirect(redirectUrl);
-            }
-            else {
-                res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
-            }
-        }
-        catch (error) {
-            console.error('Ошибка при поиске/создании пользователя:', error);
-            res.redirect(`${process.env.CLIENT_URL}/error?message=Ошибка авторизации`);
-        }
+    async telegramAuthRedirect(req, res, query) {
+        console.log('called TG');
+        const { id, first_name, last_name, username, photo_url } = query;
+        const userData = {
+            telegramId: id,
+            firstName: first_name,
+            lastName: last_name,
+            username: username,
+            photoUrl: photo_url,
+        };
+        const userId = await this.findOrCreateUser(userData);
+        const payload = { sub: userId };
+        const accessToken = this.jwtService.sign(payload, { expiresIn: '30d' });
+        return res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
     }
     async findOrCreateUser(user) {
-        console.log('user', user);
-        const existingUser = await this.UserModel.findOne({ email: user.email }).lean();
+        const existingUser = await this.UserModel.findOne({ telegramId: user.telegramId }).lean();
         if (existingUser) {
             return existingUser._id.toString();
         }
         const newUser = new this.UserModel({
-            email: user.email,
-            name: user.name,
-            avaPath: user.picture,
+            telegramId: user.telegramId,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            username: user.username,
+            photoUrl: user.photoUrl,
         });
-        console.log('newUser', newUser);
         const savedUser = await newUser.save();
         return savedUser._id.toString();
-    }
-    async logout(req, res) {
-        try {
-            const user = req['user'];
-            if (user && user.sub) {
-                await this.UserModel.findByIdAndUpdate(user.sub, {
-                    refreshToken: null,
-                });
-            }
-            res.clearCookie('refreshToken', {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                path: '/',
-                sameSite: 'strict',
-            });
-            res.status(200).json({ message: 'Выход выполнен успешно' });
-        }
-        catch (error) {
-            console.error('Ошибка при выходе:', error);
-            res.status(500).json({ message: 'Ошибка при выходе из системы' });
-        }
-    }
-    async refresh(req, res) {
-        const refreshToken = req.cookies['refreshToken'];
-        if (!refreshToken) {
-            throw new common_1.UnauthorizedException();
-        }
-        try {
-            const user = await this.UserModel.findOne({ refreshToken });
-            if (!user) {
-                throw new common_1.UnauthorizedException();
-            }
-            const payload = { sub: user._id.toString(), email: user.email };
-            const newAccessToken = this.jwtService.sign(payload, {
-                expiresIn: '15m',
-            });
-            res.json({ accessToken: newAccessToken });
-        }
-        catch (error) {
-            throw new common_1.UnauthorizedException();
-        }
     }
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.Get)('google'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "googleAuth", null);
-__decorate([
-    (0, common_1.Get)('callback/google'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
+    (0, common_1.Get)('telegram/callback'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
+    __param(2, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "googleAuthRedirect", null);
-__decorate([
-    (0, common_1.Post)('logout'),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Request, Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "logout", null);
-__decorate([
-    (0, common_1.Post)('refresh'),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "refresh", null);
+], AuthController.prototype, "telegramAuthRedirect", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
