@@ -14,4 +14,5 @@ export declare class AuthController {
     onModuleInit(): void;
     telegramAuthRedirect(req: Request, res: Response, query: any): Promise<any>;
     private findOrCreateUser;
+    logout(req: Request, res: Response): Promise<void>;
 }

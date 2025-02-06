@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b;
+var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
@@ -36,7 +36,6 @@ let AuthController = class AuthController {
     async telegramAuthRedirect(req, res, query) {
         console.log('called TG');
         const { id, first_name, last_name, username, photo_url } = query;
-        console.log('photo_url', photo_url);
         const userData = {
             telegramId: id,
             firstName: first_name,
@@ -65,6 +64,16 @@ let AuthController = class AuthController {
         const savedUser = await newUser.save();
         return savedUser._id.toString();
     }
+    async logout(req, res) {
+        try {
+            res.clearCookie('accessToken');
+            req.session = null;
+            res.status(200).json({ message: 'Вы успешно вышли из системы' });
+        }
+        catch (error) {
+            res.status(500).json({ message: 'Ошибка при выходе из системы' });
+        }
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -76,6 +85,14 @@ __decorate([
     __metadata("design:paramtypes", [typeof (_a = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _a : Object, typeof (_b = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _b : Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "telegramAuthRedirect", null);
+__decorate([
+    (0, common_1.Post)('logout'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_c = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _c : Object, typeof (_d = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _d : Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
