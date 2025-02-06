@@ -37,21 +37,12 @@ let AuthController = class AuthController {
         console.log('called TG');
         const { id, first_name, last_name, username, photo_url } = query;
         console.log('photo_url', photo_url);
-        const userProfilePhotos = await this.telegramBotService.getUserProfilePhotos(id);
-        console.log('userProfilePhotos', userProfilePhotos);
-        let photoUrl = null;
-        if (userProfilePhotos.total_count > 0) {
-            const photoFileId = userProfilePhotos.photos[0][0].file_id;
-            console.log('photoFileId', photoFileId);
-            photoUrl = await this.telegramBotService.bot.getFileLink(photoFileId);
-            console.log('photoUrl', photoUrl);
-        }
         const userData = {
             telegramId: id,
             firstName: first_name,
             lastName: last_name,
             username: username,
-            avaPath: photoUrl,
+            avaPath: photo_url,
         };
         const userId = await this.findOrCreateUser(userData);
         const payload = { sub: userId };
@@ -59,6 +50,7 @@ let AuthController = class AuthController {
         return res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
     }
     async findOrCreateUser(user) {
+        console.log('user', user);
         const existingUser = await this.UserModel.findOne({ telegramId: user.telegramId }).lean();
         if (existingUser) {
             return existingUser._id.toString();
@@ -68,7 +60,7 @@ let AuthController = class AuthController {
             firstName: user.firstName,
             lastName: user.lastName,
             username: user.username,
-            photoUrl: user.photoUrl,
+            avaPath: user.photoUrl,
         });
         const savedUser = await newUser.save();
         return savedUser._id.toString();
