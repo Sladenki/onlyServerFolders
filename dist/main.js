@@ -16,6 +16,7 @@ async function bootstrap() {
             'https://graphon.up.railway.app',
             'http://localhost:8080',
             'https://graphon-client.onrender.com',
+            'https://t.me'
         ],
         credentials: true,
         exposedHeaders: 'set-cookie',

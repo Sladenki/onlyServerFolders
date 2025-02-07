@@ -30,7 +30,11 @@ let TelegramBotService = class TelegramBotService {
     handleStartCommand() {
         this.bot.onText(/\/start/, (msg) => {
             const chatId = msg.chat.id;
-            this.bot.sendMessage(chatId, 'Привет! Выберите действие:', {
+            this.bot.sendMessage(chatId, 'Привет! Выберите действие:\n\n' +
+                '📌 *Какие данные мы собираем?*\n' +
+                'Мы получаем ваш *Telegram ID, имя, фамилию, юзернейм и фото профиля* ' +
+                'для авторизации и персонализации вашего профиля.', {
+                parse_mode: "Markdown",
                 reply_markup: {
                     inline_keyboard: [
                         [
@@ -44,8 +48,8 @@ let TelegramBotService = class TelegramBotService {
                         [
                             {
                                 text: 'Авторизоваться через Telegram',
-                                login_url: {
-                                    url: 'https://graphon.up.railway.app/api/auth/telegram/callback',
+                                web_app: {
+                                    url: 'https://graphon-server.onrender.com/api/auth/telegram/callback',
                                 },
                             },
                         ],
