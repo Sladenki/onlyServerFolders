@@ -36,6 +36,10 @@ let AuthController = class AuthController {
     async telegramAuthRedirect(req, res, query) {
         console.log('called TG');
         const { id, first_name, last_name, username, photo_url } = query;
+        if (!id) {
+            console.error('❌ Ошибка: ID пользователя не передан!');
+            return res.status(400).json({ message: 'Ошибка: ID пользователя отсутствует' });
+        }
         const userData = {
             telegramId: id,
             firstName: first_name,
