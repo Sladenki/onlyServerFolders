@@ -45,7 +45,7 @@ let TelegramBotService = class TelegramBotService {
                             {
                                 text: 'Авторизоваться через Telegram',
                                 login_url: {
-                                    url: 'https://graphon-server.onrender.com/api/auth/telegram/callback',
+                                    url: 'https://graphon.up.railway.app/api/auth/telegram/callback',
                                 },
                             },
                         ],
