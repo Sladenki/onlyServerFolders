@@ -16,7 +16,7 @@ class UserModel extends defaultClasses_1.TimeStamps {
 }
 exports.UserModel = UserModel;
 __decorate([
-    (0, typegoose_1.prop)({ unique: true, index: true }),
+    (0, typegoose_1.prop)({ unique: false, index: true }),
     __metadata("design:type", String)
 ], UserModel.prototype, "email", void 0);
 __decorate([
