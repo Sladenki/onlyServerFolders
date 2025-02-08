@@ -35,19 +35,22 @@ let AuthController = class AuthController {
     }
     async telegramAuthRedirect(req, res, query) {
         console.log('called TG');
-        const { id, first_name, last_name, username, photo_url } = query;
-        if (!id) {
+        const { telegramId, first_name, last_name, username, photo_url } = query;
+        console.log(telegramId, first_name, last_name, username, photo_url);
+        if (!telegramId) {
             console.error('❌ Ошибка: ID пользователя не передан!');
             return res.status(400).json({ message: 'Ошибка: ID пользователя отсутствует' });
         }
         const userData = {
-            telegramId: id,
+            telegramId: telegramId,
             firstName: first_name,
             lastName: last_name,
             username: username,
             avaPath: photo_url,
         };
+        console.log('userData', userData);
         const userId = await this.findOrCreateUser(userData);
+        console.log('userId', userId);
         const payload = { sub: userId };
         const accessToken = this.jwtService.sign(payload, { expiresIn: '30d' });
         return res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
