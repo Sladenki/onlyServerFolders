@@ -12,7 +12,7 @@ export declare class AuthController {
     private supportsCapacitor;
     constructor(jwtService: JwtService, UserModel: ModelType<UserModel>, configService: ConfigService, telegramBotService: TelegramBotService);
     onModuleInit(): void;
-    telegramAuthRedirect(req: Request, res: Response, query: any): Promise<any>;
+    telegramAuthRedirect(req: Request, res: Response): Promise<any>;
     private findOrCreateUser;
     logout(req: Request, res: Response): Promise<void>;
 }

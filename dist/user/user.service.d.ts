@@ -40,7 +40,7 @@ export declare class UserService {
         lastName: string;
         username: string;
         avaPath: string;
-        telegramId: number;
+        telegramId: any;
         graphSubsNum: number;
         postsNum: number;
         createdAt?: Date;
