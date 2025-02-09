@@ -35,6 +35,7 @@ let AuthController = class AuthController {
     }
     async telegramAuthRedirect(req, res, query) {
         console.log('called TG');
+        console.log('query', query);
         const { telegramId, first_name, last_name, username, photo_url } = query;
         console.log(telegramId, first_name, last_name, username, photo_url);
         if (!telegramId) {
