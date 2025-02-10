@@ -33,24 +33,19 @@ let AuthController = class AuthController {
     onModuleInit() {
         console.log('Bot initialized');
     }
-    async telegramAuthRedirect(req, res) {
-        console.log('Запрос на авторизацию Telegram получен:', req.body);
-        const { telegramId, first_name, last_name, username, photo_url } = req.body;
-        console.log(telegramId, first_name, last_name, username, photo_url);
-        if (!telegramId) {
-            console.error('❌ Ошибка: ID пользователя не передан!');
-            return res.status(400).json({ message: 'Ошибка: ID пользователя отсутствует' });
-        }
+    async telegramAuthRedirect(req, res, query) {
+        console.log('called TG');
+        const { id, first_name, last_name, username, photo_url } = query;
+        console.log('Из query', id, first_name, last_name, username, photo_url);
         const userData = {
-            telegramId: telegramId,
+            telegramId: id,
             firstName: first_name,
             lastName: last_name,
             username: username,
-            avaPath: photo_url,
+            photoUrl: photo_url,
         };
         console.log('userData', userData);
         const userId = await this.findOrCreateUser(userData);
-        console.log('userId', userId);
         const payload = { sub: userId };
         const accessToken = this.jwtService.sign(payload, { expiresIn: '30d' });
         return res.redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`);
@@ -87,8 +82,9 @@ __decorate([
     (0, common_1.Get)('telegram/callback'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
+    __param(2, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_a = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _a : Object, typeof (_b = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _b : Object]),
+    __metadata("design:paramtypes", [typeof (_a = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _a : Object, typeof (_b = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _b : Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "telegramAuthRedirect", null);
 __decorate([

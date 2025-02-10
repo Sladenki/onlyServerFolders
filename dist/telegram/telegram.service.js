@@ -14,7 +14,7 @@ const common_1 = require("@nestjs/common");
 const TelegramBot = require("node-telegram-bot-api");
 let TelegramBotService = class TelegramBotService {
     constructor() {
-        const token = '7910385156:AAG-t9hxo7IpMme864JOwDta1CYS2_Qp2EE';
+        const token = "7335134596:AAFu23SLsADju1xxcG9bqecwFXoi8MgZeBs";
         this.bot = new TelegramBot(token, { polling: true });
         console.log('Bot instance created');
     }
@@ -47,9 +47,9 @@ let TelegramBotService = class TelegramBotService {
                         ],
                         [
                             {
-                                text: '🔐 Авторизоваться через Telegram',
-                                web_app: {
-                                    url: 'https://graphon-client.onrender.com/signIn',
+                                text: 'Авторизоваться через Telegram',
+                                login_url: {
+                                    url: 'https://graphon.up.railway.app/api/auth/telegram/callback',
                                 },
                             },
                         ],
