@@ -31,15 +31,19 @@ let TelegramBotService = class TelegramBotService {
         this.bot.onText(/\/start/, (msg) => {
             const chatId = msg.chat.id;
             this.bot.sendMessage(chatId, 'Привет! Выберите действие:\n\n' +
-                '📌 *Какие данные мы собираем?*\n' +
-                'Мы получаем ваш *Telegram ID, имя, фамилию, юзернейм и фото профиля* ' +
-                'для авторизации и персонализации вашего профиля.', {
+                '📌 *Какие данные мы собираем?*\n\n' +
+                'Мы получаем следующие данные:\n' +
+                '- *Telegram ID*\n' +
+                '- *Имя*\n' +
+                '- *Фамилию*\n' +
+                '- *Юзернейм*\n' +
+                '- *Фото профиля*', {
                 parse_mode: "Markdown",
                 reply_markup: {
                     inline_keyboard: [
                         [
                             {
-                                text: '🏡 Перейти на сайт',
+                                text: '🌐 Перейти на сайт',
                                 web_app: {
                                     url: 'https://graphon-client.onrender.com/',
                                 },
@@ -47,7 +51,7 @@ let TelegramBotService = class TelegramBotService {
                         ],
                         [
                             {
-                                text: 'Авторизоваться через Telegram (временное решение)',
+                                text: '🔐 Авторизоваться через Telegram',
                                 login_url: {
                                     url: 'https://graphon-server.onrender.com/api/auth/telegram/callback',
                                 },
