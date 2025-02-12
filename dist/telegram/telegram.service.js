@@ -31,8 +31,7 @@ let TelegramBotService = class TelegramBotService {
         this.bot.onText(/\/start/, (msg) => {
             const chatId = msg.chat.id;
             this.bot.sendMessage(chatId, 'Привет! Выберите действие:\n\n' +
-                '📌 *Какие данные мы собираем?*\n\n' +
-                'Мы получаем следующие данные:\n' +
+                '📌 *Какие данные мы получаем?*\n\n' +
                 '- *Telegram ID*\n' +
                 '- *Имя*\n' +
                 '- *Фамилию*\n' +

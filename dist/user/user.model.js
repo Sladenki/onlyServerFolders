@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
 const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
-class UserModel extends defaultClasses_1.TimeStamps {
-}
+let UserModel = class UserModel extends defaultClasses_1.TimeStamps {
+};
 exports.UserModel = UserModel;
 __decorate([
     (0, typegoose_1.prop)({ unique: false }),
@@ -47,4 +47,12 @@ __decorate([
     (0, typegoose_1.prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], UserModel.prototype, "postsNum", void 0);
+exports.UserModel = UserModel = __decorate([
+    (0, typegoose_1.modelOptions)({
+        schemaOptions: {
+            versionKey: false,
+            timestamps: { createdAt: true, updatedAt: false },
+        },
+    })
+], UserModel);
 //# sourceMappingURL=user.model.js.map

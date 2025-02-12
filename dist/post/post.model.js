@@ -42,7 +42,8 @@ __decorate([
 exports.PostModel = PostModel = __decorate([
     (0, typegoose_1.modelOptions)({
         schemaOptions: {
-            versionKey: false
+            versionKey: false,
+            timestamps: { createdAt: true, updatedAt: false },
         }
     })
 ], PostModel);
