@@ -17,15 +17,15 @@ const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const graphSubs_model_1 = require("./graphSubs.model");
 const mongoose_1 = require("mongoose");
-const post_service_1 = require("../post/post.service");
 const schedule_service_1 = require("../schedule/schedule.service");
 const graph_model_1 = require("../graph/graph.model");
+const event_service_1 = require("../event/event.service");
 let GraphSubsService = class GraphSubsService {
-    constructor(graphSubsModel, GraphModel, postService, scheduleService) {
+    constructor(graphSubsModel, GraphModel, scheduleService, eventService) {
         this.graphSubsModel = graphSubsModel;
         this.GraphModel = GraphModel;
-        this.postService = postService;
         this.scheduleService = scheduleService;
+        this.eventService = eventService;
     }
     async toggleSub(user, graph) {
         const isSubExists = await this.graphSubsModel.findOne({ user, graph }).exec();
@@ -42,20 +42,15 @@ let GraphSubsService = class GraphSubsService {
             ]);
         }
     }
-    async getSubsPosts(skip, userId) {
-        const skipPosts = skip ? Number(skip) : 0;
-        const subscribedGraphs = await this.graphSubsModel
-            .find({ user: userId })
-            .distinct('graph');
-        const posts = await this.postService.getPostsFromSubscribedGraphs(skipPosts, subscribedGraphs, userId);
-        return posts;
-    }
     async getSubsSchedule(userId) {
         const subscribedGraphs = await this.graphSubsModel
             .find({ user: userId })
             .distinct('graph');
-        const posts = await this.scheduleService.getWeekdaySchedulesByGraphs(subscribedGraphs);
-        return posts;
+        const [schedule, events] = await Promise.all([
+            this.scheduleService.getWeekdaySchedulesByGraphs(subscribedGraphs),
+            this.eventService.getEventsByGraphsIds(subscribedGraphs),
+        ]);
+        return { schedule, events };
     }
     async isUserSubsExists(graph, userId) {
         const reaction = await this.graphSubsModel
@@ -71,8 +66,7 @@ exports.GraphSubsService = GraphSubsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_typegoose_1.InjectModel)(graphSubs_model_1.GraphSubsModel)),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(graph_model_1.GraphModel)),
-    __param(2, (0, common_1.Inject)((0, common_1.forwardRef)(() => post_service_1.PostService))),
-    __metadata("design:paramtypes", [Object, Object, post_service_1.PostService,
-        schedule_service_1.ScheduleService])
+    __metadata("design:paramtypes", [Object, Object, schedule_service_1.ScheduleService,
+        event_service_1.EventService])
 ], GraphSubsService);
 //# sourceMappingURL=graphSubs.service.js.map

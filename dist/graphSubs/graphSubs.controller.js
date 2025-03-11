@@ -27,9 +27,6 @@ let GraphSubsController = class GraphSubsController {
         const graphIdObjectId = new mongoose_1.Types.ObjectId(graphId);
         return this.graphSubsService.toggleSub(currentUserId, graphIdObjectId);
     }
-    async getSubsPosts(skip, userId) {
-        return this.graphSubsService.getSubsPosts(skip, userId);
-    }
     async getSubsSchedule(userId) {
         return this.graphSubsService.getSubsSchedule(userId);
     }
@@ -46,15 +43,6 @@ __decorate([
     __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, Object]),
     __metadata("design:returntype", Promise)
 ], GraphSubsController.prototype, "toggleSub", null);
-__decorate([
-    (0, common_1.Get)('getSubsPosts'),
-    (0, auth_decorator_1.Auth)(),
-    __param(0, (0, common_1.Query)('skip')),
-    __param(1, (0, currentUser_decorator_1.CurrentUser)('_id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
-    __metadata("design:returntype", Promise)
-], GraphSubsController.prototype, "getSubsPosts", null);
 __decorate([
     (0, common_1.Get)('getSubsSchedule'),
     (0, auth_decorator_1.Auth)(),

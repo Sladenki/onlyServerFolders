@@ -13,18 +13,18 @@ const graph_controller_1 = require("./graph.controller");
 const graph_model_1 = require("./graph.model");
 const graph_service_1 = require("./graph.service");
 const jwt_strategy_1 = require("../user/jwt.strategy");
-const google_strategy_1 = require("../strategies/google.strategy");
 const config_1 = require("@nestjs/config");
 const user_model_1 = require("../user/user.model");
 const jwt_1 = require("@nestjs/jwt");
 const jwt_config_1 = require("../config/jwt.config");
+const graphSubs_module_1 = require("../graphSubs/graphSubs.module");
 let GraphModule = class GraphModule {
 };
 exports.GraphModule = GraphModule;
 exports.GraphModule = GraphModule = __decorate([
     (0, common_1.Module)({
         controllers: [graph_controller_1.GraphController],
-        providers: [jwt_strategy_1.JwtStrategy, google_strategy_1.GoogleStrategy, graph_service_1.GraphService],
+        providers: [jwt_strategy_1.JwtStrategy, graph_service_1.GraphService],
         imports: [
             config_1.ConfigModule,
             jwt_1.JwtModule.registerAsync({
@@ -44,6 +44,7 @@ exports.GraphModule = GraphModule = __decorate([
                     schemaOptions: { collection: 'User' },
                 },
             ]),
+            (0, common_1.forwardRef)(() => graphSubs_module_1.GraphSubsModule)
         ],
         exports: [graph_service_1.GraphService],
     })

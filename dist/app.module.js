@@ -12,12 +12,9 @@ const config_1 = require("@nestjs/config");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const mongo_config_1 = require("./config/mongo.config");
 const user_module_1 = require("./user/user.module");
-const post_module_1 = require("./post/post.module");
 const logging_middleware_1 = require("./logging.middleware");
 const graph_module_1 = require("./graph/graph.module");
 const s3_module_1 = require("./s3/s3.module");
-const postReaction_module_1 = require("./postReaction/postReaction.module");
-const userPostReaction_module_1 = require("./userPostReaction/userPostReaction.module");
 const auth_module_1 = require("./auth/auth.module");
 const passport_1 = require("@nestjs/passport");
 const app_controller_1 = require("./app.controller");
@@ -42,16 +39,13 @@ exports.AppModule = AppModule = __decorate([
                 useFactory: mongo_config_1.getMongoConfig,
             }),
             passport_1.PassportModule.register({ session: false }),
-            (0, common_1.forwardRef)(() => s3_module_1.S3Module),
+            s3_module_1.S3Module,
             auth_module_1.AuthModule,
             user_module_1.UserModule,
-            post_module_1.PostModule,
-            (0, common_1.forwardRef)(() => graph_module_1.GraphModule),
-            postReaction_module_1.PostReactionModule,
-            (0, common_1.forwardRef)(() => userPostReaction_module_1.UserPostReactionModule),
+            graph_module_1.GraphModule,
             graphSubs_module_1.GraphSubsModule,
-            (0, common_1.forwardRef)(() => schedule_module_1.ScheduleModule),
-            (0, common_1.forwardRef)(() => event_module_1.EventModule),
+            schedule_module_1.ScheduleModule,
+            event_module_1.EventModule,
             telegram_module_1.TelegramBotModule
         ],
         controllers: [app_controller_1.AppController],

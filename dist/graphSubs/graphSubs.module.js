@@ -15,9 +15,9 @@ const graphSubs_service_1 = require("./graphSubs.service");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const jwt_config_1 = require("../config/jwt.config");
-const post_module_1 = require("../post/post.module");
 const schedule_module_1 = require("../schedule/schedule.module");
 const graph_model_1 = require("../graph/graph.model");
+const event_module_1 = require("../event/event.module");
 let GraphSubsModule = class GraphSubsModule {
 };
 exports.GraphSubsModule = GraphSubsModule;
@@ -41,8 +41,8 @@ exports.GraphSubsModule = GraphSubsModule = __decorate([
                     schemaOptions: { collection: 'Graph' }
                 },
             ]),
-            (0, common_1.forwardRef)(() => post_module_1.PostModule),
-            schedule_module_1.ScheduleModule
+            schedule_module_1.ScheduleModule,
+            event_module_1.EventModule
         ],
         exports: [graphSubs_service_1.GraphSubsService]
     })

@@ -38,13 +38,6 @@ export declare class ScheduleController {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    getWeeklyScheduleByGraphId(body: {
-        graphId: string;
-    }): Promise<(import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("./schedule.model").ScheduleModel> & Omit<import("./schedule.model").ScheduleModel & Required<{
-        _id: import("mongoose").Types.ObjectId;
-    }> & {
-        __v: number;
-    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[]>;
     getFullScheduleByGraphId(body: {
         graphId: string;
     }): Promise<{

@@ -15,7 +15,6 @@ const jwt_config_1 = require("../config/jwt.config");
 const auth_controller_1 = require("./auth.controller");
 const jwt_strategy_1 = require("../user/jwt.strategy");
 const user_model_1 = require("../user/user.model");
-const google_strategy_1 = require("../strategies/google.strategy");
 const telegram_module_1 = require("../telegram/telegram.module");
 let AuthModule = class AuthModule {
 };
@@ -23,7 +22,7 @@ exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         controllers: [auth_controller_1.AuthController],
-        providers: [jwt_strategy_1.JwtStrategy, google_strategy_1.GoogleStrategy],
+        providers: [jwt_strategy_1.JwtStrategy],
         imports: [
             config_1.ConfigModule,
             telegram_module_1.TelegramBotModule,

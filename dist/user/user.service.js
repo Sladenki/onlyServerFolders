@@ -34,10 +34,6 @@ let UserService = class UserService {
             upsert: true,
         });
         const mainData = user?._doc;
-        const www = {
-            ...mainData,
-            token: this.jwtService.sign({ _id: mainData._id }),
-        };
         return {
             ...mainData,
             token: this.jwtService.sign({ _id: mainData._id }),

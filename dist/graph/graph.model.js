@@ -21,6 +21,10 @@ __decorate([
     __metadata("design:type", String)
 ], GraphModel.prototype, "name", void 0);
 __decorate([
+    (0, typegoose_1.prop)({ index: true, maxlength: 200 }),
+    __metadata("design:type", String)
+], GraphModel.prototype, "about", void 0);
+__decorate([
     (0, typegoose_1.prop)({ ref: () => user_model_1.UserModel, index: true }),
     __metadata("design:type", Object)
 ], GraphModel.prototype, "ownerUserId", void 0);
@@ -36,6 +40,10 @@ __decorate([
     (0, typegoose_1.prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], GraphModel.prototype, "childGraphNum", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], GraphModel.prototype, "imgPath", void 0);
 exports.GraphModel = GraphModel = __decorate([
     (0, typegoose_1.modelOptions)({
         schemaOptions: {

@@ -31,6 +31,14 @@ let EventService = class EventService {
             .populate("graphId", "name")
             .lean();
     }
+    async getEventsByGraphsIds(graphIds) {
+        return this.EventModel
+            .find({
+            graphId: { $in: graphIds },
+        })
+            .populate("graphId", "name")
+            .lean();
+    }
     async getUpcomingEvents() {
         const today = new Date();
         return this.EventModel

@@ -29,9 +29,11 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { GraphModel } from './graph.model';
 import { CreateGraphDto } from './dto/create-graph.dto';
 import { Types } from 'mongoose';
+import { GraphSubsService } from 'src/graphSubs/graphSubs.service';
 export declare class GraphService {
     private readonly GraphModel;
-    constructor(GraphModel: ModelType<GraphModel>);
+    private readonly graphSubsService;
+    constructor(GraphModel: ModelType<GraphModel>, graphSubsService: GraphSubsService);
     createGraph(dto: CreateGraphDto, userId: Types.ObjectId): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
         _id: Types.ObjectId;
     }> & {
@@ -42,11 +44,25 @@ export declare class GraphService {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    getParentGraphs(): Promise<(import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
+    getParentGraphs(skip: any): Promise<(import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
         _id: Types.ObjectId;
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[]>;
+    getParentGraphsAuth(skip: any, userId: Types.ObjectId): Promise<{
+        isSubscribed: boolean;
+        name: string;
+        about?: string;
+        ownerUserId: import("@typegoose/typegoose/lib/types").Ref<import("../user/user.model").UserModel>;
+        subsNum: number;
+        parentGraphId?: import("@typegoose/typegoose/lib/types").Ref<GraphModel>;
+        childGraphNum: number;
+        imgPath?: string;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    }[]>;
     getAllChildrenGraphs(parentGraphId: Types.ObjectId): Promise<(import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
         _id: Types.ObjectId;
     }> & {

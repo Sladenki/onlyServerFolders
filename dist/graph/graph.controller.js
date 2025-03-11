@@ -29,8 +29,11 @@ let GraphController = class GraphController {
     async getGraphById(id) {
         return this.graphService.getGraphById(new mongoose_1.Types.ObjectId(id));
     }
-    async getParentGraphs() {
-        return this.graphService.getParentGraphs();
+    async getParentGraphs(skip) {
+        return this.graphService.getParentGraphs(skip);
+    }
+    async getParentGraphsAuth(skip, userId) {
+        return this.graphService.getParentGraphsAuth(skip, userId);
     }
     async getAllChildrenGraphs(parentGraphId) {
         return this.graphService.getAllChildrenGraphs(new mongoose_1.Types.ObjectId(parentGraphId));
@@ -57,10 +60,20 @@ __decorate([
 ], GraphController.prototype, "getGraphById", null);
 __decorate([
     (0, common_1.Get)('getParentGraphs'),
+    __param(0, (0, common_1.Query)('skip')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], GraphController.prototype, "getParentGraphs", null);
+__decorate([
+    (0, common_1.Get)('getParentGraphsAuth'),
+    (0, auth_decorator_1.Auth)(),
+    __param(0, (0, common_1.Query)('skip')),
+    __param(1, (0, currentUser_decorator_1.CurrentUser)('_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GraphController.prototype, "getParentGraphsAuth", null);
 __decorate([
     (0, common_1.Get)('getAllChildrenGraphs/:parentGraphId'),
     __param(0, (0, common_1.Param)('parentGraphId')),

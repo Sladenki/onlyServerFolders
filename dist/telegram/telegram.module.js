@@ -9,11 +9,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TelegramBotModule = void 0;
 const common_1 = require("@nestjs/common");
 const telegram_service_1 = require("./telegram.service");
+const config_1 = require("@nestjs/config");
 let TelegramBotModule = class TelegramBotModule {
 };
 exports.TelegramBotModule = TelegramBotModule;
 exports.TelegramBotModule = TelegramBotModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            config_1.ConfigModule,
+        ],
         providers: [telegram_service_1.TelegramBotService],
         exports: [telegram_service_1.TelegramBotService],
     })

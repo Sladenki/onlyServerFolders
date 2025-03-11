@@ -5,8 +5,10 @@ export interface GraphModel extends Base {
 }
 export declare class GraphModel extends TimeStamps {
     name: string;
+    about?: string;
     ownerUserId: Ref<UserModel>;
     subsNum: number;
     parentGraphId?: Ref<GraphModel>;
     childGraphNum: number;
+    imgPath?: string;
 }

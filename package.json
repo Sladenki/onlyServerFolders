@@ -8,7 +8,7 @@
   "scripts": {
     "build": "npx cross-env NODE_OPTIONS=--max-old-space-size=512 NODE_ENV=production npm install --omit=dev && npx nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "npx cross-env NODE_OPTIONS=--max-old-space-size=512 nest start",
+    "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "npx cross-env NODE_OPTIONS=--inspect-brk&& nest start --debug --watch",
     "start:prod": "npx cross-env NODE_OPTIONS=--max-old-space-size=512 && node dist/main",
@@ -34,10 +34,10 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
     "easy-yandex-s3": "^2.0.0",
+    "fs": "^0.0.1-security",
     "mongoose": "^8.4.5",
     "node-telegram-bot-api": "^0.66.0",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "rxjs": "^7.8.1"
   },

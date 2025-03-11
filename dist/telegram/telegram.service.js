@@ -11,12 +11,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TelegramBotService = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
 const TelegramBot = require("node-telegram-bot-api");
 let TelegramBotService = class TelegramBotService {
-    constructor() {
-        const token = '7910385156:AAG-t9hxo7IpMme864JOwDta1CYS2_Qp2EE';
+    constructor(configService) {
+        this.configService = configService;
+        const token = this.configService.get('BOT_TOKEN');
         this.bot = new TelegramBot(token, { polling: true });
         console.log('Bot instance created');
+        const webAppString = this.configService.get('WEB_APP_URL');
+        this.WEB_APP_URL = webAppString;
+        const authLoginString = this.configService.get('SERVER_URL');
+        this.SERVER_URL = authLoginString;
     }
     onModuleInit() {
         console.log('Bot initialized');
@@ -47,7 +53,7 @@ let TelegramBotService = class TelegramBotService {
                             {
                                 text: '🌐 Открыть приложение',
                                 web_app: {
-                                    url: 'https://graphon-client.onrender.com/',
+                                    url: this.WEB_APP_URL,
                                 },
                             },
                         ],
@@ -55,7 +61,7 @@ let TelegramBotService = class TelegramBotService {
                             {
                                 text: '🔐 Авторизоваться',
                                 login_url: {
-                                    url: 'https://graphon-server.onrender.com/api/auth/telegram/callback',
+                                    url: `${this.SERVER_URL}/auth/telegram/callback`,
                                 },
                             },
                         ],
@@ -77,6 +83,6 @@ let TelegramBotService = class TelegramBotService {
 exports.TelegramBotService = TelegramBotService;
 exports.TelegramBotService = TelegramBotService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [config_1.ConfigService])
 ], TelegramBotService);
 //# sourceMappingURL=telegram.service.js.map

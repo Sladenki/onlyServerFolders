@@ -52,6 +52,22 @@ export declare class EventService {
     }> & {
         __v: number;
     })[]>;
+    getEventsByGraphsIds(graphIds: string[]): Promise<({
+        graphId: import("mongoose").Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        description: string;
+        eventDate: Date;
+        timeFrom: string;
+        timeTo: string;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: import("mongoose").Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    })[]>;
     getUpcomingEvents(): Promise<({
         graphId: import("mongoose").Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         name: string;

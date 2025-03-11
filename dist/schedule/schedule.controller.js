@@ -25,10 +25,6 @@ let ScheduleController = class ScheduleController {
     async createSchedule(body) {
         return this.scheduleService.createSchedule(body);
     }
-    async getWeeklyScheduleByGraphId(body) {
-        const { graphId } = body;
-        return this.scheduleService.getWeekdaySchedulesByGraph(graphId);
-    }
     async getFullScheduleByGraphId(body) {
         const { graphId } = body;
         const schedule = await this.scheduleService.getWeekdaySchedulesByGraph(graphId);
@@ -48,13 +44,6 @@ __decorate([
     __metadata("design:paramtypes", [create_schedule_dto_1.CreateScheduleDto]),
     __metadata("design:returntype", Promise)
 ], ScheduleController.prototype, "createSchedule", null);
-__decorate([
-    (0, common_1.Post)('weekday-by-graph'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], ScheduleController.prototype, "getWeeklyScheduleByGraphId", null);
 __decorate([
     (0, common_1.Post)("full-by-graph"),
     __param(0, (0, common_1.Body)()),

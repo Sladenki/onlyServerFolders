@@ -1,4 +1,5 @@
 /// <reference types="mongoose/types/types" />
+/// <reference types="mongoose/types/document" />
 /// <reference types="mongoose/types/aggregate" />
 /// <reference types="mongoose/types/callback" />
 /// <reference types="mongoose/types/collection" />
@@ -32,6 +33,27 @@ export declare class GraphSubsController {
     toggleSub(currentUserId: Types.ObjectId, body: {
         graphId: string;
     }): Promise<void>;
-    getSubsPosts(skip: any, userId: Types.ObjectId): Promise<any[]>;
-    getSubsSchedule(userId: Types.ObjectId): Promise<any[]>;
+    getSubsSchedule(userId: Types.ObjectId): Promise<{
+        schedule: (import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("../schedule/schedule.model").ScheduleModel> & Omit<import("../schedule/schedule.model").ScheduleModel & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[];
+        events: ({
+            graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            name: string;
+            description: string;
+            eventDate: Date;
+            timeFrom: string;
+            timeTo: string;
+            createdAt?: Date;
+            updatedAt?: Date;
+            _id: Types.ObjectId;
+            id: string;
+        } & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        })[];
+    }>;
 }

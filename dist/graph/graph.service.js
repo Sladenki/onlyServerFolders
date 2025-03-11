@@ -16,9 +16,11 @@ exports.GraphService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const graph_model_1 = require("./graph.model");
+const graphSubs_service_1 = require("../graphSubs/graphSubs.service");
 let GraphService = class GraphService {
-    constructor(GraphModel) {
+    constructor(GraphModel, graphSubsService) {
         this.GraphModel = GraphModel;
+        this.graphSubsService = graphSubsService;
     }
     async createGraph(dto, userId) {
         const graph = await this.GraphModel.create({
@@ -30,11 +32,29 @@ let GraphService = class GraphService {
     async getGraphById(id) {
         return this.GraphModel.findById(id).populate('parentGraphId', 'name');
     }
-    async getParentGraphs() {
-        return this.GraphModel.find({ parentGraphId: { $exists: false } }).exec();
+    async getParentGraphs(skip) {
+        const graphs = this.GraphModel
+            .find()
+            .skip(skip)
+            .exec();
+        return graphs;
+    }
+    async getParentGraphsAuth(skip, userId) {
+        const graphs = await this.GraphModel
+            .find()
+            .skip(skip)
+            .exec();
+        const postsWithReactionsAndSubs = await Promise.all(graphs.map(async (graph) => {
+            const isSubscribed = await this.graphSubsService.isUserSubsExists(graph._id.toString(), userId.toString());
+            return {
+                ...graph.toObject(),
+                isSubscribed,
+            };
+        }));
+        return postsWithReactionsAndSubs;
     }
     async getAllChildrenGraphs(parentGraphId) {
-        return this.GraphModel.find({ parentGraphId }).exec();
+        return this.GraphModel.find().exec();
     }
     async createChildGraph(name, parentGraphId) {
         const childGraph = await this.GraphModel.create({ name, parentGraphId });
@@ -48,6 +68,6 @@ exports.GraphService = GraphService;
 exports.GraphService = GraphService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_typegoose_1.InjectModel)(graph_model_1.GraphModel)),
-    __metadata("design:paramtypes", [Object])
+    __metadata("design:paramtypes", [Object, graphSubs_service_1.GraphSubsService])
 ], GraphService);
 //# sourceMappingURL=graph.service.js.map
