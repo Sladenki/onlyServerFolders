@@ -6,8 +6,8 @@ const cookieParser = require("cookie-parser");
 const fs = require("fs");
 async function bootstrap() {
     const httpsOptions = {
-        key: fs.readFileSync('./ssl/key.pem'),
-        cert: fs.readFileSync('./ssl/cert.pem'),
+        key: fs.readFileSync(process.env.KEY),
+        cert: fs.readFileSync(process.env.CERT),
     };
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { httpsOptions });
     app.setGlobalPrefix('api');
