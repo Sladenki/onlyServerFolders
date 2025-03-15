@@ -15,14 +15,6 @@ async function bootstrap() {
     app.enableCors({
         origin: [
             process.env.CLIENT_URL,
-            'capacitor://localhost',
-            'ionic://localhost',
-            'http://localhost',
-            'https://localhost',
-            'https://graphon.up.railway.app',
-            'http://localhost:8080',
-            'https://graphon-client.onrender.com',
-            'https://t.me'
         ],
         credentials: true,
         exposedHeaders: 'set-cookie',
