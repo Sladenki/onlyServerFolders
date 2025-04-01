@@ -42,9 +42,17 @@ let AuthController = class AuthController {
         const payload = { sub: userId };
         const accessToken = this.jwtService.sign(payload, { expiresIn: '30d' });
         console.log('accessToken', accessToken);
+        const userAgent = req.headers['user-agent'] || '';
+        const mobileAppUserAgent = process.env.USER_AGENT_MOBILE_APP;
+        const isMobileApp = new RegExp(mobileAppUserAgent, 'i').test(userAgent);
         const callbackUrl = `${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`;
-        const deepLink = `graphon://auth?callback_url=${encodeURIComponent(callbackUrl)}`;
-        return res.redirect(deepLink);
+        if (isMobileApp) {
+            const deepLink = `graphon://auth?callback_url=${encodeURIComponent(callbackUrl)}`;
+            return res.redirect(deepLink);
+        }
+        else {
+            return res.redirect(callbackUrl);
+        }
     }
     async findOrCreateUser(user) {
         console.log('user', user);
