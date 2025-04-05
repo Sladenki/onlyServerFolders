@@ -42,9 +42,34 @@ let AuthController = class AuthController {
         const payload = { sub: userId };
         const accessToken = this.jwtService.sign(payload, { expiresIn: '30d' });
         console.log('accessToken', accessToken);
-        const callbackUrl = `${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`;
-        const deepLink = `graphon://auth?callback_url=${encodeURIComponent(callbackUrl)}`;
-        return res.redirect(deepLink);
+        return res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Redirecting...</title>
+            <script>
+                function checkAppAndRedirect() {
+                    var appLink = "graphon://auth?callback_url=" + encodeURIComponent("${process.env.CLIENT_URL}/profile?accessToken=${accessToken}");
+                    var fallbackUrl = "${process.env.CLIENT_URL}/profile?accessToken=${accessToken}";
+                    var start = Date.now();
+                    var timeout = setTimeout(function() {
+                        if (Date.now() - start < 2000) {
+                            window.location.href = fallbackUrl;
+                        }
+                    }, 1500);
+                    window.location.href = appLink;
+                }
+
+                window.onload = checkAppAndRedirect;
+            </script>
+        </head>
+        <body>
+            <h1>Redirecting...</h1>
+        </body>
+        </html>
+        `);
     }
     async findOrCreateUser(user) {
         console.log('user', user);
@@ -96,4 +121,3 @@ exports.AuthController = AuthController = __decorate([
     __param(1, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
     __metadata("design:paramtypes", [jwt_1.JwtService, Object])
 ], AuthController);
-//# sourceMappingURL=auth.controller.js.map
