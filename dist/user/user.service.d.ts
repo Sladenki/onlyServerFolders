@@ -35,6 +35,7 @@ export declare class UserService {
     constructor(UserModel: ModelType<UserModel>, jwtService: JwtService);
     auth(dto: AuthUserDto): Promise<any>;
     getUserById(_id: Types.ObjectId): Promise<{
+        role: "create" | "admin" | "editor" | "user";
         email: string;
         firstName: string;
         lastName: string;

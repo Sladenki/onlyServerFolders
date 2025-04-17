@@ -16,6 +16,10 @@ let UserModel = class UserModel extends defaultClasses_1.TimeStamps {
 };
 exports.UserModel = UserModel;
 __decorate([
+    (0, typegoose_1.prop)({ enum: ['create', 'admin', 'editor', 'user'], default: 'user' }),
+    __metadata("design:type", String)
+], UserModel.prototype, "role", void 0);
+__decorate([
     (0, typegoose_1.prop)({ unique: false }),
     __metadata("design:type", String)
 ], UserModel.prototype, "email", void 0);

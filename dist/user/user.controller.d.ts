@@ -35,6 +35,7 @@ export declare class UserController {
     constructor(userService: UserService, UserModel: ModelType<UserModel>);
     auth(dto: AuthUserDto): Promise<any>;
     getUser(id: string): Promise<{
+        role: "create" | "admin" | "editor" | "user";
         email: string;
         firstName: string;
         lastName: string;

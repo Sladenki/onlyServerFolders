@@ -38,44 +38,20 @@ let AuthController = class AuthController {
             username: username,
             photoUrl: photo_url,
         };
-        const userId = await this.findOrCreateUser(userData);
-        const payload = { sub: userId };
+        const user = await this.findOrCreateUser(userData);
+        const userId = user._id.toString();
+        const payload = { sub: userId, role: user.role };
         const accessToken = this.jwtService.sign(payload, { expiresIn: '30d' });
         console.log('accessToken', accessToken);
-        return res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Redirecting...</title>
-            <script>
-                function checkAppAndRedirect() {
-                    var appLink = "graphon://auth?callback_url=" + encodeURIComponent("${process.env.CLIENT_URL}/profile?accessToken=${accessToken}");
-                    var fallbackUrl = "${process.env.CLIENT_URL}/profile?accessToken=${accessToken}";
-                    var start = Date.now();
-                    var timeout = setTimeout(function() {
-                        if (Date.now() - start < 2000) {
-                            window.location.href = fallbackUrl;
-                        }
-                    }, 1500);
-                    window.location.href = appLink;
-                }
-
-                window.onload = checkAppAndRedirect;
-            </script>
-        </head>
-        <body>
-            <h1>Redirecting...</h1>
-        </body>
-        </html>
-        `);
+        const callbackUrl = `${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`;
+        const deepLink = `graphon://auth?callback_url=${encodeURIComponent(callbackUrl)}`;
+        return res.redirect(deepLink);
     }
     async findOrCreateUser(user) {
         console.log('user', user);
         const existingUser = await this.UserModel.findOne({ telegramId: user.telegramId }).lean();
         if (existingUser) {
-            return existingUser._id.toString();
+            return existingUser;
         }
         const newUser = new this.UserModel({
             telegramId: user.telegramId,
@@ -85,7 +61,7 @@ let AuthController = class AuthController {
             avaPath: user.photoUrl,
         });
         const savedUser = await newUser.save();
-        return savedUser._id.toString();
+        return savedUser;
     }
     async logout(req, res) {
         try {
@@ -121,3 +97,4 @@ exports.AuthController = AuthController = __decorate([
     __param(1, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
     __metadata("design:paramtypes", [jwt_1.JwtService, Object])
 ], AuthController);
+//# sourceMappingURL=auth.controller.js.map

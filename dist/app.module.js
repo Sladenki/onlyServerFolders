@@ -23,6 +23,8 @@ const graphSubs_module_1 = require("./graphSubs/graphSubs.module");
 const schedule_module_1 = require("./schedule/schedule.module");
 const event_module_1 = require("./event/event.module");
 const telegram_module_1 = require("./telegram/telegram.module");
+const core_1 = require("@nestjs/core");
+const roles_guard_1 = require("./user/roles.guard");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(logging_middleware_1.LogginMiddleware).forRoutes('*');
@@ -49,7 +51,13 @@ exports.AppModule = AppModule = __decorate([
             telegram_module_1.TelegramBotModule
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [
+            app_service_1.AppService,
+            {
+                provide: core_1.APP_GUARD,
+                useClass: roles_guard_1.RolesGuard,
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
