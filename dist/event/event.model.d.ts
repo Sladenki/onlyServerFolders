@@ -10,4 +10,5 @@ export declare class EventModel extends TimeStamps {
     eventDate: Date;
     timeFrom: string;
     timeTo: string;
+    regedUsers: number;
 }

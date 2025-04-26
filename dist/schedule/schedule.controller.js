@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const schedule_service_1 = require("./schedule.service");
 const create_schedule_dto_1 = require("./dto/create-schedule.dto");
 const event_service_1 = require("../event/event.service");
+const mongoose_1 = require("mongoose");
 let ScheduleController = class ScheduleController {
     constructor(scheduleService, eventService) {
         this.scheduleService = scheduleService;
@@ -26,10 +27,19 @@ let ScheduleController = class ScheduleController {
         return this.scheduleService.createSchedule(body);
     }
     async getFullScheduleByGraphId(body) {
-        const { graphId } = body;
-        const schedule = await this.scheduleService.getWeekdaySchedulesByGraph(graphId);
-        const events = await this.eventService.getEventsByGraphId(graphId);
-        return { schedule, events };
+        if (!body.graphId || !mongoose_1.Types.ObjectId.isValid(body.graphId)) {
+            throw new common_1.HttpException('Invalid graphId', common_1.HttpStatus.BAD_REQUEST);
+        }
+        try {
+            const [schedule, events] = await Promise.all([
+                this.scheduleService.getWeekdaySchedulesByGraph(body.graphId),
+                this.eventService.getEventsByGraphId(body.graphId)
+            ]);
+            return { schedule, events };
+        }
+        catch (error) {
+            throw new common_1.HttpException('Failed to fetch schedule data', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async getWeekdaySchedulesByGraphs(body) {
         const { graphIds } = body;

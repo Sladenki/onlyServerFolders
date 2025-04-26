@@ -15,13 +15,13 @@ var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const user_model_1 = require("../user/user.model");
 const express_1 = require("express");
+const jwt_service_1 = require("../jwt/jwt.service");
 let AuthController = class AuthController {
-    constructor(jwtService, UserModel) {
-        this.jwtService = jwtService;
+    constructor(jwtAuthService, UserModel) {
+        this.jwtAuthService = jwtAuthService;
         this.UserModel = UserModel;
     }
     onModuleInit() {
@@ -39,29 +39,18 @@ let AuthController = class AuthController {
             photoUrl: photo_url,
         };
         const user = await this.findOrCreateUser(userData);
-        const userId = user._id.toString();
-        const payload = { sub: userId, role: user.role };
-        const accessToken = this.jwtService.sign(payload, { expiresIn: '30d' });
+        const accessToken = this.jwtAuthService.generateToken(user._id, user.role);
         console.log('accessToken', accessToken);
         const callbackUrl = `${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`;
         const deepLink = `graphon://auth?callback_url=${encodeURIComponent(callbackUrl)}`;
         return res.redirect(deepLink);
     }
     async findOrCreateUser(user) {
-        console.log('user', user);
-        const existingUser = await this.UserModel.findOne({ telegramId: user.telegramId }).lean();
-        if (existingUser) {
-            return existingUser;
-        }
-        const newUser = new this.UserModel({
-            telegramId: user.telegramId,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            username: user.username,
-            avaPath: user.photoUrl,
+        return this.UserModel.findOneAndUpdate({ telegramId: user.telegramId }, user, {
+            upsert: true,
+            new: true,
+            lean: true
         });
-        const savedUser = await newUser.save();
-        return savedUser;
     }
     async logout(req, res) {
         try {
@@ -95,6 +84,6 @@ __decorate([
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
-    __metadata("design:paramtypes", [jwt_1.JwtService, Object])
+    __metadata("design:paramtypes", [jwt_service_1.JwtAuthService, Object])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

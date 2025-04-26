@@ -15,18 +15,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventController = void 0;
 const common_1 = require("@nestjs/common");
 const event_service_1 = require("./event.service");
+const event_dto_1 = require("./dto/event.dto");
+const eventRegs_service_1 = require("../eventRegs/eventRegs.service");
+const jwt_auth_guard_1 = require("../jwt/jwt-auth.guard");
+const optionalAuth_guard_1 = require("../guards/optionalAuth.guard");
+const optional_auth_context_decorator_1 = require("../decorators/optional-auth-context.decorator");
+const optionalAuth_decorator_1 = require("../decorators/optionalAuth.decorator");
 let EventController = class EventController {
-    constructor(eventService) {
+    constructor(eventService, eventRegsService) {
         this.eventService = eventService;
+        this.eventRegsService = eventRegsService;
     }
     async createEvent(body) {
-        return this.eventService.createEvent(body.graphId, body.name, body.description, new Date(body.eventDate), body.timeFrom, body.timeTo);
+        return this.eventService.createEvent(body);
     }
     async getEventsByGraphId(graphId) {
         return this.eventService.getEventsByGraphId(graphId);
     }
-    async getUpcomingEvents() {
-        return this.eventService.getUpcomingEvents();
+    async getUpcomingEvents(authContext) {
+        const events = await this.eventService.getUpcomingEvents();
+        if (authContext.isAuthenticated) {
+            const eventsWithAttendance = await Promise.all(events.map(async (event) => {
+                const isAttended = await this.eventRegsService.isUserAttendingEvent(authContext.userId, event._id);
+                return {
+                    ...event,
+                    isAttended
+                };
+            }));
+            return eventsWithAttendance;
+        }
+        return events;
     }
 };
 exports.EventController = EventController;
@@ -34,7 +52,7 @@ __decorate([
     (0, common_1.Post)("create"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [event_dto_1.CreateEventDto]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "createEvent", null);
 __decorate([
@@ -46,12 +64,16 @@ __decorate([
 ], EventController.prototype, "getEventsByGraphId", null);
 __decorate([
     (0, common_1.Get)("upcoming"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, optionalAuth_guard_1.OptionalAuthGuard),
+    (0, optionalAuth_decorator_1.OptionalAuth)(),
+    __param(0, (0, optional_auth_context_decorator_1.GetOptionalAuthContext)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getUpcomingEvents", null);
 exports.EventController = EventController = __decorate([
     (0, common_1.Controller)("event"),
-    __metadata("design:paramtypes", [event_service_1.EventService])
+    __metadata("design:paramtypes", [event_service_1.EventService,
+        eventRegs_service_1.EventRegsService])
 ], EventController);
 //# sourceMappingURL=event.controller.js.map

@@ -46,6 +46,7 @@ export declare class GraphSubsController {
             eventDate: Date;
             timeFrom: string;
             timeTo: string;
+            regedUsers: number;
             createdAt?: Date;
             updatedAt?: Date;
             _id: Types.ObjectId;

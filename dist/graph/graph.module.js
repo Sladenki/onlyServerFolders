@@ -15,23 +15,17 @@ const graph_service_1 = require("./graph.service");
 const jwt_strategy_1 = require("../user/jwt.strategy");
 const config_1 = require("@nestjs/config");
 const user_model_1 = require("../user/user.model");
-const jwt_1 = require("@nestjs/jwt");
-const jwt_config_1 = require("../config/jwt.config");
 const graphSubs_module_1 = require("../graphSubs/graphSubs.module");
+const optionalAuth_guard_1 = require("../guards/optionalAuth.guard");
 let GraphModule = class GraphModule {
 };
 exports.GraphModule = GraphModule;
 exports.GraphModule = GraphModule = __decorate([
     (0, common_1.Module)({
         controllers: [graph_controller_1.GraphController],
-        providers: [jwt_strategy_1.JwtStrategy, graph_service_1.GraphService],
+        providers: [jwt_strategy_1.JwtStrategy, graph_service_1.GraphService, optionalAuth_guard_1.OptionalAuthGuard],
         imports: [
             config_1.ConfigModule,
-            jwt_1.JwtModule.registerAsync({
-                imports: [config_1.ConfigModule],
-                inject: [config_1.ConfigService],
-                useFactory: jwt_config_1.getJwtConfig,
-            }),
             nestjs_typegoose_1.TypegooseModule.forFeature([
                 {
                     typegooseClass: graph_model_1.GraphModel,

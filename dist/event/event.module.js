@@ -12,6 +12,7 @@ const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const event_controller_1 = require("./event.controller");
 const event_service_1 = require("./event.service");
 const event_model_1 = require("./event.model");
+const eventRegs_module_1 = require("../eventRegs/eventRegs.module");
 let EventModule = class EventModule {
 };
 exports.EventModule = EventModule;
@@ -26,6 +27,7 @@ exports.EventModule = EventModule = __decorate([
                     schemaOptions: { collection: 'Event' }
                 },
             ]),
+            eventRegs_module_1.EventRegsModule,
         ],
         exports: [event_service_1.EventService]
     })

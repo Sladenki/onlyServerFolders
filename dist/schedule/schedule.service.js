@@ -25,11 +25,11 @@ let ScheduleService = class ScheduleService {
         return newSchedule.save();
     }
     async getWeekdaySchedulesByGraph(graphId) {
-        const schedule = this.ScheduleModel
+        return this.ScheduleModel
             .find({ graphId: graphId })
             .populate('graphId', 'name')
+            .lean()
             .exec();
-        return schedule;
     }
     async getWeekdaySchedulesByGraphs(graphIds) {
         return this.ScheduleModel

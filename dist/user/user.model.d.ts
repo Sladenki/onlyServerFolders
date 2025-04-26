@@ -11,4 +11,5 @@ export declare class UserModel extends TimeStamps {
     telegramId: any;
     graphSubsNum: number;
     postsNum: number;
+    attentedEventsNum: number;
 }

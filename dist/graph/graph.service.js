@@ -27,23 +27,24 @@ let GraphService = class GraphService {
             ...dto,
             ownerUserId: userId,
         });
+        if (dto.parentGraphId) {
+            await this.GraphModel.findByIdAndUpdate(dto.parentGraphId, {
+                $inc: { childGraphNum: 1 },
+            }).exec();
+        }
         return graph;
     }
-    async getGraphById(id) {
-        return this.GraphModel.findById(id).populate('parentGraphId', 'name');
-    }
-    async getParentGraphs(skip) {
-        const graphs = this.GraphModel
-            .find()
-            .skip(skip)
-            .exec();
-        return graphs;
-    }
-    async getParentGraphsAuth(skip, userId) {
+    async getParentGraphs(skip, userId) {
         const graphs = await this.GraphModel
             .find()
             .skip(skip)
             .exec();
+        if (!userId) {
+            return graphs.map(graph => ({
+                ...graph.toObject(),
+                isSubscribed: false
+            }));
+        }
         const postsWithReactionsAndSubs = await Promise.all(graphs.map(async (graph) => {
             const isSubscribed = await this.graphSubsService.isUserSubsExists(graph._id.toString(), userId.toString());
             return {
@@ -55,13 +56,6 @@ let GraphService = class GraphService {
     }
     async getAllChildrenGraphs(parentGraphId) {
         return this.GraphModel.find().exec();
-    }
-    async createChildGraph(name, parentGraphId) {
-        const childGraph = await this.GraphModel.create({ name, parentGraphId });
-        await this.GraphModel.findByIdAndUpdate(parentGraphId, {
-            $inc: { childGraphNum: 1 },
-        }).exec();
-        return childGraph;
     }
 };
 exports.GraphService = GraphService;

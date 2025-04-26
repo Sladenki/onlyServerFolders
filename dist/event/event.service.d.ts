@@ -28,10 +28,11 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { EventModel } from "./event.model";
 import { ModelType } from "@typegoose/typegoose/lib/types";
+import { CreateEventDto } from "./dto/event.dto";
 export declare class EventService {
     private readonly EventModel;
     constructor(EventModel: ModelType<EventModel>);
-    createEvent(graphId: string, name: string, description: string, eventDate: Date, timeFrom: string, timeTo: string): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, EventModel> & Omit<EventModel & Required<{
+    createEvent(dto: CreateEventDto): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, EventModel> & Omit<EventModel & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;
@@ -43,6 +44,7 @@ export declare class EventService {
         eventDate: Date;
         timeFrom: string;
         timeTo: string;
+        regedUsers: number;
         createdAt?: Date;
         updatedAt?: Date;
         _id: import("mongoose").Types.ObjectId;
@@ -59,6 +61,7 @@ export declare class EventService {
         eventDate: Date;
         timeFrom: string;
         timeTo: string;
+        regedUsers: number;
         createdAt?: Date;
         updatedAt?: Date;
         _id: import("mongoose").Types.ObjectId;
@@ -75,6 +78,7 @@ export declare class EventService {
         eventDate: Date;
         timeFrom: string;
         timeTo: string;
+        regedUsers: number;
         createdAt?: Date;
         updatedAt?: Date;
         _id: import("mongoose").Types.ObjectId;

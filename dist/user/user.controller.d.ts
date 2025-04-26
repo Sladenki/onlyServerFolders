@@ -27,12 +27,9 @@
 import { UserService } from './user.service';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { Types } from 'mongoose';
-import { UserModel } from './user.model';
-import { ModelType } from '@typegoose/typegoose/lib/types';
 export declare class UserController {
     private readonly userService;
-    private readonly UserModel;
-    constructor(userService: UserService, UserModel: ModelType<UserModel>);
+    constructor(userService: UserService);
     auth(dto: AuthUserDto): Promise<any>;
     getUser(id: string): Promise<{
         role: "create" | "admin" | "editor" | "user";
@@ -44,6 +41,7 @@ export declare class UserController {
         telegramId: any;
         graphSubsNum: number;
         postsNum: number;
+        attentedEventsNum: number;
         createdAt?: Date;
         updatedAt?: Date;
         _id: Types.ObjectId;
@@ -53,5 +51,25 @@ export declare class UserController {
     }> & {
         __v: number;
     }>;
+    getAllUsers(limit?: string): Promise<({
+        role: "create" | "admin" | "editor" | "user";
+        email: string;
+        firstName: string;
+        lastName: string;
+        username: string;
+        avaPath: string;
+        telegramId: any;
+        graphSubsNum: number;
+        postsNum: number;
+        attentedEventsNum: number;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    })[]>;
     getMe(req: any): Promise<any>;
 }

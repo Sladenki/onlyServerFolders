@@ -39,17 +39,7 @@ export declare class GraphService {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    getGraphById(id: Types.ObjectId): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
-        _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    getParentGraphs(skip: any): Promise<(import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
-        _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[]>;
-    getParentGraphsAuth(skip: any, userId: Types.ObjectId): Promise<{
+    getParentGraphs(skip: any, userId?: Types.ObjectId): Promise<{
         isSubscribed: boolean;
         name: string;
         about?: string;
@@ -68,9 +58,4 @@ export declare class GraphService {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[]>;
-    createChildGraph(name: string, parentGraphId: Types.ObjectId): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
-        _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
 }

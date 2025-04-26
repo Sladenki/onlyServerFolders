@@ -40,6 +40,10 @@ __decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", String)
 ], EventModel.prototype, "timeTo", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], EventModel.prototype, "regedUsers", void 0);
 exports.EventModel = EventModel = __decorate([
     (0, typegoose_1.modelOptions)({
         schemaOptions: {

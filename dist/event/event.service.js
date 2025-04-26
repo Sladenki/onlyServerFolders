@@ -20,9 +20,10 @@ let EventService = class EventService {
     constructor(EventModel) {
         this.EventModel = EventModel;
     }
-    async createEvent(graphId, name, description, eventDate, timeFrom, timeTo) {
+    async createEvent(dto) {
         return this.EventModel.create({
-            graphId, name, description, eventDate, timeFrom, timeTo
+            ...dto,
+            eventDate: new Date(dto.eventDate)
         });
     }
     async getEventsByGraphId(graphId) {

@@ -26,13 +26,13 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { UserModel } from './user.model';
-import { JwtService } from '@nestjs/jwt';
+import { JwtAuthService } from '../jwt/jwt.service';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { Types } from 'mongoose';
 export declare class UserService {
     private readonly UserModel;
-    private readonly jwtService;
-    constructor(UserModel: ModelType<UserModel>, jwtService: JwtService);
+    private jwtAuthService;
+    constructor(UserModel: ModelType<UserModel>, jwtAuthService: JwtAuthService);
     auth(dto: AuthUserDto): Promise<any>;
     getUserById(_id: Types.ObjectId): Promise<{
         role: "create" | "admin" | "editor" | "user";
@@ -44,6 +44,7 @@ export declare class UserService {
         telegramId: any;
         graphSubsNum: number;
         postsNum: number;
+        attentedEventsNum: number;
         createdAt?: Date;
         updatedAt?: Date;
         _id: Types.ObjectId;
@@ -53,4 +54,25 @@ export declare class UserService {
     }> & {
         __v: number;
     }>;
+    getAllUsers(limit?: number): Promise<({
+        role: "create" | "admin" | "editor" | "user";
+        email: string;
+        firstName: string;
+        lastName: string;
+        username: string;
+        avaPath: string;
+        telegramId: any;
+        graphSubsNum: number;
+        postsNum: number;
+        attentedEventsNum: number;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    })[]>;
+    generateToken(userId: string, role: string): Promise<string>;
 }

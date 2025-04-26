@@ -16,11 +16,12 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const user_model_1 = require("./user.model");
-const jwt_1 = require("@nestjs/jwt");
+const jwt_service_1 = require("../jwt/jwt.service");
+const mongoose_1 = require("mongoose");
 let UserService = class UserService {
-    constructor(UserModel, jwtService) {
+    constructor(UserModel, jwtAuthService) {
         this.UserModel = UserModel;
-        this.jwtService = jwtService;
+        this.jwtAuthService = jwtAuthService;
     }
     async auth(dto) {
         const user = await this.UserModel.findOneAndUpdate({ email: dto.email }, {
@@ -36,7 +37,7 @@ let UserService = class UserService {
         const mainData = user?._doc;
         return {
             ...mainData,
-            token: this.jwtService.sign({ _id: mainData._id }),
+            token: this.jwtAuthService.generateToken(mainData._id.toString(), 'user'),
         };
     }
     async getUserById(_id) {
@@ -45,11 +46,21 @@ let UserService = class UserService {
             .select({ _id: 0, email: 0, __v: 0, createdAt: 0, updatedAt: 0 });
         return user;
     }
+    async getAllUsers(limit = 100) {
+        return this.UserModel
+            .find({})
+            .limit(limit)
+            .lean()
+            .select({ createdAt: 0, updatedAt: 0 });
+    }
+    async generateToken(userId, role) {
+        return this.jwtAuthService.generateToken(new mongoose_1.Types.ObjectId(userId), role);
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
-    __metadata("design:paramtypes", [Object, jwt_1.JwtService])
+    __metadata("design:paramtypes", [Object, jwt_service_1.JwtAuthService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

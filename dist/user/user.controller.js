@@ -17,19 +17,20 @@ const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
 const auth_user_dto_1 = require("./dto/auth-user.dto");
 const mongoose_1 = require("mongoose");
-const jwt_auth_guard_1 = require("./jwt-auth.guard");
-const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
-const user_model_1 = require("./user.model");
+const jwt_auth_guard_1 = require("../jwt/jwt-auth.guard");
 let UserController = class UserController {
-    constructor(userService, UserModel) {
+    constructor(userService) {
         this.userService = userService;
-        this.UserModel = UserModel;
     }
     auth(dto) {
         return this.userService.auth(dto);
     }
     async getUser(id) {
         return this.userService.getUserById(new mongoose_1.Types.ObjectId(id));
+    }
+    async getAllUsers(limit) {
+        const parsedLimit = parseInt(limit, 10);
+        return this.userService.getAllUsers(isNaN(parsedLimit) ? 100 : parsedLimit);
     }
     async getMe(req) {
         return req.user;
@@ -51,6 +52,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUser", null);
 __decorate([
+    (0, common_1.Get)('allUsers'),
+    __param(0, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAllUsers", null);
+__decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('me'),
     __param(0, (0, common_1.Req)()),
@@ -60,7 +68,6 @@ __decorate([
 ], UserController.prototype, "getMe", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
-    __param(1, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
-    __metadata("design:paramtypes", [user_service_1.UserService, Object])
+    __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

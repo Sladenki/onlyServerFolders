@@ -28,6 +28,7 @@
 import { Types } from "mongoose";
 import { CreateGraphDto } from "./dto/create-graph.dto";
 import { GraphService } from "./graph.service";
+import { OptionalAuthContext } from "../interfaces/optional-auth.interface";
 export declare class GraphController {
     private readonly graphService;
     constructor(graphService: GraphService);
@@ -36,17 +37,7 @@ export declare class GraphController {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    getGraphById(id: string): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("./graph.model").GraphModel> & Omit<import("./graph.model").GraphModel & Required<{
-        _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    getParentGraphs(skip: any): Promise<(import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("./graph.model").GraphModel> & Omit<import("./graph.model").GraphModel & Required<{
-        _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[]>;
-    getParentGraphsAuth(skip: any, userId: Types.ObjectId): Promise<{
+    getParentGraphs(skip: any, authContext: OptionalAuthContext): Promise<{
         isSubscribed: boolean;
         name: string;
         about?: string;

@@ -27,17 +27,14 @@
 /// <reference types="mongoose/types/inferrawdoctype" />
 /// <reference types="mongoose/types/inferschematype" />
 import { EventService } from "./event.service";
+import { CreateEventDto } from "./dto/event.dto";
+import { EventRegsService } from "src/eventRegs/eventRegs.service";
+import { OptionalAuthContext } from "src/interfaces/optional-auth.interface";
 export declare class EventController {
     private readonly eventService;
-    constructor(eventService: EventService);
-    createEvent(body: {
-        graphId: string;
-        name: string;
-        description: string;
-        eventDate: string;
-        timeFrom: string;
-        timeTo: string;
-    }): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("./event.model").EventModel> & Omit<import("./event.model").EventModel & Required<{
+    private readonly eventRegsService;
+    constructor(eventService: EventService, eventRegsService: EventRegsService);
+    createEvent(body: CreateEventDto): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("./event.model").EventModel> & Omit<import("./event.model").EventModel & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;
@@ -49,6 +46,7 @@ export declare class EventController {
         eventDate: Date;
         timeFrom: string;
         timeTo: string;
+        regedUsers: number;
         createdAt?: Date;
         updatedAt?: Date;
         _id: import("mongoose").Types.ObjectId;
@@ -58,13 +56,14 @@ export declare class EventController {
     }> & {
         __v: number;
     })[]>;
-    getUpcomingEvents(): Promise<({
+    getUpcomingEvents(authContext: OptionalAuthContext): Promise<({
         graphId: import("mongoose").Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         name: string;
         description: string;
         eventDate: Date;
         timeFrom: string;
         timeTo: string;
+        regedUsers: number;
         createdAt?: Date;
         updatedAt?: Date;
         _id: import("mongoose").Types.ObjectId;

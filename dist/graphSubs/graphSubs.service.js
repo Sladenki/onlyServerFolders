@@ -43,22 +43,44 @@ let GraphSubsService = class GraphSubsService {
         }
     }
     async getSubsSchedule(userId) {
-        const subscribedGraphs = await this.graphSubsModel
-            .find({ user: userId })
-            .distinct('graph');
-        const [schedule, events] = await Promise.all([
-            this.scheduleService.getWeekdaySchedulesByGraphs(subscribedGraphs),
-            this.eventService.getEventsByGraphsIds(subscribedGraphs),
-        ]);
-        return { schedule, events };
+        try {
+            const subscribedGraphs = await this.graphSubsModel
+                .find({ user: userId })
+                .distinct('graph')
+                .exec();
+            if (!subscribedGraphs || subscribedGraphs.length === 0) {
+                return { schedule: [], events: [] };
+            }
+            const graphIds = subscribedGraphs.map(graphId => graphId.toString());
+            const [schedule, events] = await Promise.all([
+                this.scheduleService.getWeekdaySchedulesByGraphs(graphIds),
+                this.eventService.getEventsByGraphsIds(graphIds),
+            ]);
+            return {
+                schedule: schedule || [],
+                events: events || []
+            };
+        }
+        catch (error) {
+            console.error('Error in getSubsSchedule:', error);
+            throw new common_1.InternalServerErrorException('Ошибка при получении расписания подписок');
+        }
     }
     async isUserSubsExists(graph, userId) {
-        const reaction = await this.graphSubsModel
-            .findOne({
-            graph: new mongoose_1.Types.ObjectId(graph),
-            user: new mongoose_1.Types.ObjectId(userId),
-        });
-        return !!reaction;
+        try {
+            const exists = await this.graphSubsModel
+                .findOne({
+                graph: new mongoose_1.Types.ObjectId(graph),
+                user: new mongoose_1.Types.ObjectId(userId),
+            }, { _id: 1 })
+                .lean()
+                .exec();
+            return !!exists;
+        }
+        catch (error) {
+            console.error('Error in isUserSubsExists:', error);
+            return false;
+        }
     }
 };
 exports.GraphSubsService = GraphSubsService;

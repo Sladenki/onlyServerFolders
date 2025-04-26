@@ -23,8 +23,9 @@ const graphSubs_module_1 = require("./graphSubs/graphSubs.module");
 const schedule_module_1 = require("./schedule/schedule.module");
 const event_module_1 = require("./event/event.module");
 const telegram_module_1 = require("./telegram/telegram.module");
-const core_1 = require("@nestjs/core");
-const roles_guard_1 = require("./user/roles.guard");
+const admin_module_1 = require("./admin/admin.module");
+const eventRegs_module_1 = require("./eventRegs/eventRegs.module");
+const jwt_module_1 = require("./jwt/jwt.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(logging_middleware_1.LogginMiddleware).forRoutes('*');
@@ -48,15 +49,14 @@ exports.AppModule = AppModule = __decorate([
             graphSubs_module_1.GraphSubsModule,
             schedule_module_1.ScheduleModule,
             event_module_1.EventModule,
-            telegram_module_1.TelegramBotModule
+            telegram_module_1.TelegramBotModule,
+            eventRegs_module_1.EventRegsModule,
+            admin_module_1.AdminModule,
+            jwt_module_1.JwtGlobalModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
-            {
-                provide: core_1.APP_GUARD,
-                useClass: roles_guard_1.RolesGuard,
-            },
         ],
     })
 ], AppModule);

@@ -6,7 +6,11 @@ const mongoose_1 = require("mongoose");
 exports.CurrentUser = (0, decorators_1.createParamDecorator)((data, ctx) => {
     const request = ctx.switchToHttp().getRequest();
     const user = request.user;
-    const objectId = new mongoose_1.Types.ObjectId(user.sub);
-    return objectId;
+    if (!user)
+        return undefined;
+    if (data === '_id') {
+        return new mongoose_1.Types.ObjectId(user.sub);
+    }
+    return data ? user[data] : user;
 });
 //# sourceMappingURL=currentUser.decorator.js.map

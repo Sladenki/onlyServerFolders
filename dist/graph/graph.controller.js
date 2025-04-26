@@ -17,6 +17,10 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("mongoose");
 const auth_decorator_1 = require("../decorators/auth.decorator");
 const currentUser_decorator_1 = require("../decorators/currentUser.decorator");
+const optionalAuth_decorator_1 = require("../decorators/optionalAuth.decorator");
+const optional_auth_context_decorator_1 = require("../decorators/optional-auth-context.decorator");
+const optionalAuth_guard_1 = require("../guards/optionalAuth.guard");
+const jwt_auth_guard_1 = require("../jwt/jwt-auth.guard");
 const create_graph_dto_1 = require("./dto/create-graph.dto");
 const graph_service_1 = require("./graph.service");
 let GraphController = class GraphController {
@@ -26,14 +30,8 @@ let GraphController = class GraphController {
     async createGraph(userId, dto) {
         return this.graphService.createGraph(dto, userId);
     }
-    async getGraphById(id) {
-        return this.graphService.getGraphById(new mongoose_1.Types.ObjectId(id));
-    }
-    async getParentGraphs(skip) {
-        return this.graphService.getParentGraphs(skip);
-    }
-    async getParentGraphsAuth(skip, userId) {
-        return this.graphService.getParentGraphsAuth(skip, userId);
+    async getParentGraphs(skip, authContext) {
+        return this.graphService.getParentGraphs(skip, authContext.userId);
     }
     async getAllChildrenGraphs(parentGraphId) {
         return this.graphService.getAllChildrenGraphs(new mongoose_1.Types.ObjectId(parentGraphId));
@@ -52,28 +50,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GraphController.prototype, "createGraph", null);
 __decorate([
-    (0, common_1.Get)('getById/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], GraphController.prototype, "getGraphById", null);
-__decorate([
     (0, common_1.Get)('getParentGraphs'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, optionalAuth_guard_1.OptionalAuthGuard),
+    (0, optionalAuth_decorator_1.OptionalAuth)(),
     __param(0, (0, common_1.Query)('skip')),
+    __param(1, (0, optional_auth_context_decorator_1.GetOptionalAuthContext)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], GraphController.prototype, "getParentGraphs", null);
-__decorate([
-    (0, common_1.Get)('getParentGraphsAuth'),
-    (0, auth_decorator_1.Auth)(),
-    __param(0, (0, common_1.Query)('skip')),
-    __param(1, (0, currentUser_decorator_1.CurrentUser)('_id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, mongoose_1.Types.ObjectId]),
-    __metadata("design:returntype", Promise)
-], GraphController.prototype, "getParentGraphsAuth", null);
 __decorate([
     (0, common_1.Get)('getAllChildrenGraphs/:parentGraphId'),
     __param(0, (0, common_1.Param)('parentGraphId')),
