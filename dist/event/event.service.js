@@ -48,6 +48,18 @@ let EventService = class EventService {
             .populate("graphId", "name")
             .lean();
     }
+    async deleteEvent(eventId) {
+        return this.EventModel.findByIdAndDelete(eventId).lean();
+    }
+    async updateEvent(eventId, dto) {
+        return this.EventModel
+            .findByIdAndUpdate(eventId, {
+            ...dto,
+            eventDate: new Date(dto.eventDate)
+        }, { new: true })
+            .populate("graphId", "name")
+            .lean();
+    }
 };
 exports.EventService = EventService;
 exports.EventService = EventService = __decorate([

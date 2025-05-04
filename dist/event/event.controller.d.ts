@@ -73,4 +73,38 @@ export declare class EventController {
     }> & {
         __v: number;
     })[]>;
+    deleteEvent(eventId: string): Promise<{
+        graphId: import("mongoose").Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        description: string;
+        eventDate: Date;
+        timeFrom: string;
+        timeTo: string;
+        regedUsers: number;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: import("mongoose").Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    }>;
+    updateEvent(eventId: string, dto: CreateEventDto): Promise<{
+        graphId: import("mongoose").Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        description: string;
+        eventDate: Date;
+        timeFrom: string;
+        timeTo: string;
+        regedUsers: number;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: import("mongoose").Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    }>;
 }

@@ -21,6 +21,7 @@ const jwt_auth_guard_1 = require("../jwt/jwt-auth.guard");
 const optionalAuth_guard_1 = require("../guards/optionalAuth.guard");
 const optional_auth_context_decorator_1 = require("../decorators/optional-auth-context.decorator");
 const optionalAuth_decorator_1 = require("../decorators/optionalAuth.decorator");
+const auth_decorator_1 = require("../decorators/auth.decorator");
 let EventController = class EventController {
     constructor(eventService, eventRegsService) {
         this.eventService = eventService;
@@ -46,9 +47,16 @@ let EventController = class EventController {
         }
         return events;
     }
+    async deleteEvent(eventId) {
+        return this.eventService.deleteEvent(eventId);
+    }
+    async updateEvent(eventId, dto) {
+        return this.eventService.updateEvent(eventId, dto);
+    }
 };
 exports.EventController = EventController;
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)("create"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -56,8 +64,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "createEvent", null);
 __decorate([
-    (0, common_1.Get)("by-graph"),
-    __param(0, (0, common_1.Query)("graphId")),
+    (0, common_1.Get)("by-graph/:graphId"),
+    __param(0, (0, common_1.Param)("graphId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -71,6 +79,24 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getUpcomingEvents", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Delete)(":eventId"),
+    (0, auth_decorator_1.Auth)(),
+    __param(0, (0, common_1.Param)("eventId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], EventController.prototype, "deleteEvent", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Put)(":eventId"),
+    __param(0, (0, common_1.Param)("eventId")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, event_dto_1.CreateEventDto]),
+    __metadata("design:returntype", Promise)
+], EventController.prototype, "updateEvent", null);
 exports.EventController = EventController = __decorate([
     (0, common_1.Controller)("event"),
     __metadata("design:paramtypes", [event_service_1.EventService,

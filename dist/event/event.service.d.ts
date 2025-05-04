@@ -23,22 +23,22 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
-/// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferrawdoctype" />
 /// <reference types="mongoose/types/inferschematype" />
 import { EventModel } from "./event.model";
 import { ModelType } from "@typegoose/typegoose/lib/types";
 import { CreateEventDto } from "./dto/event.dto";
+import { Types } from "mongoose";
 export declare class EventService {
     private readonly EventModel;
     constructor(EventModel: ModelType<EventModel>);
     createEvent(dto: CreateEventDto): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, EventModel> & Omit<EventModel & Required<{
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
     getEventsByGraphId(graphId: string): Promise<({
-        graphId: import("mongoose").Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         name: string;
         description: string;
         eventDate: Date;
@@ -47,15 +47,15 @@ export declare class EventService {
         regedUsers: number;
         createdAt?: Date;
         updatedAt?: Date;
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
         id: string;
     } & Required<{
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     }> & {
         __v: number;
     })[]>;
     getEventsByGraphsIds(graphIds: string[]): Promise<({
-        graphId: import("mongoose").Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         name: string;
         description: string;
         eventDate: Date;
@@ -64,15 +64,15 @@ export declare class EventService {
         regedUsers: number;
         createdAt?: Date;
         updatedAt?: Date;
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
         id: string;
     } & Required<{
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     }> & {
         __v: number;
     })[]>;
     getUpcomingEvents(): Promise<({
-        graphId: import("mongoose").Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         name: string;
         description: string;
         eventDate: Date;
@@ -81,11 +81,45 @@ export declare class EventService {
         regedUsers: number;
         createdAt?: Date;
         updatedAt?: Date;
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
         id: string;
     } & Required<{
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     }> & {
         __v: number;
     })[]>;
+    deleteEvent(eventId: string | Types.ObjectId): Promise<{
+        graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        description: string;
+        eventDate: Date;
+        timeFrom: string;
+        timeTo: string;
+        regedUsers: number;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }>;
+    updateEvent(eventId: string | Types.ObjectId, dto: CreateEventDto): Promise<{
+        graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        description: string;
+        eventDate: Date;
+        timeFrom: string;
+        timeTo: string;
+        regedUsers: number;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }>;
 }

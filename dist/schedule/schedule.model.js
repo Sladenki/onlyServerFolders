@@ -17,8 +17,6 @@ var ScheduleType;
 (function (ScheduleType) {
     ScheduleType["LECTURE"] = "lecture";
     ScheduleType["PRACTICE"] = "practice";
-    ScheduleType["REHEARSAL"] = "rehearsal";
-    ScheduleType["FIELD_EVENT"] = "field_event";
 })(ScheduleType || (exports.ScheduleType = ScheduleType = {}));
 let ScheduleModel = class ScheduleModel extends defaultClasses_1.TimeStamps {
 };

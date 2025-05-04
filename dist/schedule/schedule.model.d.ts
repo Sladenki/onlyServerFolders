@@ -5,9 +5,7 @@ export interface ScheduleModel extends Base {
 }
 export declare enum ScheduleType {
     LECTURE = "lecture",
-    PRACTICE = "practice",
-    REHEARSAL = "rehearsal",
-    FIELD_EVENT = "field_event"
+    PRACTICE = "practice"
 }
 export declare class ScheduleModel extends TimeStamps {
     graphId: Ref<GraphModel>;
