@@ -23,10 +23,10 @@ let S3Service = class S3Service {
             debug: false,
         });
     }
-    async uploadFile(file) {
+    async uploadFile(file, customPath) {
         const uploadResult = await this.s3.Upload({
             buffer: file.buffer,
-            name: `uploads/${Date.now()}_${file.originalname}`,
+            name: customPath || `uploads/${Date.now()}_${file.originalname}`,
         }, '/images');
         return uploadResult;
     }

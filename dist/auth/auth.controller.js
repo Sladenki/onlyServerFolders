@@ -55,7 +55,6 @@ let AuthController = class AuthController {
     async logout(req, res) {
         try {
             res.clearCookie('accessToken');
-            req.session = null;
             res.status(200).json({ message: 'Вы успешно вышли из системы' });
         }
         catch (error) {

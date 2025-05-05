@@ -17,6 +17,7 @@ const config_1 = require("@nestjs/config");
 const user_model_1 = require("../user/user.model");
 const graphSubs_module_1 = require("../graphSubs/graphSubs.module");
 const optionalAuth_guard_1 = require("../guards/optionalAuth.guard");
+const s3_module_1 = require("../s3/s3.module");
 let GraphModule = class GraphModule {
 };
 exports.GraphModule = GraphModule;
@@ -26,6 +27,7 @@ exports.GraphModule = GraphModule = __decorate([
         providers: [jwt_strategy_1.JwtStrategy, graph_service_1.GraphService, optionalAuth_guard_1.OptionalAuthGuard],
         imports: [
             config_1.ConfigModule,
+            s3_module_1.S3Module,
             nestjs_typegoose_1.TypegooseModule.forFeature([
                 {
                     typegooseClass: graph_model_1.GraphModel,

@@ -30,11 +30,14 @@ import { GraphModel } from './graph.model';
 import { CreateGraphDto } from './dto/create-graph.dto';
 import { Types } from 'mongoose';
 import { GraphSubsService } from 'src/graphSubs/graphSubs.service';
+import { S3Service } from 'src/s3/s3.service';
+import type { Express } from 'express';
 export declare class GraphService {
     private readonly GraphModel;
     private readonly graphSubsService;
-    constructor(GraphModel: ModelType<GraphModel>, graphSubsService: GraphSubsService);
-    createGraph(dto: CreateGraphDto, userId: Types.ObjectId): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
+    private readonly s3Service;
+    constructor(GraphModel: ModelType<GraphModel>, graphSubsService: GraphSubsService, s3Service: S3Service);
+    createGraph(dto: CreateGraphDto, userId: Types.ObjectId, image?: Express.Multer.File): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
         _id: Types.ObjectId;
     }> & {
         __v: number;

@@ -15,20 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GraphController = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("mongoose");
-const auth_decorator_1 = require("../decorators/auth.decorator");
-const currentUser_decorator_1 = require("../decorators/currentUser.decorator");
 const optionalAuth_decorator_1 = require("../decorators/optionalAuth.decorator");
 const optional_auth_context_decorator_1 = require("../decorators/optional-auth-context.decorator");
 const optionalAuth_guard_1 = require("../guards/optionalAuth.guard");
 const jwt_auth_guard_1 = require("../jwt/jwt-auth.guard");
-const create_graph_dto_1 = require("./dto/create-graph.dto");
 const graph_service_1 = require("./graph.service");
 let GraphController = class GraphController {
     constructor(graphService) {
         this.graphService = graphService;
-    }
-    async createGraph(userId, dto) {
-        return this.graphService.createGraph(dto, userId);
     }
     async getParentGraphs(skip, authContext) {
         return this.graphService.getParentGraphs(skip, authContext.userId);
@@ -38,17 +32,6 @@ let GraphController = class GraphController {
     }
 };
 exports.GraphController = GraphController;
-__decorate([
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
-    (0, common_1.HttpCode)(200),
-    (0, common_1.Post)(),
-    (0, auth_decorator_1.Auth)(),
-    __param(0, (0, currentUser_decorator_1.CurrentUser)('_id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, create_graph_dto_1.CreateGraphDto]),
-    __metadata("design:returntype", Promise)
-], GraphController.prototype, "createGraph", null);
 __decorate([
     (0, common_1.Get)('getParentGraphs'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, optionalAuth_guard_1.OptionalAuthGuard),

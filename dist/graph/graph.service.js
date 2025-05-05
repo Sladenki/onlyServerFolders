@@ -17,15 +17,27 @@ const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const graph_model_1 = require("./graph.model");
 const graphSubs_service_1 = require("../graphSubs/graphSubs.service");
+const s3_service_1 = require("../s3/s3.service");
 let GraphService = class GraphService {
-    constructor(GraphModel, graphSubsService) {
+    constructor(GraphModel, graphSubsService, s3Service) {
         this.GraphModel = GraphModel;
         this.graphSubsService = graphSubsService;
+        this.s3Service = s3Service;
     }
-    async createGraph(dto, userId) {
+    async createGraph(dto, userId, image) {
+        console.log('createGraph', dto, userId, image);
+        let imgPath;
+        if (image) {
+            const fileExtension = image.originalname.split('.').pop();
+            const fileName = `${dto.name}.${fileExtension}`;
+            const s3Path = `graphAva/${fileName}`;
+            const uploadResult = await this.s3Service.uploadFile(image, s3Path);
+            imgPath = `images/${s3Path}`;
+        }
         const graph = await this.GraphModel.create({
             ...dto,
             ownerUserId: userId,
+            imgPath
         });
         if (dto.parentGraphId) {
             await this.GraphModel.findByIdAndUpdate(dto.parentGraphId, {
@@ -62,6 +74,7 @@ exports.GraphService = GraphService;
 exports.GraphService = GraphService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_typegoose_1.InjectModel)(graph_model_1.GraphModel)),
-    __metadata("design:paramtypes", [Object, graphSubs_service_1.GraphSubsService])
+    __metadata("design:paramtypes", [Object, graphSubs_service_1.GraphSubsService,
+        s3_service_1.S3Service])
 ], GraphService);
 //# sourceMappingURL=graph.service.js.map

@@ -26,17 +26,11 @@
 /// <reference types="mongoose/types/inferrawdoctype" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Types } from "mongoose";
-import { CreateGraphDto } from "./dto/create-graph.dto";
 import { GraphService } from "./graph.service";
 import { OptionalAuthContext } from "../interfaces/optional-auth.interface";
 export declare class GraphController {
     private readonly graphService;
     constructor(graphService: GraphService);
-    createGraph(userId: Types.ObjectId, dto: CreateGraphDto): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("./graph.model").GraphModel> & Omit<import("./graph.model").GraphModel & Required<{
-        _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
     getParentGraphs(skip: any, authContext: OptionalAuthContext): Promise<{
         isSubscribed: boolean;
         name: string;
