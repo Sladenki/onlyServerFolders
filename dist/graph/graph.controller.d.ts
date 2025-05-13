@@ -40,6 +40,9 @@ export declare class GraphController {
         parentGraphId?: import("@typegoose/typegoose").Ref<import("./graph.model").GraphModel>;
         childGraphNum: number;
         imgPath?: string;
+        directorName?: string;
+        directorVkLink?: string;
+        vkLink?: string;
         createdAt?: Date;
         updatedAt?: Date;
         _id: Types.ObjectId;

@@ -44,6 +44,18 @@ __decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", String)
 ], GraphModel.prototype, "imgPath", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], GraphModel.prototype, "directorName", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], GraphModel.prototype, "directorVkLink", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], GraphModel.prototype, "vkLink", void 0);
 exports.GraphModel = GraphModel = __decorate([
     (0, typegoose_1.modelOptions)({
         schemaOptions: {

@@ -16,9 +16,11 @@ exports.AdminService = void 0;
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const common_1 = require("@nestjs/common");
 const user_model_1 = require("../user/user.model");
+const graph_model_1 = require("../graph/graph.model");
 let AdminService = class AdminService {
-    constructor(UserModel) {
+    constructor(UserModel, GraphModel) {
         this.UserModel = UserModel;
+        this.GraphModel = GraphModel;
     }
     async assignRole(userId, newRole) {
         const user = await this.UserModel.findById(userId);
@@ -27,11 +29,22 @@ let AdminService = class AdminService {
         user.role = newRole;
         return user.save();
     }
+    async transferGraphOwnership(graphId, newOwnerId) {
+        const graph = await this.GraphModel.findById(graphId);
+        if (!graph)
+            throw new common_1.NotFoundException('Graph not found');
+        const newOwner = await this.UserModel.findById(newOwnerId);
+        if (!newOwner)
+            throw new common_1.NotFoundException('New owner not found');
+        graph.ownerUserId = newOwner._id;
+        return graph.save();
+    }
 };
 exports.AdminService = AdminService;
 exports.AdminService = AdminService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, nestjs_typegoose_1.InjectModel)(graph_model_1.GraphModel)),
+    __metadata("design:paramtypes", [Object, Object])
 ], AdminService);
 //# sourceMappingURL=admin.service.js.map

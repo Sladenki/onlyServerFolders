@@ -33,6 +33,9 @@ let AdminController = class AdminController {
     createGraph(dto, userId, image) {
         return this.graphService.createGraph(dto, userId, image);
     }
+    transferGraphOwnership(graphId, newOwnerId) {
+        return this.adminService.transferGraphOwnership(graphId, newOwnerId);
+    }
 };
 exports.AdminController = AdminController;
 __decorate([
@@ -57,6 +60,15 @@ __decorate([
     __metadata("design:paramtypes", [create_graph_dto_1.CreateGraphDto, mongoose_1.Types.ObjectId, Object]),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "createGraph", null);
+__decorate([
+    (0, auth_decorator_1.AuthRoles)(role_enum_1.UserRole.Admin),
+    (0, common_1.Patch)('transferGraphOwnership/:graphId'),
+    __param(0, (0, common_1.Param)('graphId')),
+    __param(1, (0, common_1.Body)('newOwnerId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "transferGraphOwnership", null);
 exports.AdminController = AdminController = __decorate([
     (0, common_1.Controller)('admin'),
     __metadata("design:paramtypes", [admin_service_1.AdminService,

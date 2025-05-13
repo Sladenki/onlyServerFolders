@@ -51,6 +51,9 @@ export declare class GraphService {
         parentGraphId?: import("@typegoose/typegoose/lib/types").Ref<GraphModel>;
         childGraphNum: number;
         imgPath?: string;
+        directorName?: string;
+        directorVkLink?: string;
+        vkLink?: string;
         createdAt?: Date;
         updatedAt?: Date;
         _id: Types.ObjectId;

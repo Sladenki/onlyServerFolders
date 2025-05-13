@@ -29,10 +29,17 @@
 import { ModelType } from "@typegoose/typegoose/lib/types";
 import { UserModel } from "src/user/user.model";
 import { UserRole } from "./role.enum";
+import { GraphModel } from "src/graph/graph.model";
 export declare class AdminService {
     private readonly UserModel;
-    constructor(UserModel: ModelType<UserModel>);
+    private readonly GraphModel;
+    constructor(UserModel: ModelType<UserModel>, GraphModel: ModelType<GraphModel>);
     assignRole(userId: string, newRole: UserRole): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, UserModel> & Omit<UserModel & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
+    transferGraphOwnership(graphId: string, newOwnerId: string): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;

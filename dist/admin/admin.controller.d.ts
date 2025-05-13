@@ -45,4 +45,9 @@ export declare class AdminController {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
+    transferGraphOwnership(graphId: string, newOwnerId: string): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("../graph/graph.model").GraphModel> & Omit<import("../graph/graph.model").GraphModel & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
 }

@@ -11,4 +11,7 @@ export declare class GraphModel extends TimeStamps {
     parentGraphId?: Ref<GraphModel>;
     childGraphNum: number;
     imgPath?: string;
+    directorName?: string;
+    directorVkLink?: string;
+    vkLink?: string;
 }

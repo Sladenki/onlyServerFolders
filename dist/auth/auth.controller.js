@@ -41,9 +41,34 @@ let AuthController = class AuthController {
         const user = await this.findOrCreateUser(userData);
         const accessToken = this.jwtAuthService.generateToken(user._id, user.role);
         console.log('accessToken', accessToken);
-        const callbackUrl = `${process.env.CLIENT_URL}/profile?accessToken=${accessToken}`;
-        const deepLink = `graphon://auth?callback_url=${encodeURIComponent(callbackUrl)}`;
-        return res.redirect(deepLink);
+        return res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Redirecting...</title>
+          <script>
+              function checkAppAndRedirect() {
+                  var appLink = "graphon://auth?callback_url=" + encodeURIComponent("${process.env.CLIENT_URL}/profile?accessToken=${accessToken}");
+                  var fallbackUrl = "${process.env.CLIENT_URL}/profile?accessToken=${accessToken}";
+                  var start = Date.now();
+                  var timeout = setTimeout(function() {
+                      if (Date.now() - start < 2000) {
+                          window.location.href = fallbackUrl;
+                      }
+                  }, 1500);
+                  window.location.href = appLink;
+              }
+
+              window.onload = checkAppAndRedirect;
+          </script>
+      </head>
+      <body>
+          <h1>Redirecting...</h1>
+      </body>
+      </html>
+      `);
     }
     async findOrCreateUser(user) {
         return this.UserModel.findOneAndUpdate({ telegramId: user.telegramId }, user, {

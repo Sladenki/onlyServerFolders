@@ -16,6 +16,7 @@ const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
 const jwt_config_1 = require("../config/jwt.config");
 const graph_module_1 = require("../graph/graph.module");
+const graph_model_1 = require("../graph/graph.model");
 let AdminModule = class AdminModule {
 };
 exports.AdminModule = AdminModule;
@@ -34,6 +35,10 @@ exports.AdminModule = AdminModule = __decorate([
                 {
                     typegooseClass: user_model_1.UserModel,
                     schemaOptions: { collection: 'User' },
+                },
+                {
+                    typegooseClass: graph_model_1.GraphModel,
+                    schemaOptions: { collection: 'Graph' },
                 },
             ]),
             graph_module_1.GraphModule
