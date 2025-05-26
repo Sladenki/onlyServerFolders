@@ -42,13 +42,18 @@ export declare class GraphService {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    getParentGraphs(skip: any, userId?: Types.ObjectId): Promise<{
-        isSubscribed: boolean;
+    getGraphById(id: Types.ObjectId): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
+    getParentGraphs(skip: any, userId?: Types.ObjectId): Promise<any[]>;
+    getAllChildrenGraphs(parentGraphId: Types.ObjectId): Promise<({
         name: string;
         about?: string;
-        ownerUserId: import("@typegoose/typegoose/lib/types").Ref<import("../user/user.model").UserModel>;
+        ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         subsNum: number;
-        parentGraphId?: import("@typegoose/typegoose/lib/types").Ref<GraphModel>;
+        parentGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         childGraphNum: number;
         imgPath?: string;
         directorName?: string;
@@ -58,10 +63,9 @@ export declare class GraphService {
         updatedAt?: Date;
         _id: Types.ObjectId;
         id: string;
-    }[]>;
-    getAllChildrenGraphs(parentGraphId: Types.ObjectId): Promise<(import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
+    } & Required<{
         _id: Types.ObjectId;
     }> & {
         __v: number;
-    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[]>;
+    })[]>;
 }

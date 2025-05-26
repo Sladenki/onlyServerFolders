@@ -18,6 +18,7 @@ const user_service_1 = require("./user.service");
 const auth_user_dto_1 = require("./dto/auth-user.dto");
 const mongoose_1 = require("mongoose");
 const jwt_auth_guard_1 = require("../jwt/jwt-auth.guard");
+const user_constants_1 = require("../constants/user.constants");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -28,9 +29,10 @@ let UserController = class UserController {
     async getUser(id) {
         return this.userService.getUserById(new mongoose_1.Types.ObjectId(id));
     }
-    async getAllUsers(limit) {
+    async getAllUsers(lastId, limit) {
         const parsedLimit = parseInt(limit, 10);
-        return this.userService.getAllUsers(isNaN(parsedLimit) ? 100 : parsedLimit);
+        const size = isNaN(parsedLimit) ? user_constants_1.USER_CONSTANTS.DEFAULT_USERS_LIMIT : parsedLimit;
+        return this.userService.getAllUsers(lastId, size);
     }
     async getMe(req) {
         return req.user;
@@ -53,9 +55,10 @@ __decorate([
 ], UserController.prototype, "getUser", null);
 __decorate([
     (0, common_1.Get)('allUsers'),
-    __param(0, (0, common_1.Query)('limit')),
+    __param(0, (0, common_1.Query)('lastId')),
+    __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUsers", null);
 __decorate([

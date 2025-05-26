@@ -28,38 +28,45 @@ let GraphSubsService = class GraphSubsService {
         this.eventService = eventService;
     }
     async toggleSub(user, graph) {
-        const isSubExists = await this.graphSubsModel.findOne({ user, graph }).exec();
-        if (isSubExists) {
-            await Promise.all([
-                this.GraphModel.findOneAndUpdate({ _id: graph }, { $inc: { subsNum: -1 } }).exec(),
-                this.graphSubsModel.deleteOne({ user, graph })
-            ]);
+        try {
+            const existingSub = await this.graphSubsModel
+                .findOne({ user, graph })
+                .lean()
+                .exec();
+            if (existingSub) {
+                await Promise.all([
+                    this.GraphModel.findOneAndUpdate({ _id: graph }, { $inc: { subsNum: -1 } }, { lean: true }).exec(),
+                    this.graphSubsModel.deleteOne({ user, graph }).exec()
+                ]);
+            }
+            else {
+                await Promise.all([
+                    this.GraphModel.findOneAndUpdate({ _id: graph }, { $inc: { subsNum: 1 } }, { lean: true }).exec(),
+                    this.graphSubsModel.create({ user, graph })
+                ]);
+            }
         }
-        else {
-            await Promise.all([
-                this.GraphModel.findOneAndUpdate({ _id: graph }, { $inc: { subsNum: 1 } }).exec(),
-                this.graphSubsModel.create({ user, graph })
-            ]);
+        catch (error) {
+            console.error('Error in toggleSub:', error);
+            throw new common_1.InternalServerErrorException('Ошибка при переключении подписки');
         }
     }
     async getSubsSchedule(userId) {
         try {
-            const subscribedGraphs = await this.graphSubsModel
-                .find({ user: userId })
-                .distinct('graph')
-                .exec();
+            const subscribedGraphs = await this.graphSubsModel.aggregate([
+                { $match: { user: userId } },
+                { $group: { _id: '$graph' } },
+                { $project: { _id: 1 } }
+            ]).exec();
             if (!subscribedGraphs || subscribedGraphs.length === 0) {
                 return { schedule: [], events: [] };
             }
-            const graphIds = subscribedGraphs.map(graphId => graphId.toString());
+            const graphIds = subscribedGraphs.map(graph => graph._id.toString());
             const [schedule, events] = await Promise.all([
                 this.scheduleService.getWeekdaySchedulesByGraphs(graphIds),
-                this.eventService.getEventsByGraphsIds(graphIds),
+                this.eventService.getEventsByGraphsIds(graphIds)
             ]);
-            return {
-                schedule: schedule || [],
-                events: events || []
-            };
+            return { schedule: schedule || [], events: events || [] };
         }
         catch (error) {
             console.error('Error in getSubsSchedule:', error);

@@ -37,7 +37,7 @@ __decorate([
     __metadata("design:type", Object)
 ], GraphModel.prototype, "parentGraphId", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ default: 0 }),
+    (0, typegoose_1.prop)({ default: 0, index: true }),
     __metadata("design:type", Number)
 ], GraphModel.prototype, "childGraphNum", void 0);
 __decorate([

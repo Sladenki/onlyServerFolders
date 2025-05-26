@@ -29,8 +29,9 @@ exports.GraphSubsModel = GraphSubsModel = __decorate([
     (0, typegoose_1.modelOptions)({
         schemaOptions: {
             timestamps: false,
-            versionKey: false
+            versionKey: false,
         }
-    })
+    }),
+    (0, typegoose_1.index)({ user: 1, graph: 1 })
 ], GraphSubsModel);
 //# sourceMappingURL=graphSubs.model.js.map

@@ -35,7 +35,7 @@ export declare class UserService {
     constructor(UserModel: ModelType<UserModel>, jwtAuthService: JwtAuthService);
     auth(dto: AuthUserDto): Promise<any>;
     getUserById(_id: Types.ObjectId): Promise<{
-        role: "create" | "admin" | "editor" | "user";
+        role: "create" | "admin" | "editor" | "sysadmin" | "user";
         email: string;
         firstName: string;
         lastName: string;
@@ -54,25 +54,28 @@ export declare class UserService {
     }> & {
         __v: number;
     }>;
-    getAllUsers(limit?: number): Promise<({
-        role: "create" | "admin" | "editor" | "user";
-        email: string;
-        firstName: string;
-        lastName: string;
-        username: string;
-        avaPath: string;
-        telegramId: any;
-        graphSubsNum: number;
-        postsNum: number;
-        attentedEventsNum: number;
-        createdAt?: Date;
-        updatedAt?: Date;
-        _id: Types.ObjectId;
-        id: string;
-    } & Required<{
-        _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    })[]>;
+    getAllUsers(lastId?: string, limit?: number): Promise<{
+        users: ({
+            role: "create" | "admin" | "editor" | "sysadmin" | "user";
+            email: string;
+            firstName: string;
+            lastName: string;
+            username: string;
+            avaPath: string;
+            telegramId: any;
+            graphSubsNum: number;
+            postsNum: number;
+            attentedEventsNum: number;
+            createdAt?: Date;
+            updatedAt?: Date;
+            _id: Types.ObjectId;
+            id: string;
+        } & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        })[];
+        hasMore: boolean;
+    }>;
     generateToken(userId: string, role: string): Promise<string>;
 }

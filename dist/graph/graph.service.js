@@ -46,28 +46,51 @@ let GraphService = class GraphService {
         }
         return graph;
     }
+    async getGraphById(id) {
+        return this.GraphModel.findById(id).populate('parentGraphId', 'name');
+    }
     async getParentGraphs(skip, userId) {
-        const graphs = await this.GraphModel
-            .find()
-            .skip(skip)
-            .exec();
-        if (!userId) {
-            return graphs.map(graph => ({
-                ...graph.toObject(),
-                isSubscribed: false
-            }));
+        const pipeline = [
+            {
+                $skip: Number(skip) || 0
+            }
+        ];
+        if (userId) {
+            pipeline.push({
+                $lookup: {
+                    from: 'GraphSubs',
+                    let: { graphId: '$_id' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ['$graph', '$$graphId'] },
+                                        { $eq: ['$user', userId] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: 'subscription'
+                }
+            }, {
+                $addFields: {
+                    isSubscribed: { $gt: [{ $size: '$subscription' }, 0] }
+                }
+            }, {
+                $project: {
+                    subscription: 0
+                }
+            });
         }
-        const postsWithReactionsAndSubs = await Promise.all(graphs.map(async (graph) => {
-            const isSubscribed = await this.graphSubsService.isUserSubsExists(graph._id.toString(), userId.toString());
-            return {
-                ...graph.toObject(),
-                isSubscribed,
-            };
-        }));
-        return postsWithReactionsAndSubs;
+        return this.GraphModel.aggregate(pipeline).exec();
     }
     async getAllChildrenGraphs(parentGraphId) {
-        return this.GraphModel.find().exec();
+        return this.GraphModel
+            .find()
+            .lean()
+            .exec();
     }
 };
 exports.GraphService = GraphService;

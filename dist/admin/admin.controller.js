@@ -36,6 +36,12 @@ let AdminController = class AdminController {
     transferGraphOwnership(graphId, newOwnerId) {
         return this.adminService.transferGraphOwnership(graphId, newOwnerId);
     }
+    getApplicationStats() {
+        return this.adminService.getApplicationStats();
+    }
+    getServerResourceStats() {
+        return this.adminService.getServerResourceStats();
+    }
 };
 exports.AdminController = AdminController;
 __decorate([
@@ -69,6 +75,20 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "transferGraphOwnership", null);
+__decorate([
+    (0, auth_decorator_1.AuthRoles)(role_enum_1.UserRole.Create),
+    (0, common_1.Get)('user-stats'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "getApplicationStats", null);
+__decorate([
+    (0, auth_decorator_1.AuthRoles)(role_enum_1.UserRole.Create),
+    (0, common_1.Get)('server-stats'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "getServerResourceStats", null);
 exports.AdminController = AdminController = __decorate([
     (0, common_1.Controller)('admin'),
     __metadata("design:paramtypes", [admin_service_1.AdminService,

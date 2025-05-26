@@ -24,6 +24,9 @@ let GraphController = class GraphController {
     constructor(graphService) {
         this.graphService = graphService;
     }
+    async getGraphById(id) {
+        return this.graphService.getGraphById(new mongoose_1.Types.ObjectId(id));
+    }
     async getParentGraphs(skip, authContext) {
         return this.graphService.getParentGraphs(skip, authContext.userId);
     }
@@ -32,6 +35,13 @@ let GraphController = class GraphController {
     }
 };
 exports.GraphController = GraphController;
+__decorate([
+    (0, common_1.Get)('getById/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], GraphController.prototype, "getGraphById", null);
 __decorate([
     (0, common_1.Get)('getParentGraphs'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, optionalAuth_guard_1.OptionalAuthGuard),

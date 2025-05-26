@@ -50,4 +50,48 @@ export declare class AdminController {
     }> & {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
+    getApplicationStats(): Promise<{
+        totalUsers: number;
+        totalGraphs: number;
+        usersByRole: any;
+    }>;
+    getServerResourceStats(): Promise<{
+        cpu: {
+            model: string;
+            cores: number;
+            usage: {
+                model: string;
+                speed: number;
+                usage: string;
+            }[];
+            averageUsage: string;
+        };
+        memory: {
+            total: string;
+            used: string;
+            free: string;
+            usagePercentage: string;
+            processMemory: {
+                heapUsed: string;
+                heapTotal: string;
+                heapUsagePercentage: string;
+                rss: string;
+                external: string;
+            };
+        };
+        uptime: {
+            seconds: number;
+            formatted: string;
+        };
+        platform: {
+            type: string;
+            release: string;
+            hostname: string;
+        };
+        systemLoad: {
+            level: string;
+            description: string;
+            recommendations: string[];
+        };
+    }>;
 }

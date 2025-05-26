@@ -32,7 +32,7 @@ export declare class UserController {
     constructor(userService: UserService);
     auth(dto: AuthUserDto): Promise<any>;
     getUser(id: string): Promise<{
-        role: "create" | "admin" | "editor" | "user";
+        role: "create" | "admin" | "editor" | "sysadmin" | "user";
         email: string;
         firstName: string;
         lastName: string;
@@ -51,25 +51,28 @@ export declare class UserController {
     }> & {
         __v: number;
     }>;
-    getAllUsers(limit?: string): Promise<({
-        role: "create" | "admin" | "editor" | "user";
-        email: string;
-        firstName: string;
-        lastName: string;
-        username: string;
-        avaPath: string;
-        telegramId: any;
-        graphSubsNum: number;
-        postsNum: number;
-        attentedEventsNum: number;
-        createdAt?: Date;
-        updatedAt?: Date;
-        _id: Types.ObjectId;
-        id: string;
-    } & Required<{
-        _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    })[]>;
+    getAllUsers(lastId?: string, limit?: string): Promise<{
+        users: ({
+            role: "create" | "admin" | "editor" | "sysadmin" | "user";
+            email: string;
+            firstName: string;
+            lastName: string;
+            username: string;
+            avaPath: string;
+            telegramId: any;
+            graphSubsNum: number;
+            postsNum: number;
+            attentedEventsNum: number;
+            createdAt?: Date;
+            updatedAt?: Date;
+            _id: Types.ObjectId;
+            id: string;
+        } & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        })[];
+        hasMore: boolean;
+    }>;
     getMe(req: any): Promise<any>;
 }

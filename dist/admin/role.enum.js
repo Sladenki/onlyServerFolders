@@ -6,12 +6,14 @@ var UserRole;
     UserRole["Create"] = "create";
     UserRole["Admin"] = "admin";
     UserRole["Editor"] = "editor";
+    UserRole["SysAdmin"] = "sysadmin";
     UserRole["User"] = "user";
 })(UserRole || (exports.UserRole = UserRole = {}));
 exports.RoleHierarchy = {
-    [UserRole.Create]: 3,
-    [UserRole.Admin]: 2,
-    [UserRole.Editor]: 1,
+    [UserRole.Create]: 4,
+    [UserRole.Admin]: 3,
+    [UserRole.Editor]: 2,
+    [UserRole.SysAdmin]: 1,
     [UserRole.User]: 0,
 };
 //# sourceMappingURL=role.enum.js.map
