@@ -59,6 +59,7 @@ export declare class GraphService {
         directorName?: string;
         directorVkLink?: string;
         vkLink?: string;
+        websiteLink?: string;
         createdAt?: Date;
         updatedAt?: Date;
         _id: Types.ObjectId;

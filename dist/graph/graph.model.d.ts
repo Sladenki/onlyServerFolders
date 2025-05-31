@@ -14,4 +14,5 @@ export declare class GraphModel extends TimeStamps {
     directorName?: string;
     directorVkLink?: string;
     vkLink?: string;
+    websiteLink?: string;
 }
