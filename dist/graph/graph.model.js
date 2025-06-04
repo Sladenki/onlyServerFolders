@@ -17,9 +17,21 @@ let GraphModel = class GraphModel extends defaultClasses_1.TimeStamps {
 };
 exports.GraphModel = GraphModel;
 __decorate([
+    (0, typegoose_1.prop)({ enum: ["global", "topic", "default"], required: true, index: true }),
+    __metadata("design:type", String)
+], GraphModel.prototype, "graphType", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ ref: () => GraphModel, index: true }),
+    __metadata("design:type", Object)
+], GraphModel.prototype, "globalGraphId", void 0);
+__decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", String)
 ], GraphModel.prototype, "name", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], GraphModel.prototype, "city", void 0);
 __decorate([
     (0, typegoose_1.prop)({ index: true, maxlength: 200 }),
     __metadata("design:type", String)

@@ -36,7 +36,7 @@ export declare class UserService {
     auth(dto: AuthUserDto): Promise<any>;
     getUserById(_id: Types.ObjectId): Promise<{
         role: "create" | "admin" | "editor" | "sysadmin" | "user";
-        email: string;
+        selectedGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         firstName: string;
         lastName: string;
         username: string;
@@ -57,7 +57,7 @@ export declare class UserService {
     getAllUsers(lastId?: string, limit?: number): Promise<{
         users: ({
             role: "create" | "admin" | "editor" | "sysadmin" | "user";
-            email: string;
+            selectedGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
             firstName: string;
             lastName: string;
             username: string;
@@ -78,4 +78,24 @@ export declare class UserService {
         hasMore: boolean;
     }>;
     generateToken(userId: string, role: string): Promise<string>;
+    updateSelectedGraph(userId: Types.ObjectId, selectedGraphId: string): Promise<{
+        role: "create" | "admin" | "editor" | "sysadmin" | "user";
+        selectedGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        firstName: string;
+        lastName: string;
+        username: string;
+        avaPath: string;
+        telegramId: any;
+        graphSubsNum: number;
+        postsNum: number;
+        attentedEventsNum: number;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }>;
 }

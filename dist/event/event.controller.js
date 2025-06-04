@@ -33,8 +33,9 @@ let EventController = class EventController {
     async getEventsByGraphId(graphId) {
         return this.eventService.getEventsByGraphId(graphId);
     }
-    async getUpcomingEvents(authContext) {
-        const events = await this.eventService.getUpcomingEvents();
+    async getUpcomingEvents(authContext, globalGraphId) {
+        const events = await this.eventService.getUpcomingEvents(globalGraphId);
+        console.log(events);
         if (authContext.isAuthenticated) {
             const eventsWithAttendance = await Promise.all(events.map(async (event) => {
                 const isAttended = await this.eventRegsService.isUserAttendingEvent(authContext.userId, event._id);
@@ -71,12 +72,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getEventsByGraphId", null);
 __decorate([
-    (0, common_1.Get)("upcoming"),
+    (0, common_1.Get)("upcoming/:selectedGraphId"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, optionalAuth_guard_1.OptionalAuthGuard),
     (0, optionalAuth_decorator_1.OptionalAuth)(),
     __param(0, (0, optional_auth_context_decorator_1.GetOptionalAuthContext)()),
+    __param(1, (0, common_1.Param)("selectedGraphId")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getUpcomingEvents", null);
 __decorate([

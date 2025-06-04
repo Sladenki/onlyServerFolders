@@ -19,6 +19,8 @@ const auth_user_dto_1 = require("./dto/auth-user.dto");
 const mongoose_1 = require("mongoose");
 const jwt_auth_guard_1 = require("../jwt/jwt-auth.guard");
 const user_constants_1 = require("../constants/user.constants");
+const auth_decorator_1 = require("../decorators/auth.decorator");
+const currentUser_decorator_1 = require("../decorators/currentUser.decorator");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -36,6 +38,12 @@ let UserController = class UserController {
     }
     async getMe(req) {
         return req.user;
+    }
+    async updateSelectedGraph(userId, selectedGraphId) {
+        if (!selectedGraphId) {
+            throw new common_1.UnauthorizedException('ID графа не указан');
+        }
+        return this.userService.updateSelectedGraph(userId, selectedGraphId);
     }
 };
 exports.UserController = UserController;
@@ -69,6 +77,16 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getMe", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Patch)('selected-graph'),
+    (0, auth_decorator_1.Auth)(),
+    __param(0, (0, currentUser_decorator_1.CurrentUser)('_id')),
+    __param(1, (0, common_1.Body)('selectedGraphId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateSelectedGraph", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])

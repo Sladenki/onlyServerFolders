@@ -30,8 +30,23 @@ let GraphController = class GraphController {
     async getParentGraphs(skip, authContext) {
         return this.graphService.getParentGraphs(skip, authContext.userId);
     }
-    async getAllChildrenGraphs(parentGraphId) {
-        return this.graphService.getAllChildrenGraphs(new mongoose_1.Types.ObjectId(parentGraphId));
+    async getAllChildrenGraphs(parentGraphId, skip, authContext) {
+        return this.graphService.getAllChildrenGraphs(new mongoose_1.Types.ObjectId(parentGraphId), skip, authContext.userId);
+    }
+    async getAllChildrenByGlobal(globalGraphId) {
+        return this.graphService.getAllChildrenByGlobal(new mongoose_1.Types.ObjectId(globalGraphId));
+    }
+    async getAllChildrenByTopic(parentGraphId) {
+        return this.graphService.getAllChildrenByTopic(new mongoose_1.Types.ObjectId(parentGraphId));
+    }
+    async getTopicGraphs(parentGraphId) {
+        return this.graphService.getTopicGraphs(new mongoose_1.Types.ObjectId(parentGraphId));
+    }
+    async getTopicGraphsWithMain(globalGraphId) {
+        return this.graphService.getTopicGraphsWithMain(new mongoose_1.Types.ObjectId(globalGraphId));
+    }
+    async getGlobalGraphs() {
+        return this.graphService.getGlobalGraphs();
     }
 };
 exports.GraphController = GraphController;
@@ -54,11 +69,49 @@ __decorate([
 ], GraphController.prototype, "getParentGraphs", null);
 __decorate([
     (0, common_1.Get)('getAllChildrenGraphs/:parentGraphId'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, optionalAuth_guard_1.OptionalAuthGuard),
+    (0, optionalAuth_decorator_1.OptionalAuth)(),
+    __param(0, (0, common_1.Param)('parentGraphId')),
+    __param(1, (0, common_1.Query)('skip')),
+    __param(2, (0, optional_auth_context_decorator_1.GetOptionalAuthContext)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object, Object]),
+    __metadata("design:returntype", Promise)
+], GraphController.prototype, "getAllChildrenGraphs", null);
+__decorate([
+    (0, common_1.Get)('getAllChildrenByGlobal/:globalGraphId'),
+    __param(0, (0, common_1.Param)('globalGraphId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], GraphController.prototype, "getAllChildrenByGlobal", null);
+__decorate([
+    (0, common_1.Get)('getAllChildrenByTopic/:parentGraphId'),
     __param(0, (0, common_1.Param)('parentGraphId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], GraphController.prototype, "getAllChildrenGraphs", null);
+], GraphController.prototype, "getAllChildrenByTopic", null);
+__decorate([
+    (0, common_1.Get)('getTopicGraphs/:parentGraphId'),
+    __param(0, (0, common_1.Param)('parentGraphId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], GraphController.prototype, "getTopicGraphs", null);
+__decorate([
+    (0, common_1.Get)('getTopicGraphsWithGlobal/:globalGraphId'),
+    __param(0, (0, common_1.Param)('globalGraphId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], GraphController.prototype, "getTopicGraphsWithMain", null);
+__decorate([
+    (0, common_1.Get)('getGlobalGraphs'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], GraphController.prototype, "getGlobalGraphs", null);
 exports.GraphController = GraphController = __decorate([
     (0, common_1.Controller)('graph'),
     __metadata("design:paramtypes", [graph_service_1.GraphService])

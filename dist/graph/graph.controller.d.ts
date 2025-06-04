@@ -37,8 +37,111 @@ export declare class GraphController {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
     getParentGraphs(skip: any, authContext: OptionalAuthContext): Promise<any[]>;
-    getAllChildrenGraphs(parentGraphId: string): Promise<({
+    getAllChildrenGraphs(parentGraphId: string, skip: any, authContext: OptionalAuthContext): Promise<any[]>;
+    getAllChildrenByGlobal(globalGraphId: string): Promise<({
+        graphType: "default" | "global" | "topic";
+        globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         name: string;
+        city?: string;
+        about?: string;
+        ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        subsNum: number;
+        parentGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        childGraphNum: number;
+        imgPath?: string;
+        directorName?: string;
+        directorVkLink?: string;
+        vkLink?: string;
+        websiteLink?: string;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    })[]>;
+    getAllChildrenByTopic(parentGraphId: string): Promise<({
+        graphType: "default" | "global" | "topic";
+        globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        city?: string;
+        about?: string;
+        ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        subsNum: number;
+        parentGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        childGraphNum: number;
+        imgPath?: string;
+        directorName?: string;
+        directorVkLink?: string;
+        vkLink?: string;
+        websiteLink?: string;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    })[]>;
+    getTopicGraphs(parentGraphId: string): Promise<any[]>;
+    getTopicGraphsWithMain(globalGraphId: string): Promise<{
+        globalGraph: {
+            graphType: "default" | "global" | "topic";
+            globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            name: string;
+            city?: string;
+            about?: string;
+            ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            subsNum: number;
+            parentGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            childGraphNum: number;
+            imgPath?: string;
+            directorName?: string;
+            directorVkLink?: string;
+            vkLink?: string;
+            websiteLink?: string;
+            createdAt?: Date;
+            updatedAt?: Date;
+            _id: Types.ObjectId;
+            id: string;
+        } & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        };
+        topicGraphs: ({
+            graphType: "default" | "global" | "topic";
+            globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            name: string;
+            city?: string;
+            about?: string;
+            ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            subsNum: number;
+            parentGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            childGraphNum: number;
+            imgPath?: string;
+            directorName?: string;
+            directorVkLink?: string;
+            vkLink?: string;
+            websiteLink?: string;
+            createdAt?: Date;
+            updatedAt?: Date;
+            _id: Types.ObjectId;
+            id: string;
+        } & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        })[];
+    }>;
+    getGlobalGraphs(): Promise<({
+        graphType: "default" | "global" | "topic";
+        globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        city?: string;
         about?: string;
         ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         subsNum: number;

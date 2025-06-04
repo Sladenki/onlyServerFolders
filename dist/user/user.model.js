@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
 const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
+const graph_model_1 = require("../graph/graph.model");
 let UserModel = class UserModel extends defaultClasses_1.TimeStamps {
 };
 exports.UserModel = UserModel;
@@ -20,9 +21,9 @@ __decorate([
     __metadata("design:type", String)
 ], UserModel.prototype, "role", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ unique: false }),
-    __metadata("design:type", String)
-], UserModel.prototype, "email", void 0);
+    (0, typegoose_1.prop)({ ref: () => graph_model_1.GraphModel, index: true, default: null }),
+    __metadata("design:type", Object)
+], UserModel.prototype, "selectedGraphId", void 0);
 __decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", String)

@@ -5,4 +5,5 @@ export declare class CreateEventDto {
     eventDate: string;
     timeFrom: string;
     timeTo: string;
+    globalGraphId: string;
 }

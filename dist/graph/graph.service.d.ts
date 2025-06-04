@@ -28,6 +28,8 @@
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { GraphModel } from './graph.model';
 import { CreateGraphDto } from './dto/create-graph.dto';
+import { CreateGlobalGraphDto } from './dto/create-global-graph.dto';
+import { CreateTopicGraphDto } from './dto/create-topic-graph.dto';
 import { Types } from 'mongoose';
 import { GraphSubsService } from 'src/graphSubs/graphSubs.service';
 import { S3Service } from 'src/s3/s3.service';
@@ -48,8 +50,12 @@ export declare class GraphService {
         __v: number;
     }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
     getParentGraphs(skip: any, userId?: Types.ObjectId): Promise<any[]>;
-    getAllChildrenGraphs(parentGraphId: Types.ObjectId): Promise<({
+    getAllChildrenGraphs(parentGraphId: Types.ObjectId, skip: any, userId?: Types.ObjectId): Promise<any[]>;
+    getAllChildrenByTopic(parentGraphId: Types.ObjectId): Promise<({
+        graphType: "default" | "global" | "topic";
+        globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         name: string;
+        city?: string;
         about?: string;
         ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         subsNum: number;
@@ -69,4 +75,113 @@ export declare class GraphService {
     }> & {
         __v: number;
     })[]>;
+    getAllChildrenByGlobal(globalGraphId: Types.ObjectId): Promise<({
+        graphType: "default" | "global" | "topic";
+        globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        city?: string;
+        about?: string;
+        ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        subsNum: number;
+        parentGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        childGraphNum: number;
+        imgPath?: string;
+        directorName?: string;
+        directorVkLink?: string;
+        vkLink?: string;
+        websiteLink?: string;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    })[]>;
+    getTopicGraphs(parentGraphId: Types.ObjectId): Promise<any[]>;
+    createGlobalGraph(dto: CreateGlobalGraphDto, userId: Types.ObjectId, image?: Express.Multer.File): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
+    createTopicGraph(dto: CreateTopicGraphDto, userId: Types.ObjectId, image?: Express.Multer.File): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, GraphModel> & Omit<GraphModel & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
+    getGlobalGraphs(): Promise<({
+        graphType: "default" | "global" | "topic";
+        globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        city?: string;
+        about?: string;
+        ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        subsNum: number;
+        parentGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        childGraphNum: number;
+        imgPath?: string;
+        directorName?: string;
+        directorVkLink?: string;
+        vkLink?: string;
+        websiteLink?: string;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    })[]>;
+    getTopicGraphsWithMain(globalGraphId: Types.ObjectId): Promise<{
+        globalGraph: {
+            graphType: "default" | "global" | "topic";
+            globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            name: string;
+            city?: string;
+            about?: string;
+            ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            subsNum: number;
+            parentGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            childGraphNum: number;
+            imgPath?: string;
+            directorName?: string;
+            directorVkLink?: string;
+            vkLink?: string;
+            websiteLink?: string;
+            createdAt?: Date;
+            updatedAt?: Date;
+            _id: Types.ObjectId;
+            id: string;
+        } & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        };
+        topicGraphs: ({
+            graphType: "default" | "global" | "topic";
+            globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            name: string;
+            city?: string;
+            about?: string;
+            ownerUserId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            subsNum: number;
+            parentGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+            childGraphNum: number;
+            imgPath?: string;
+            directorName?: string;
+            directorVkLink?: string;
+            vkLink?: string;
+            websiteLink?: string;
+            createdAt?: Date;
+            updatedAt?: Date;
+            _id: Types.ObjectId;
+            id: string;
+        } & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        })[];
+    }>;
 }

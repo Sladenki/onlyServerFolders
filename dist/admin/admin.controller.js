@@ -22,6 +22,8 @@ const create_graph_dto_1 = require("../graph/dto/create-graph.dto");
 const mongoose_1 = require("mongoose");
 const graph_service_1 = require("../graph/graph.service");
 const platform_express_1 = require("@nestjs/platform-express");
+const create_global_graph_dto_1 = require("../graph/dto/create-global-graph.dto");
+const create_topic_graph_dto_1 = require("../graph/dto/create-topic-graph.dto");
 let AdminController = class AdminController {
     constructor(adminService, graphService) {
         this.adminService = adminService;
@@ -29,6 +31,12 @@ let AdminController = class AdminController {
     }
     assignRole(userId, role) {
         return this.adminService.assignRole(userId, role);
+    }
+    createGlobalGraph(dto, userId, image) {
+        return this.graphService.createGlobalGraph(dto, userId, image);
+    }
+    createTopicGraph(dto, userId, image) {
+        return this.graphService.createTopicGraph(dto, userId, image);
     }
     createGraph(dto, userId, image) {
         return this.graphService.createGraph(dto, userId, image);
@@ -53,6 +61,32 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "assignRole", null);
+__decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, common_1.HttpCode)(200),
+    (0, auth_decorator_1.AuthRoles)(role_enum_1.UserRole.Create),
+    (0, common_1.Post)('createGlobalGraph'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, currentUser_decorator_1.CurrentUser)('_id')),
+    __param(2, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_global_graph_dto_1.CreateGlobalGraphDto, mongoose_1.Types.ObjectId, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "createGlobalGraph", null);
+__decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, common_1.HttpCode)(200),
+    (0, auth_decorator_1.AuthRoles)(role_enum_1.UserRole.Create),
+    (0, common_1.Post)('createTopicGraph'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, currentUser_decorator_1.CurrentUser)('_id')),
+    __param(2, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_topic_graph_dto_1.CreateTopicGraphDto, mongoose_1.Types.ObjectId, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "createTopicGraph", null);
 __decorate([
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.HttpCode)(200),

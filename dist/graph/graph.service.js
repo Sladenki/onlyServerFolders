@@ -37,7 +37,9 @@ let GraphService = class GraphService {
         const graph = await this.GraphModel.create({
             ...dto,
             ownerUserId: userId,
-            imgPath
+            imgPath,
+            graphType: "default",
+            globalGraphId: dto.globalGraphId
         });
         if (dto.parentGraphId) {
             await this.GraphModel.findByIdAndUpdate(dto.parentGraphId, {
@@ -86,11 +88,134 @@ let GraphService = class GraphService {
         }
         return this.GraphModel.aggregate(pipeline).exec();
     }
-    async getAllChildrenGraphs(parentGraphId) {
-        return this.GraphModel
-            .find()
+    async getAllChildrenGraphs(parentGraphId, skip, userId) {
+        const pipeline = [
+            {
+                $match: {
+                    globalGraphId: parentGraphId,
+                    graphType: 'default'
+                }
+            },
+            {
+                $skip: Number(skip) || 0
+            }
+        ];
+        if (userId) {
+            pipeline.push({
+                $lookup: {
+                    from: 'GraphSubs',
+                    let: { graphId: '$_id' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ['$graph', '$$graphId'] },
+                                        { $eq: ['$user', userId] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: 'subscription'
+                }
+            }, {
+                $addFields: {
+                    isSubscribed: { $gt: [{ $size: '$subscription' }, 0] }
+                }
+            }, {
+                $project: {
+                    subscription: 0
+                }
+            });
+        }
+        return this.GraphModel.aggregate(pipeline).exec();
+    }
+    async getAllChildrenByTopic(parentGraphId) {
+        const childrenGraphs = this.GraphModel.find({
+            parentGraphId: parentGraphId,
+            graphType: 'default'
+        }).lean();
+        return childrenGraphs;
+    }
+    async getAllChildrenByGlobal(globalGraphId) {
+        const childrenGraphs = this.GraphModel.find({
+            globalGraphId: globalGraphId,
+            graphType: 'default'
+        }).lean();
+        return childrenGraphs;
+    }
+    async getTopicGraphs(parentGraphId) {
+        const pipeline = [
+            {
+                $match: {
+                    graphType: 'topic',
+                    parentGraphId: parentGraphId
+                }
+            },
+        ];
+        return this.GraphModel.aggregate(pipeline).exec();
+    }
+    async createGlobalGraph(dto, userId, image) {
+        let imgPath;
+        if (image) {
+            const fileExtension = image.originalname.split('.').pop();
+            const fileName = `${dto.name}.${fileExtension}`;
+            const s3Path = `graphAva/${fileName}`;
+            const uploadResult = await this.s3Service.uploadFile(image, s3Path);
+            imgPath = `images/${s3Path}`;
+        }
+        const graph = await this.GraphModel.create({
+            name: dto.name,
+            city: dto.city,
+            ownerUserId: userId,
+            imgPath,
+            graphType: "global"
+        });
+        return graph;
+    }
+    async createTopicGraph(dto, userId, image) {
+        let imgPath;
+        if (image) {
+            const fileExtension = image.originalname.split('.').pop();
+            const fileName = `${dto.name}.${fileExtension}`;
+            const s3Path = `graphAva/${fileName}`;
+            const uploadResult = await this.s3Service.uploadFile(image, s3Path);
+            imgPath = `images/${s3Path}`;
+        }
+        const graph = await this.GraphModel.create({
+            ...dto,
+            ownerUserId: userId,
+            imgPath,
+            globalGraphId: dto.parentGraphId,
+            graphType: "topic"
+        });
+        await this.GraphModel.findByIdAndUpdate(dto.parentGraphId, {
+            $inc: { childGraphNum: 1 },
+        }).exec();
+        return graph;
+    }
+    async getGlobalGraphs() {
+        return this.GraphModel.find({ graphType: 'global' })
+            .sort({ name: 1 })
             .lean()
             .exec();
+    }
+    async getTopicGraphsWithMain(globalGraphId) {
+        const [globalGraph, topicGraphs] = await Promise.all([
+            this.GraphModel.findOne({
+                _id: globalGraphId,
+                graphType: 'global'
+            }).lean(),
+            this.GraphModel.find({
+                parentGraphId: globalGraphId,
+                graphType: 'topic'
+            }).sort({ name: 1 }).lean()
+        ]);
+        return {
+            globalGraph,
+            topicGraphs
+        };
     }
 };
 exports.GraphService = GraphService;

@@ -31,11 +31,23 @@ import { CreateGraphDto } from 'src/graph/dto/create-graph.dto';
 import { Types } from 'mongoose';
 import { GraphService } from 'src/graph/graph.service';
 import type { Express } from 'express';
+import { CreateGlobalGraphDto } from 'src/graph/dto/create-global-graph.dto';
+import { CreateTopicGraphDto } from 'src/graph/dto/create-topic-graph.dto';
 export declare class AdminController {
     private readonly adminService;
     private readonly graphService;
     constructor(adminService: AdminService, graphService: GraphService);
     assignRole(userId: string, role: UserRole): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("../user/user.model").UserModel> & Omit<import("../user/user.model").UserModel & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
+    createGlobalGraph(dto: CreateGlobalGraphDto, userId: Types.ObjectId, image: Express.Multer.File): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("../graph/graph.model").GraphModel> & Omit<import("../graph/graph.model").GraphModel & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
+    createTopicGraph(dto: CreateTopicGraphDto, userId: Types.ObjectId, image: Express.Multer.File): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("../graph/graph.model").GraphModel> & Omit<import("../graph/graph.model").GraphModel & Required<{
         _id: Types.ObjectId;
     }> & {
         __v: number;

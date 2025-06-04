@@ -16,6 +16,7 @@ exports.EventService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const event_model_1 = require("./event.model");
+const mongoose_1 = require("mongoose");
 let EventService = class EventService {
     constructor(EventModel) {
         this.EventModel = EventModel;
@@ -40,10 +41,13 @@ let EventService = class EventService {
             .populate("graphId", "name")
             .lean();
     }
-    async getUpcomingEvents() {
+    async getUpcomingEvents(globalGraphId) {
         const today = new Date();
         return this.EventModel
-            .find({ eventDate: { $gte: today } })
+            .find({
+            eventDate: { $gte: today },
+            globalGraphId: new mongoose_1.Types.ObjectId(globalGraphId)
+        })
             .sort({ eventDate: 1 })
             .populate("graphId", "name")
             .lean();

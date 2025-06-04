@@ -24,9 +24,13 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferrawdoctype" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Types } from "mongoose";
-export declare class CreateGraphDto {
+import { Types } from 'mongoose';
+export declare class CreateTopicGraphDto {
     name: string;
+    about?: string;
     parentGraphId: Types.ObjectId;
-    globalGraphId: Types.ObjectId;
+    directorName?: string;
+    directorVkLink?: string;
+    vkLink?: string;
+    websiteLink?: string;
 }

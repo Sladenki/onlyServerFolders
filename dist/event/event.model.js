@@ -21,6 +21,10 @@ __decorate([
     __metadata("design:type", Object)
 ], EventModel.prototype, "graphId", void 0);
 __decorate([
+    (0, typegoose_1.prop)({ ref: () => graph_model_1.GraphModel, required: true, index: true }),
+    __metadata("design:type", Object)
+], EventModel.prototype, "globalGraphId", void 0);
+__decorate([
     (0, typegoose_1.prop)({ required: true }),
     __metadata("design:type", String)
 ], EventModel.prototype, "name", void 0);

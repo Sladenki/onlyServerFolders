@@ -66,6 +66,21 @@ let UserService = class UserService {
     async generateToken(userId, role) {
         return this.jwtAuthService.generateToken(new mongoose_1.Types.ObjectId(userId), role);
     }
+    async updateSelectedGraph(userId, selectedGraphId) {
+        try {
+            const updatedUser = await this.UserModel.findByIdAndUpdate(userId, { selectedGraphId }, { new: true }).lean();
+            if (!updatedUser) {
+                throw new common_1.NotFoundException('Пользователь не найден');
+            }
+            return updatedUser;
+        }
+        catch (error) {
+            if (error instanceof common_1.NotFoundException) {
+                throw error;
+            }
+            throw new common_1.InternalServerErrorException('Ошибка при обновлении выбранного графа');
+        }
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
