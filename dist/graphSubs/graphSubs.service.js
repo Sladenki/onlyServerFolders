@@ -20,12 +20,14 @@ const mongoose_1 = require("mongoose");
 const schedule_service_1 = require("../schedule/schedule.service");
 const graph_model_1 = require("../graph/graph.model");
 const event_service_1 = require("../event/event.service");
+const eventRegs_service_1 = require("../eventRegs/eventRegs.service");
 let GraphSubsService = class GraphSubsService {
-    constructor(graphSubsModel, GraphModel, scheduleService, eventService) {
+    constructor(graphSubsModel, GraphModel, scheduleService, eventService, eventRegsService) {
         this.graphSubsModel = graphSubsModel;
         this.GraphModel = GraphModel;
         this.scheduleService = scheduleService;
         this.eventService = eventService;
+        this.eventRegsService = eventRegsService;
     }
     async toggleSub(user, graph) {
         try {
@@ -62,11 +64,36 @@ let GraphSubsService = class GraphSubsService {
                 return { schedule: [], events: [] };
             }
             const graphIds = subscribedGraphs.map(graph => graph._id.toString());
-            const [schedule, events] = await Promise.all([
+            const [schedule, graphEvents, userEvents] = await Promise.all([
                 this.scheduleService.getWeekdaySchedulesByGraphs(graphIds),
-                this.eventService.getEventsByGraphsIds(graphIds)
+                this.eventService.getEventsByGraphsIds(graphIds),
+                this.eventRegsService.getEventsByUserId(userId)
             ]);
-            return { schedule: schedule || [], events: events || [] };
+            const graphEventIdsSet = new Set(graphEvents.map(e => e._id.toString()));
+            const allUserEventObjs = userEvents.map((reg) => ({
+                ...reg.eventId,
+                isAttended: true
+            }));
+            const combinedEventsMap = new Map();
+            for (const event of graphEvents) {
+                combinedEventsMap.set(event._id.toString(), {
+                    ...event,
+                    isAttended: false
+                });
+            }
+            for (const userEvent of allUserEventObjs) {
+                const id = userEvent._id.toString();
+                combinedEventsMap.set(id, {
+                    ...userEvent,
+                    isAttended: true
+                });
+            }
+            const mergedEvents = Array.from(combinedEventsMap.values());
+            console.log('mergedEvents', mergedEvents);
+            return {
+                schedule: schedule || [],
+                events: mergedEvents
+            };
         }
         catch (error) {
             console.error('Error in getSubsSchedule:', error);
@@ -96,6 +123,7 @@ exports.GraphSubsService = GraphSubsService = __decorate([
     __param(0, (0, nestjs_typegoose_1.InjectModel)(graphSubs_model_1.GraphSubsModel)),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(graph_model_1.GraphModel)),
     __metadata("design:paramtypes", [Object, Object, schedule_service_1.ScheduleService,
-        event_service_1.EventService])
+        event_service_1.EventService,
+        eventRegs_service_1.EventRegsService])
 ], GraphSubsService);
 //# sourceMappingURL=graphSubs.service.js.map

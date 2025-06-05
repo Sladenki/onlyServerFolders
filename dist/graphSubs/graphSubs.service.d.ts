@@ -31,12 +31,14 @@ import { Types } from 'mongoose';
 import { ScheduleService } from 'src/schedule/schedule.service';
 import { GraphModel } from 'src/graph/graph.model';
 import { EventService } from 'src/event/event.service';
+import { EventRegsService } from 'src/eventRegs/eventRegs.service';
 export declare class GraphSubsService {
     private readonly graphSubsModel;
     private readonly GraphModel;
     private readonly scheduleService;
     private readonly eventService;
-    constructor(graphSubsModel: ModelType<GraphSubsModel>, GraphModel: ModelType<GraphModel>, scheduleService: ScheduleService, eventService: EventService);
+    private readonly eventRegsService;
+    constructor(graphSubsModel: ModelType<GraphSubsModel>, GraphModel: ModelType<GraphModel>, scheduleService: ScheduleService, eventService: EventService, eventRegsService: EventRegsService);
     toggleSub(user: string | Types.ObjectId, graph: string | Types.ObjectId): Promise<void>;
     getSubsSchedule(userId: Types.ObjectId): Promise<{
         schedule: (import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("../schedule/schedule.model").ScheduleModel> & Omit<import("../schedule/schedule.model").ScheduleModel & Required<{
@@ -44,24 +46,7 @@ export declare class GraphSubsService {
         }> & {
             __v: number;
         }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[];
-        events: ({
-            graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-            globalGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-            name: string;
-            description: string;
-            eventDate: Date;
-            timeFrom: string;
-            timeTo: string;
-            regedUsers: number;
-            createdAt?: Date;
-            updatedAt?: Date;
-            _id: Types.ObjectId;
-            id: string;
-        } & Required<{
-            _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        })[];
+        events: any[];
     }>;
     isUserSubsExists(graph: string, userId: string): Promise<boolean>;
 }

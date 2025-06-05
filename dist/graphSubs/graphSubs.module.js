@@ -18,6 +18,7 @@ const jwt_config_1 = require("../config/jwt.config");
 const schedule_module_1 = require("../schedule/schedule.module");
 const graph_model_1 = require("../graph/graph.model");
 const event_module_1 = require("../event/event.module");
+const eventRegs_module_1 = require("../eventRegs/eventRegs.module");
 let GraphSubsModule = class GraphSubsModule {
 };
 exports.GraphSubsModule = GraphSubsModule;
@@ -42,7 +43,8 @@ exports.GraphSubsModule = GraphSubsModule = __decorate([
                 },
             ]),
             schedule_module_1.ScheduleModule,
-            event_module_1.EventModule
+            event_module_1.EventModule,
+            eventRegs_module_1.EventRegsModule
         ],
         exports: [graphSubs_service_1.GraphSubsService]
     })

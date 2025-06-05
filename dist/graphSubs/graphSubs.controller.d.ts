@@ -39,23 +39,6 @@ export declare class GraphSubsController {
         }> & {
             __v: number;
         }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[];
-        events: ({
-            graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-            globalGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-            name: string;
-            description: string;
-            eventDate: Date;
-            timeFrom: string;
-            timeTo: string;
-            regedUsers: number;
-            createdAt?: Date;
-            updatedAt?: Date;
-            _id: Types.ObjectId;
-            id: string;
-        } & Required<{
-            _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        })[];
+        events: any[];
     }>;
 }
