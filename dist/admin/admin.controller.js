@@ -117,7 +117,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "getApplicationStats", null);
 __decorate([
-    (0, auth_decorator_1.AuthRoles)(role_enum_1.UserRole.Create),
+    (0, auth_decorator_1.AuthRoles)(role_enum_1.UserRole.SysAdmin),
     (0, common_1.Get)('server-stats'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
