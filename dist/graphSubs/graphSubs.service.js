@@ -21,15 +21,18 @@ const schedule_service_1 = require("../schedule/schedule.service");
 const graph_model_1 = require("../graph/graph.model");
 const event_service_1 = require("../event/event.service");
 const eventRegs_service_1 = require("../eventRegs/eventRegs.service");
+const user_model_1 = require("../user/user.model");
 let GraphSubsService = class GraphSubsService {
-    constructor(graphSubsModel, GraphModel, scheduleService, eventService, eventRegsService) {
+    constructor(graphSubsModel, GraphModel, UserModel, scheduleService, eventService, eventRegsService) {
         this.graphSubsModel = graphSubsModel;
         this.GraphModel = GraphModel;
+        this.UserModel = UserModel;
         this.scheduleService = scheduleService;
         this.eventService = eventService;
         this.eventRegsService = eventRegsService;
     }
     async toggleSub(user, graph) {
+        console.log('toggleSub', user, graph);
         try {
             const existingSub = await this.graphSubsModel
                 .findOne({ user, graph })
@@ -38,13 +41,15 @@ let GraphSubsService = class GraphSubsService {
             if (existingSub) {
                 await Promise.all([
                     this.GraphModel.findOneAndUpdate({ _id: graph }, { $inc: { subsNum: -1 } }, { lean: true }).exec(),
-                    this.graphSubsModel.deleteOne({ user, graph }).exec()
+                    this.graphSubsModel.deleteOne({ user, graph }).exec(),
+                    this.UserModel.findOneAndUpdate({ _id: user }, { $inc: { graphSubsNum: -1 } }).exec()
                 ]);
             }
             else {
                 await Promise.all([
                     this.GraphModel.findOneAndUpdate({ _id: graph }, { $inc: { subsNum: 1 } }, { lean: true }).exec(),
-                    this.graphSubsModel.create({ user, graph })
+                    this.graphSubsModel.create({ user, graph }),
+                    this.UserModel.findOneAndUpdate({ _id: user }, { $inc: { graphSubsNum: 1 } }).exec()
                 ]);
             }
         }
@@ -122,7 +127,8 @@ exports.GraphSubsService = GraphSubsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_typegoose_1.InjectModel)(graphSubs_model_1.GraphSubsModel)),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(graph_model_1.GraphModel)),
-    __metadata("design:paramtypes", [Object, Object, schedule_service_1.ScheduleService,
+    __param(2, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
+    __metadata("design:paramtypes", [Object, Object, Object, schedule_service_1.ScheduleService,
         event_service_1.EventService,
         eventRegs_service_1.EventRegsService])
 ], GraphSubsService);

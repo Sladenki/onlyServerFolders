@@ -19,6 +19,7 @@ const schedule_module_1 = require("../schedule/schedule.module");
 const graph_model_1 = require("../graph/graph.model");
 const event_module_1 = require("../event/event.module");
 const eventRegs_module_1 = require("../eventRegs/eventRegs.module");
+const user_model_1 = require("../user/user.model");
 let GraphSubsModule = class GraphSubsModule {
 };
 exports.GraphSubsModule = GraphSubsModule;
@@ -40,6 +41,10 @@ exports.GraphSubsModule = GraphSubsModule = __decorate([
                 {
                     typegooseClass: graph_model_1.GraphModel,
                     schemaOptions: { collection: 'Graph' }
+                },
+                {
+                    typegooseClass: user_model_1.UserModel,
+                    schemaOptions: { collection: 'User' }
                 },
             ]),
             schedule_module_1.ScheduleModule,

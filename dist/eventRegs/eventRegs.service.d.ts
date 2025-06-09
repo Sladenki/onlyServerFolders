@@ -38,12 +38,6 @@ export declare class EventRegsService {
     isUserAttendingEvent(userId: string | Types.ObjectId, eventId: string | Types.ObjectId): Promise<boolean>;
     getEventsByUserId(userId: string | Types.ObjectId): Promise<{
         isAttended: boolean;
-        userId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-        eventId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<EventModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-        createdAt?: Date;
-        updatedAt?: Date;
-        _id: Types.ObjectId;
-        id: string;
-        __v: number;
+        eventId: EventModel;
     }[]>;
 }

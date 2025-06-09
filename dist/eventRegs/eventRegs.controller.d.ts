@@ -32,12 +32,6 @@ export declare class EventRegsController {
     toggleEvent(currentUserId: Types.ObjectId, eventId: Types.ObjectId): Promise<void>;
     getEventsByUserId(userId: Types.ObjectId): Promise<{
         isAttended: boolean;
-        userId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../user/user.model").UserModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-        eventId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../event/event.model").EventModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-        createdAt?: Date;
-        updatedAt?: Date;
-        _id: Types.ObjectId;
-        id: string;
-        __v: number;
+        eventId: import("../event/event.model").EventModel;
     }[]>;
 }

@@ -7,6 +7,7 @@ export declare class EventModel extends TimeStamps {
     graphId: Ref<GraphModel>;
     globalGraphId: Ref<GraphModel>;
     name: string;
+    place: string;
     description: string;
     eventDate: Date;
     timeFrom: string;

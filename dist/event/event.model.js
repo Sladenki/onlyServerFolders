@@ -31,6 +31,10 @@ __decorate([
 __decorate([
     (0, typegoose_1.prop)({ maxlength: 150 }),
     __metadata("design:type", String)
+], EventModel.prototype, "place", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ maxlength: 150 }),
+    __metadata("design:type", String)
 ], EventModel.prototype, "description", void 0);
 __decorate([
     (0, typegoose_1.prop)({ required: true }),

@@ -28,8 +28,12 @@ let EventService = class EventService {
         });
     }
     async getEventsByGraphId(graphId) {
+        const now = new Date();
         return this.EventModel
-            .find({ graphId })
+            .find({
+            graphId,
+            eventDate: { $gte: now }
+        })
             .populate("graphId", "name")
             .lean();
     }

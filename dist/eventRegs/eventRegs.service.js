@@ -46,14 +46,21 @@ let EventRegsService = class EventRegsService {
         return !!eventReg;
     }
     async getEventsByUserId(userId) {
-        const events = await this.EventRegsModel
+        const now = new Date();
+        const regs = await this.EventRegsModel
             .find({ userId })
-            .populate('eventId')
+            .populate({
+            path: 'eventId',
+            model: 'EventModel',
+        })
             .lean();
-        return events.map(event => ({
-            ...event,
+        const upcomingEvents = regs
+            .filter(reg => reg.eventId && new Date(reg.eventId.eventDate) >= now)
+            .map(reg => ({
+            ...reg,
             isAttended: true
         }));
+        return upcomingEvents;
     }
 };
 exports.EventRegsService = EventRegsService;
