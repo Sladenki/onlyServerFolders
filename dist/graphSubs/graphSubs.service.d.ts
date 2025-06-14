@@ -1,5 +1,4 @@
 /// <reference types="mongoose/types/types" />
-/// <reference types="mongoose/types/document" />
 /// <reference types="mongoose/types/aggregate" />
 /// <reference types="mongoose/types/callback" />
 /// <reference types="mongoose/types/collection" />
@@ -43,12 +42,27 @@ export declare class GraphSubsService {
     constructor(graphSubsModel: ModelType<GraphSubsModel>, GraphModel: ModelType<GraphModel>, UserModel: ModelType<UserModel>, scheduleService: ScheduleService, eventService: EventService, eventRegsService: EventRegsService);
     toggleSub(user: string | Types.ObjectId, graph: string | Types.ObjectId): Promise<void>;
     getSubsSchedule(userId: Types.ObjectId): Promise<{
-        schedule: (import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("../schedule/schedule.model").ScheduleModel> & Omit<import("../schedule/schedule.model").ScheduleModel & Required<{
-            _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        }, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction)[];
+        schedule: any[];
         events: any[];
     }>;
+    getSubsEvents(userId: Types.ObjectId): Promise<({
+        graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        globalGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        name: string;
+        place: string;
+        description: string;
+        eventDate: Date;
+        timeFrom: string;
+        timeTo: string;
+        regedUsers: number;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    })[]>;
     isUserSubsExists(graph: string, userId: string): Promise<boolean>;
 }

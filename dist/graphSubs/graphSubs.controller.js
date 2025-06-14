@@ -28,7 +28,11 @@ let GraphSubsController = class GraphSubsController {
         return this.graphSubsService.toggleSub(currentUserId, graphIdObjectId);
     }
     async getSubsSchedule(userId) {
+        console.log('Controller getSubsSchedule вызван для userId:', userId);
         return this.graphSubsService.getSubsSchedule(userId);
+    }
+    async getSubsEvents(userId) {
+        return this.graphSubsService.getSubsEvents(userId);
     }
 };
 exports.GraphSubsController = GraphSubsController;
@@ -51,6 +55,14 @@ __decorate([
     __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], GraphSubsController.prototype, "getSubsSchedule", null);
+__decorate([
+    (0, common_1.Get)('getSubsEvents'),
+    (0, auth_decorator_1.Auth)(),
+    __param(0, (0, currentUser_decorator_1.CurrentUser)('_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], GraphSubsController.prototype, "getSubsEvents", null);
 exports.GraphSubsController = GraphSubsController = __decorate([
     (0, common_1.Controller)('graphSubs'),
     __metadata("design:paramtypes", [graphSubs_service_1.GraphSubsService])

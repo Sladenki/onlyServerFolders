@@ -26,6 +26,7 @@ let EventRegsService = class EventRegsService {
     }
     async toggleEvent(userId, eventId) {
         const isAttendedEvent = await this.EventRegsModel.findOne({ userId, eventId }).exec();
+        console.log(!!isAttendedEvent);
         if (isAttendedEvent) {
             await Promise.all([
                 this.UserModel.findOneAndUpdate({ _id: userId }, { $inc: { attentedEventsNum: -1 } }).exec(),
@@ -46,14 +47,20 @@ let EventRegsService = class EventRegsService {
         return !!eventReg;
     }
     async getEventsByUserId(userId) {
+        console.log('userId', userId);
         const now = new Date();
         const regs = await this.EventRegsModel
             .find({ userId })
             .populate({
             path: 'eventId',
             model: 'EventModel',
+            populate: {
+                path: 'graphId',
+                select: 'name imgPath'
+            }
         })
             .lean();
+        console.log(regs);
         const upcomingEvents = regs
             .filter(reg => reg.eventId && new Date(reg.eventId.eventDate) >= now)
             .map(reg => ({

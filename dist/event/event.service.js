@@ -53,7 +53,7 @@ let EventService = class EventService {
             globalGraphId: new mongoose_1.Types.ObjectId(globalGraphId)
         })
             .sort({ eventDate: 1 })
-            .populate("graphId", "name")
+            .populate("graphId", "name imgPath")
             .lean();
     }
     async deleteEvent(eventId) {

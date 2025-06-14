@@ -65,36 +65,19 @@ let GraphSubsService = class GraphSubsService {
                 { $group: { _id: '$graph' } },
                 { $project: { _id: 1 } }
             ]).exec();
-            if (!subscribedGraphs || subscribedGraphs.length === 0) {
-                return { schedule: [], events: [] };
-            }
-            const graphIds = subscribedGraphs.map(graph => graph._id.toString());
-            const [schedule, graphEvents, userEvents] = await Promise.all([
-                this.scheduleService.getWeekdaySchedulesByGraphs(graphIds),
-                this.eventService.getEventsByGraphsIds(graphIds),
+            const graphIds = subscribedGraphs?.length > 0
+                ? subscribedGraphs.map(graph => graph._id.toString())
+                : [];
+            const [schedule, userEvents] = await Promise.all([
+                graphIds.length > 0
+                    ? this.scheduleService.getWeekdaySchedulesByGraphs(graphIds)
+                    : Promise.resolve([]),
                 this.eventRegsService.getEventsByUserId(userId)
             ]);
-            const graphEventIdsSet = new Set(graphEvents.map(e => e._id.toString()));
-            const allUserEventObjs = userEvents.map((reg) => ({
+            const mergedEvents = userEvents.map((reg) => ({
                 ...reg.eventId,
                 isAttended: true
             }));
-            const combinedEventsMap = new Map();
-            for (const event of graphEvents) {
-                combinedEventsMap.set(event._id.toString(), {
-                    ...event,
-                    isAttended: false
-                });
-            }
-            for (const userEvent of allUserEventObjs) {
-                const id = userEvent._id.toString();
-                combinedEventsMap.set(id, {
-                    ...userEvent,
-                    isAttended: true
-                });
-            }
-            const mergedEvents = Array.from(combinedEventsMap.values());
-            console.log('mergedEvents', mergedEvents);
             return {
                 schedule: schedule || [],
                 events: mergedEvents
@@ -104,6 +87,18 @@ let GraphSubsService = class GraphSubsService {
             console.error('Error in getSubsSchedule:', error);
             throw new common_1.InternalServerErrorException('Ошибка при получении расписания подписок');
         }
+    }
+    async getSubsEvents(userId) {
+        const subscribedGraphs = await this.graphSubsModel.aggregate([
+            { $match: { user: userId } },
+            { $group: { _id: '$graph' } },
+            { $project: { _id: 1 } }
+        ]).exec();
+        const graphIds = subscribedGraphs?.length > 0
+            ? subscribedGraphs.map(graph => graph._id.toString())
+            : [];
+        const events = await this.eventService.getEventsByGraphsIds(graphIds);
+        return events;
     }
     async isUserSubsExists(graph, userId) {
         try {

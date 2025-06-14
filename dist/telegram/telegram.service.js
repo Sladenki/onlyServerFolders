@@ -54,6 +54,7 @@ let TelegramBotService = class TelegramBotService {
                                 text: '🌐 Открыть приложение',
                                 web_app: {
                                     url: this.WEB_APP_URL,
+                                    hide_webapp_header: true
                                 },
                             },
                         ],

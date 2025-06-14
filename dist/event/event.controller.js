@@ -35,7 +35,6 @@ let EventController = class EventController {
     }
     async getUpcomingEvents(authContext, globalGraphId) {
         const events = await this.eventService.getUpcomingEvents(globalGraphId);
-        console.log(events);
         if (authContext.isAuthenticated) {
             const eventsWithAttendance = await Promise.all(events.map(async (event) => {
                 const isAttended = await this.eventRegsService.isUserAttendingEvent(authContext.userId, event._id);
