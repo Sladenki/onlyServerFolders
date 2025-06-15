@@ -98,7 +98,14 @@ let GraphSubsService = class GraphSubsService {
             ? subscribedGraphs.map(graph => graph._id.toString())
             : [];
         const events = await this.eventService.getEventsByGraphsIds(graphIds);
-        return events;
+        const eventsWithAttendance = await Promise.all(events.map(async (event) => {
+            const isAttended = await this.eventRegsService.isUserAttendingEvent(userId, event._id);
+            return {
+                ...event,
+                isAttended
+            };
+        }));
+        return eventsWithAttendance;
     }
     async isUserSubsExists(graph, userId) {
         try {

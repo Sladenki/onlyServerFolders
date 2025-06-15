@@ -36,7 +36,8 @@ export declare class GraphSubsController {
         schedule: any[];
         events: any[];
     }>;
-    getSubsEvents(userId: Types.ObjectId): Promise<({
+    getSubsEvents(userId: Types.ObjectId): Promise<{
+        isAttended: boolean;
         graphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         globalGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
         name: string;
@@ -50,9 +51,6 @@ export declare class GraphSubsController {
         updatedAt?: Date;
         _id: Types.ObjectId;
         id: string;
-    } & Required<{
-        _id: Types.ObjectId;
-    }> & {
         __v: number;
-    })[]>;
+    }[]>;
 }

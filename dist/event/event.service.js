@@ -28,25 +28,30 @@ let EventService = class EventService {
         });
     }
     async getEventsByGraphId(graphId) {
-        const now = new Date();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         return this.EventModel
             .find({
             graphId,
-            eventDate: { $gte: now }
+            eventDate: { $gte: today }
         })
             .populate("graphId", "name")
             .lean();
     }
     async getEventsByGraphsIds(graphIds) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         return this.EventModel
             .find({
             graphId: { $in: graphIds },
+            eventDate: { $gte: today }
         })
             .populate("graphId", "name")
             .lean();
     }
     async getUpcomingEvents(globalGraphId) {
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
         return this.EventModel
             .find({
             eventDate: { $gte: today },
