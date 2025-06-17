@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const graph_controller_1 = require("./graph.controller");
 const graph_model_1 = require("./graph.model");
+const graphSubs_model_1 = require("../graphSubs/graphSubs.model");
 const graph_service_1 = require("./graph.service");
 const jwt_strategy_1 = require("../user/jwt.strategy");
 const config_1 = require("@nestjs/config");
@@ -33,8 +34,10 @@ exports.GraphModule = GraphModule = __decorate([
                     typegooseClass: graph_model_1.GraphModel,
                     schemaOptions: { collection: 'Graph' },
                 },
-            ]),
-            nestjs_typegoose_1.TypegooseModule.forFeature([
+                {
+                    typegooseClass: graphSubs_model_1.GraphSubsModel,
+                    schemaOptions: { collection: 'GraphSubs' },
+                },
                 {
                     typegooseClass: user_model_1.UserModel,
                     schemaOptions: { collection: 'User' },

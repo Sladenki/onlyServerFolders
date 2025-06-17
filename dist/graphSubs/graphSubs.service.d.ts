@@ -26,6 +26,7 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { GraphSubsModel } from './graphSubs.model';
+import { EventRegsModel } from 'src/eventRegs/eventRegs.model';
 import { Types } from 'mongoose';
 import { ScheduleService } from 'src/schedule/schedule.service';
 import { GraphModel } from 'src/graph/graph.model';
@@ -36,10 +37,11 @@ export declare class GraphSubsService {
     private readonly graphSubsModel;
     private readonly GraphModel;
     private readonly UserModel;
+    private readonly eventRegsModel;
     private readonly scheduleService;
     private readonly eventService;
     private readonly eventRegsService;
-    constructor(graphSubsModel: ModelType<GraphSubsModel>, GraphModel: ModelType<GraphModel>, UserModel: ModelType<UserModel>, scheduleService: ScheduleService, eventService: EventService, eventRegsService: EventRegsService);
+    constructor(graphSubsModel: ModelType<GraphSubsModel>, GraphModel: ModelType<GraphModel>, UserModel: ModelType<UserModel>, eventRegsModel: ModelType<EventRegsModel>, scheduleService: ScheduleService, eventService: EventService, eventRegsService: EventRegsService);
     toggleSub(user: string | Types.ObjectId, graph: string | Types.ObjectId): Promise<void>;
     getSubsSchedule(userId: Types.ObjectId): Promise<{
         schedule: any[];

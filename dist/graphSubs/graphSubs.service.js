@@ -16,6 +16,7 @@ exports.GraphSubsService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const graphSubs_model_1 = require("./graphSubs.model");
+const eventRegs_model_1 = require("../eventRegs/eventRegs.model");
 const mongoose_1 = require("mongoose");
 const schedule_service_1 = require("../schedule/schedule.service");
 const graph_model_1 = require("../graph/graph.model");
@@ -23,10 +24,11 @@ const event_service_1 = require("../event/event.service");
 const eventRegs_service_1 = require("../eventRegs/eventRegs.service");
 const user_model_1 = require("../user/user.model");
 let GraphSubsService = class GraphSubsService {
-    constructor(graphSubsModel, GraphModel, UserModel, scheduleService, eventService, eventRegsService) {
+    constructor(graphSubsModel, GraphModel, UserModel, eventRegsModel, scheduleService, eventService, eventRegsService) {
         this.graphSubsModel = graphSubsModel;
         this.GraphModel = GraphModel;
         this.UserModel = UserModel;
+        this.eventRegsModel = eventRegsModel;
         this.scheduleService = scheduleService;
         this.eventService = eventService;
         this.eventRegsService = eventRegsService;
@@ -89,21 +91,29 @@ let GraphSubsService = class GraphSubsService {
         }
     }
     async getSubsEvents(userId) {
-        const subscribedGraphs = await this.graphSubsModel.aggregate([
-            { $match: { user: userId } },
-            { $group: { _id: '$graph' } },
-            { $project: { _id: 1 } }
-        ]).exec();
+        const [subscribedGraphs, userEventRegs] = await Promise.all([
+            this.graphSubsModel.aggregate([
+                { $match: { user: userId } },
+                { $group: { _id: '$graph' } },
+                { $project: { _id: 1 } }
+            ]).exec(),
+            this.eventRegsModel
+                .find({ userId })
+                .select('eventId')
+                .lean()
+                .exec()
+        ]);
         const graphIds = subscribedGraphs?.length > 0
             ? subscribedGraphs.map(graph => graph._id.toString())
             : [];
+        if (graphIds.length === 0) {
+            return [];
+        }
         const events = await this.eventService.getEventsByGraphsIds(graphIds);
-        const eventsWithAttendance = await Promise.all(events.map(async (event) => {
-            const isAttended = await this.eventRegsService.isUserAttendingEvent(userId, event._id);
-            return {
-                ...event,
-                isAttended
-            };
+        const attendedEventIds = new Set(userEventRegs.map(reg => reg.eventId.toString()));
+        const eventsWithAttendance = events.map(event => ({
+            ...event,
+            isAttended: attendedEventIds.has(event._id.toString())
         }));
         return eventsWithAttendance;
     }
@@ -130,7 +140,8 @@ exports.GraphSubsService = GraphSubsService = __decorate([
     __param(0, (0, nestjs_typegoose_1.InjectModel)(graphSubs_model_1.GraphSubsModel)),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(graph_model_1.GraphModel)),
     __param(2, (0, nestjs_typegoose_1.InjectModel)(user_model_1.UserModel)),
-    __metadata("design:paramtypes", [Object, Object, Object, schedule_service_1.ScheduleService,
+    __param(3, (0, nestjs_typegoose_1.InjectModel)(eventRegs_model_1.EventRegsModel)),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, schedule_service_1.ScheduleService,
         event_service_1.EventService,
         eventRegs_service_1.EventRegsService])
 ], GraphSubsService);

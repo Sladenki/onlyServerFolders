@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const graphSubs_controller_1 = require("./graphSubs.controller");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const graphSubs_model_1 = require("./graphSubs.model");
+const eventRegs_model_1 = require("../eventRegs/eventRegs.model");
 const graphSubs_service_1 = require("./graphSubs.service");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
@@ -45,6 +46,10 @@ exports.GraphSubsModule = GraphSubsModule = __decorate([
                 {
                     typegooseClass: user_model_1.UserModel,
                     schemaOptions: { collection: 'User' }
+                },
+                {
+                    typegooseClass: eventRegs_model_1.EventRegsModel,
+                    schemaOptions: { collection: 'EventRegs' }
                 },
             ]),
             schedule_module_1.ScheduleModule,

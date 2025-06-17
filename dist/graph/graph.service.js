@@ -16,11 +16,13 @@ exports.GraphService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const graph_model_1 = require("./graph.model");
+const graphSubs_model_1 = require("../graphSubs/graphSubs.model");
 const graphSubs_service_1 = require("../graphSubs/graphSubs.service");
 const s3_service_1 = require("../s3/s3.service");
 let GraphService = class GraphService {
-    constructor(GraphModel, graphSubsService, s3Service) {
+    constructor(GraphModel, graphSubsModel, graphSubsService, s3Service) {
         this.GraphModel = GraphModel;
+        this.graphSubsModel = graphSubsModel;
         this.graphSubsService = graphSubsService;
         this.s3Service = s3Service;
     }
@@ -52,84 +54,64 @@ let GraphService = class GraphService {
         return this.GraphModel.findById(id).populate('parentGraphId', 'name');
     }
     async getParentGraphs(skip, userId) {
-        const pipeline = [
-            {
-                $skip: Number(skip) || 0
-            }
-        ];
-        if (userId) {
-            pipeline.push({
-                $lookup: {
-                    from: 'GraphSubs',
-                    let: { graphId: '$_id' },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: {
-                                    $and: [
-                                        { $eq: ['$graph', '$$graphId'] },
-                                        { $eq: ['$user', userId] }
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    as: 'subscription'
-                }
-            }, {
-                $addFields: {
-                    isSubscribed: { $gt: [{ $size: '$subscription' }, 0] }
-                }
-            }, {
-                $project: {
-                    subscription: 0
-                }
-            });
+        if (!userId) {
+            return this.GraphModel
+                .find()
+                .skip(Number(skip) || 0)
+                .lean()
+                .exec();
         }
-        return this.GraphModel.aggregate(pipeline).exec();
+        const [graphs, userSubscriptions] = await Promise.all([
+            this.GraphModel
+                .find()
+                .skip(Number(skip) || 0)
+                .lean()
+                .exec(),
+            this.graphSubsModel
+                .find({ user: userId })
+                .select('graph')
+                .lean()
+                .exec()
+        ]);
+        const subscribedGraphIds = new Set(userSubscriptions.map(sub => sub.graph.toString()));
+        const graphsWithSubscription = graphs.map(graph => ({
+            ...graph,
+            isSubscribed: subscribedGraphIds.has(graph._id.toString())
+        }));
+        return graphsWithSubscription;
     }
     async getAllChildrenGraphs(parentGraphId, skip, userId) {
-        const pipeline = [
-            {
-                $match: {
-                    globalGraphId: parentGraphId,
-                    graphType: 'default'
-                }
-            },
-            {
-                $skip: Number(skip) || 0
-            }
-        ];
-        if (userId) {
-            pipeline.push({
-                $lookup: {
-                    from: 'GraphSubs',
-                    let: { graphId: '$_id' },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: {
-                                    $and: [
-                                        { $eq: ['$graph', '$$graphId'] },
-                                        { $eq: ['$user', userId] }
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    as: 'subscription'
-                }
-            }, {
-                $addFields: {
-                    isSubscribed: { $gt: [{ $size: '$subscription' }, 0] }
-                }
-            }, {
-                $project: {
-                    subscription: 0
-                }
-            });
+        if (!userId) {
+            return this.GraphModel
+                .find({
+                globalGraphId: parentGraphId,
+                graphType: 'default'
+            })
+                .skip(Number(skip) || 0)
+                .lean()
+                .exec();
         }
-        return this.GraphModel.aggregate(pipeline).exec();
+        const [graphs, userSubscriptions] = await Promise.all([
+            this.GraphModel
+                .find({
+                globalGraphId: parentGraphId,
+                graphType: 'default'
+            })
+                .skip(Number(skip) || 0)
+                .lean()
+                .exec(),
+            this.graphSubsModel
+                .find({ user: userId })
+                .select('graph')
+                .lean()
+                .exec()
+        ]);
+        const subscribedGraphIds = new Set(userSubscriptions.map(sub => sub.graph.toString()));
+        const graphsWithSubscription = graphs.map(graph => ({
+            ...graph,
+            isSubscribed: subscribedGraphIds.has(graph._id.toString())
+        }));
+        return graphsWithSubscription;
     }
     async getAllChildrenByTopic(parentGraphId) {
         const childrenGraphs = this.GraphModel.find({
@@ -222,7 +204,8 @@ exports.GraphService = GraphService;
 exports.GraphService = GraphService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_typegoose_1.InjectModel)(graph_model_1.GraphModel)),
-    __metadata("design:paramtypes", [Object, graphSubs_service_1.GraphSubsService,
+    __param(1, (0, nestjs_typegoose_1.InjectModel)(graphSubs_model_1.GraphSubsModel)),
+    __metadata("design:paramtypes", [Object, Object, graphSubs_service_1.GraphSubsService,
         s3_service_1.S3Service])
 ], GraphService);
 //# sourceMappingURL=graph.service.js.map

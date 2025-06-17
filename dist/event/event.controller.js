@@ -17,15 +17,18 @@ const common_1 = require("@nestjs/common");
 const event_service_1 = require("./event.service");
 const event_dto_1 = require("./dto/event.dto");
 const eventRegs_service_1 = require("../eventRegs/eventRegs.service");
+const eventRegs_model_1 = require("../eventRegs/eventRegs.model");
 const jwt_auth_guard_1 = require("../jwt/jwt-auth.guard");
 const optionalAuth_guard_1 = require("../guards/optionalAuth.guard");
 const optional_auth_context_decorator_1 = require("../decorators/optional-auth-context.decorator");
 const optionalAuth_decorator_1 = require("../decorators/optionalAuth.decorator");
 const auth_decorator_1 = require("../decorators/auth.decorator");
+const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 let EventController = class EventController {
-    constructor(eventService, eventRegsService) {
+    constructor(eventService, eventRegsService, eventRegsModel) {
         this.eventService = eventService;
         this.eventRegsService = eventRegsService;
+        this.eventRegsModel = eventRegsModel;
     }
     async createEvent(body) {
         return this.eventService.createEvent(body);
@@ -34,18 +37,23 @@ let EventController = class EventController {
         return this.eventService.getEventsByGraphId(graphId);
     }
     async getUpcomingEvents(authContext, globalGraphId) {
-        const events = await this.eventService.getUpcomingEvents(globalGraphId);
-        if (authContext.isAuthenticated) {
-            const eventsWithAttendance = await Promise.all(events.map(async (event) => {
-                const isAttended = await this.eventRegsService.isUserAttendingEvent(authContext.userId, event._id);
-                return {
-                    ...event,
-                    isAttended
-                };
-            }));
-            return eventsWithAttendance;
+        if (!authContext.isAuthenticated) {
+            return this.eventService.getUpcomingEvents(globalGraphId);
         }
-        return events;
+        const [events, userEventRegs] = await Promise.all([
+            this.eventService.getUpcomingEvents(globalGraphId),
+            this.eventRegsModel
+                .find({ userId: authContext.userId })
+                .select('eventId')
+                .lean()
+                .exec()
+        ]);
+        const attendedEventIds = new Set(userEventRegs.map(reg => reg.eventId.toString()));
+        const eventsWithAttendance = events.map(event => ({
+            ...event,
+            isAttended: attendedEventIds.has(event._id.toString())
+        }));
+        return eventsWithAttendance;
     }
     async deleteEvent(eventId) {
         return this.eventService.deleteEvent(eventId);
@@ -100,7 +108,8 @@ __decorate([
 ], EventController.prototype, "updateEvent", null);
 exports.EventController = EventController = __decorate([
     (0, common_1.Controller)("event"),
+    __param(2, (0, nestjs_typegoose_1.InjectModel)(eventRegs_model_1.EventRegsModel)),
     __metadata("design:paramtypes", [event_service_1.EventService,
-        eventRegs_service_1.EventRegsService])
+        eventRegs_service_1.EventRegsService, Object])
 ], EventController);
 //# sourceMappingURL=event.controller.js.map
