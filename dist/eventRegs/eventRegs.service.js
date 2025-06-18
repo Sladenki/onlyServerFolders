@@ -25,19 +25,18 @@ let EventRegsService = class EventRegsService {
         this.EventRegsModel = EventRegsModel;
     }
     async toggleEvent(userId, eventId) {
-        const isAttendedEvent = await this.EventRegsModel.findOne({ userId, eventId }).exec();
-        console.log(!!isAttendedEvent);
-        if (isAttendedEvent) {
+        const deletedEvent = await this.EventRegsModel.findOneAndDelete({ userId, eventId }).lean();
+        console.log(!!deletedEvent);
+        if (deletedEvent) {
             await Promise.all([
-                this.UserModel.findOneAndUpdate({ _id: userId }, { $inc: { attentedEventsNum: -1 } }).exec(),
-                this.EventModel.findOneAndUpdate({ _id: eventId }, { $inc: { regedUsers: -1 } }).exec(),
-                this.EventRegsModel.deleteOne({ userId, eventId })
+                this.UserModel.findOneAndUpdate({ _id: userId }, { $inc: { attentedEventsNum: -1 } }),
+                this.EventModel.findOneAndUpdate({ _id: eventId }, { $inc: { regedUsers: -1 } })
             ]);
         }
         else {
             await Promise.all([
-                this.UserModel.findOneAndUpdate({ _id: userId }, { $inc: { attentedEventsNum: 1 } }).exec(),
-                this.EventModel.findOneAndUpdate({ _id: eventId }, { $inc: { regedUsers: 1 } }).exec(),
+                this.UserModel.findOneAndUpdate({ _id: userId }, { $inc: { attentedEventsNum: 1 } }),
+                this.EventModel.findOneAndUpdate({ _id: eventId }, { $inc: { regedUsers: 1 } }),
                 this.EventRegsModel.create({ userId, eventId })
             ]);
         }

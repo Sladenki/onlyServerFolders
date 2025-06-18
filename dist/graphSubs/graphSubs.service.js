@@ -62,17 +62,15 @@ let GraphSubsService = class GraphSubsService {
     }
     async getSubsSchedule(userId) {
         try {
-            const subscribedGraphs = await this.graphSubsModel.aggregate([
-                { $match: { user: userId } },
-                { $group: { _id: '$graph' } },
-                { $project: { _id: 1 } }
-            ]).exec();
-            const graphIds = subscribedGraphs?.length > 0
-                ? subscribedGraphs.map(graph => graph._id.toString())
-                : [];
+            const subscribedGraphs = await this.graphSubsModel
+                .find({ user: userId })
+                .select('graph')
+                .lean()
+                .exec();
+            const subscribedGraphIds = [...new Set(subscribedGraphs.map(sub => sub.graph))];
             const [schedule, userEvents] = await Promise.all([
-                graphIds.length > 0
-                    ? this.scheduleService.getWeekdaySchedulesByGraphs(graphIds)
+                subscribedGraphIds.length > 0
+                    ? this.scheduleService.getWeekdaySchedulesByGraphs(subscribedGraphIds.map(id => id.toString()))
                     : Promise.resolve([]),
                 this.eventRegsService.getEventsByUserId(userId)
             ]);
@@ -81,7 +79,7 @@ let GraphSubsService = class GraphSubsService {
                 isAttended: true
             }));
             return {
-                schedule: schedule || [],
+                schedule,
                 events: mergedEvents
             };
         }
