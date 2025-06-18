@@ -27,25 +27,45 @@ let TelegramBotService = class TelegramBotService {
     onModuleInit() {
         console.log('Bot initialized');
         setTimeout(() => {
+            this.setupBotCommands();
             this.handleStartCommand();
+            this.handleAuthCommand();
         }, 1000);
     }
     async getUserProfilePhotos(id) {
         return await this.bot.getUserProfilePhotos(id);
     }
+    async setupBotCommands() {
+        try {
+            await this.bot.setMyCommands([
+                {
+                    command: 'start',
+                    description: '🌟 Главное меню'
+                },
+                {
+                    command: 'auth',
+                    description: '🔐 Авторизация'
+                }
+            ]);
+            console.log('Bot commands set successfully');
+        }
+        catch (error) {
+            console.error('Error setting bot commands:', error);
+        }
+    }
     handleStartCommand() {
-        this.bot.onText(/\/start/, (msg) => {
+        this.bot.onText(/\/start(.*)/, (msg, match) => {
             const chatId = msg.chat.id;
+            const parameter = match[1]?.trim();
+            if (parameter === 'auth') {
+                this.sendAuthMessage(chatId);
+                return;
+            }
             this.bot.sendMessage(chatId, '🌟 *Добро пожаловать в GraphON!* 🌟\n\n' +
                 'Ваш личный гид по менеджменту внеучебных мероприятий.\n\n' +
-                'Для доступа к приложению зарегистрируйтесь, нажав на кнопку "Авторизоваться" ⬇️\n\n' +
-                '---\n\n' +
-                '📌 *Какие данные мы получим после авторизации?*\n\n' +
-                '- *Telegram ID*\n' +
-                '- *Имя*\n' +
-                '- *Фамилию*\n' +
-                '- *Юзернейм*\n' +
-                '- *Фото профиля*', {
+                'Используйте команды:\n' +
+                '• `/auth` - для авторизации\n' +
+                '• Кнопку ниже - для открытия приложения', {
                 parse_mode: "Markdown",
                 reply_markup: {
                     inline_keyboard: [
@@ -60,14 +80,6 @@ let TelegramBotService = class TelegramBotService {
                         ],
                         [
                             {
-                                text: '🔐 Авторизоваться',
-                                login_url: {
-                                    url: `${this.SERVER_URL}/auth/telegram/callback`,
-                                },
-                            },
-                        ],
-                        [
-                            {
                                 text: '📢 Telegram канал',
                                 url: 'https://t.me/graph_ON',
                             },
@@ -75,6 +87,37 @@ let TelegramBotService = class TelegramBotService {
                     ],
                 },
             });
+        });
+    }
+    handleAuthCommand() {
+        this.bot.onText(/\/auth/, (msg) => {
+            const chatId = msg.chat.id;
+            this.sendAuthMessage(chatId);
+        });
+    }
+    sendAuthMessage(chatId) {
+        this.bot.sendMessage(chatId, '🔐 *Авторизация в GraphON*\n\n' +
+            'Для доступа к приложению авторизуйтесь, нажав на кнопку ⬇️\n\n' +
+            '---\n\n' +
+            '📌 *Какие данные мы получим после авторизации?*\n\n' +
+            '- *Telegram ID*\n' +
+            '- *Имя*\n' +
+            '- *Фамилию*\n' +
+            '- *Юзернейм*\n' +
+            '- *Фото профиля*', {
+            parse_mode: "Markdown",
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        {
+                            text: '🔐 Авторизоваться',
+                            login_url: {
+                                url: `${this.SERVER_URL}/auth/telegram/callback`,
+                            },
+                        },
+                    ],
+                ],
+            },
         });
     }
     sendMessage(chatId, message) {
