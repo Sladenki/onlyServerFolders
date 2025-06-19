@@ -35,29 +35,37 @@ let GraphSubsService = class GraphSubsService {
     }
     async toggleSub(user, graph) {
         console.log('toggleSub', user, graph);
+        const session = await this.graphSubsModel.db.startSession();
         try {
-            const existingSub = await this.graphSubsModel
-                .findOne({ user, graph })
-                .lean()
-                .exec();
-            if (existingSub) {
-                await Promise.all([
-                    this.GraphModel.findOneAndUpdate({ _id: graph }, { $inc: { subsNum: -1 } }, { lean: true }).exec(),
-                    this.graphSubsModel.deleteOne({ user, graph }).exec(),
-                    this.UserModel.findOneAndUpdate({ _id: user }, { $inc: { graphSubsNum: -1 } }).exec()
-                ]);
-            }
-            else {
-                await Promise.all([
-                    this.GraphModel.findOneAndUpdate({ _id: graph }, { $inc: { subsNum: 1 } }, { lean: true }).exec(),
-                    this.graphSubsModel.create({ user, graph }),
-                    this.UserModel.findOneAndUpdate({ _id: user }, { $inc: { graphSubsNum: 1 } }).exec()
-                ]);
-            }
+            return await session.withTransaction(async () => {
+                const deletedSub = await this.graphSubsModel
+                    .findOneAndDelete({ user, graph })
+                    .session(session)
+                    .lean()
+                    .exec();
+                if (deletedSub) {
+                    await Promise.all([
+                        this.GraphModel.findByIdAndUpdate(graph, { $inc: { subsNum: -1 } }, { session, lean: true }).exec(),
+                        this.UserModel.findByIdAndUpdate(user, { $inc: { graphSubsNum: -1 } }, { session, lean: true }).exec()
+                    ]);
+                    return { subscribed: false };
+                }
+                else {
+                    await Promise.all([
+                        this.graphSubsModel.create([{ user, graph }], { session }),
+                        this.GraphModel.findByIdAndUpdate(graph, { $inc: { subsNum: 1 } }, { session, lean: true }).exec(),
+                        this.UserModel.findByIdAndUpdate(user, { $inc: { graphSubsNum: 1 } }, { session, lean: true }).exec()
+                    ]);
+                    return { subscribed: true };
+                }
+            });
         }
         catch (error) {
             console.error('Error in toggleSub:', error);
             throw new common_1.InternalServerErrorException('Ошибка при переключении подписки');
+        }
+        finally {
+            await session.endSession();
         }
     }
     async getSubsSchedule(userId) {
@@ -129,6 +137,72 @@ let GraphSubsService = class GraphSubsService {
         catch (error) {
             console.error('Error in isUserSubsExists:', error);
             return false;
+        }
+    }
+    async toggleSubBulk(user, graph) {
+        console.log('toggleSubBulk', user, graph);
+        const session = await this.graphSubsModel.db.startSession();
+        try {
+            return await session.withTransaction(async () => {
+                const deleteResult = await this.graphSubsModel
+                    .deleteOne({ user, graph })
+                    .session(session)
+                    .exec();
+                if (deleteResult.deletedCount > 0) {
+                    const bulkOps = [
+                        {
+                            updateOne: {
+                                filter: { _id: graph },
+                                update: { $inc: { subsNum: -1 } }
+                            }
+                        }
+                    ];
+                    const userBulkOps = [
+                        {
+                            updateOne: {
+                                filter: { _id: user },
+                                update: { $inc: { graphSubsNum: -1 } }
+                            }
+                        }
+                    ];
+                    await Promise.all([
+                        this.GraphModel.bulkWrite(bulkOps, { session }),
+                        this.UserModel.bulkWrite(userBulkOps, { session })
+                    ]);
+                    return { subscribed: false };
+                }
+                else {
+                    const bulkOps = [
+                        {
+                            updateOne: {
+                                filter: { _id: graph },
+                                update: { $inc: { subsNum: 1 } }
+                            }
+                        }
+                    ];
+                    const userBulkOps = [
+                        {
+                            updateOne: {
+                                filter: { _id: user },
+                                update: { $inc: { graphSubsNum: 1 } }
+                            }
+                        }
+                    ];
+                    await Promise.all([
+                        this.graphSubsModel.create([{ user, graph }], { session }),
+                        this.GraphModel.bulkWrite(bulkOps, { session }),
+                        this.UserModel.bulkWrite(userBulkOps, { session })
+                    ]);
+                    return { subscribed: true };
+                }
+            });
+        }
+        catch (error) {
+            console.error('Error in toggleSubBulk:', error);
+            throw new common_1.InternalServerErrorException('Ошибка при переключении подписки');
+        }
+        finally {
+            await session.endSession();
         }
     }
 };

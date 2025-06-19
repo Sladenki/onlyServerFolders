@@ -31,7 +31,9 @@ export declare class GraphSubsController {
     constructor(graphSubsService: GraphSubsService);
     toggleSub(currentUserId: Types.ObjectId, body: {
         graphId: string;
-    }): Promise<void>;
+    }): Promise<{
+        subscribed: boolean;
+    }>;
     getSubsSchedule(userId: Types.ObjectId): Promise<{
         schedule: any[];
         events: any[];

@@ -42,7 +42,9 @@ export declare class GraphSubsService {
     private readonly eventService;
     private readonly eventRegsService;
     constructor(graphSubsModel: ModelType<GraphSubsModel>, GraphModel: ModelType<GraphModel>, UserModel: ModelType<UserModel>, eventRegsModel: ModelType<EventRegsModel>, scheduleService: ScheduleService, eventService: EventService, eventRegsService: EventRegsService);
-    toggleSub(user: string | Types.ObjectId, graph: string | Types.ObjectId): Promise<void>;
+    toggleSub(user: string | Types.ObjectId, graph: string | Types.ObjectId): Promise<{
+        subscribed: boolean;
+    }>;
     getSubsSchedule(userId: Types.ObjectId): Promise<{
         schedule: any[];
         events: any[];
@@ -65,4 +67,7 @@ export declare class GraphSubsService {
         __v: number;
     }[]>;
     isUserSubsExists(graph: string, userId: string): Promise<boolean>;
+    toggleSubBulk(user: string | Types.ObjectId, graph: string | Types.ObjectId): Promise<{
+        subscribed: boolean;
+    }>;
 }
