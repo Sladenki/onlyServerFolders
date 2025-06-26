@@ -22,10 +22,30 @@ let EventService = class EventService {
         this.EventModel = EventModel;
     }
     async createEvent(dto) {
-        return this.EventModel.create({
-            ...dto,
-            eventDate: new Date(dto.eventDate)
-        });
+        try {
+            return await this.EventModel.create({
+                ...dto,
+                eventDate: new Date(dto.eventDate)
+            });
+        }
+        catch (error) {
+            if (error.name === 'ValidationError') {
+                const errors = Object.values(error.errors).map((err) => {
+                    if (err.kind === 'maxlength') {
+                        return `Поле "${err.path}" не может быть длиннее ${err.properties.maxlength} символов`;
+                    }
+                    if (err.kind === 'required') {
+                        return `Поле "${err.path}" обязательно для заполнения`;
+                    }
+                    return `Ошибка в поле "${err.path}": ${err.message}`;
+                });
+                throw new common_1.HttpException({
+                    message: 'Ошибка валидации данных',
+                    errors: errors
+                }, common_1.HttpStatus.BAD_REQUEST);
+            }
+            throw new common_1.HttpException('Произошла ошибка при создании мероприятия', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async getEventsByGraphId(graphId) {
         const today = new Date();
@@ -65,13 +85,40 @@ let EventService = class EventService {
         return this.EventModel.findByIdAndDelete(eventId).lean();
     }
     async updateEvent(eventId, dto) {
-        return this.EventModel
-            .findByIdAndUpdate(eventId, {
-            ...dto,
-            eventDate: new Date(dto.eventDate)
-        }, { new: true })
-            .populate("graphId", "name")
-            .lean();
+        try {
+            const updatedEvent = await this.EventModel
+                .findByIdAndUpdate(eventId, {
+                ...dto,
+                eventDate: new Date(dto.eventDate)
+            }, { new: true, runValidators: true })
+                .populate("graphId", "name")
+                .lean();
+            if (!updatedEvent) {
+                throw new common_1.HttpException('Мероприятие не найдено', common_1.HttpStatus.NOT_FOUND);
+            }
+            return updatedEvent;
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            if (error.name === 'ValidationError') {
+                const errors = Object.values(error.errors).map((err) => {
+                    if (err.kind === 'maxlength') {
+                        return `Поле "${err.path}" не может быть длиннее ${err.properties.maxlength} символов`;
+                    }
+                    if (err.kind === 'required') {
+                        return `Поле "${err.path}" обязательно для заполнения`;
+                    }
+                    return `Ошибка в поле "${err.path}": ${err.message}`;
+                });
+                throw new common_1.HttpException({
+                    message: 'Ошибка валидации данных',
+                    errors: errors
+                }, common_1.HttpStatus.BAD_REQUEST);
+            }
+            throw new common_1.HttpException('Произошла ошибка при обновлении мероприятия', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 };
 exports.EventService = EventService;

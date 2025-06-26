@@ -27,7 +27,6 @@ let GraphService = class GraphService {
         this.s3Service = s3Service;
     }
     async createGraph(dto, userId, image) {
-        console.log('createGraph', dto, userId, image);
         let imgPath;
         if (image) {
             const fileExtension = image.originalname.split('.').pop();
@@ -121,11 +120,17 @@ let GraphService = class GraphService {
         return childrenGraphs;
     }
     async getAllChildrenByGlobal(globalGraphId) {
-        const childrenGraphs = this.GraphModel.find({
-            globalGraphId: globalGraphId,
-            graphType: 'default'
-        }).lean();
-        return childrenGraphs;
+        const [globalGraph, childrenGraphs] = await Promise.all([
+            this.GraphModel.findOne({
+                _id: globalGraphId,
+                graphType: 'global'
+            }).lean(),
+            this.GraphModel.find({
+                globalGraphId: globalGraphId,
+                graphType: 'default'
+            }).lean()
+        ]);
+        return globalGraph ? [globalGraph, ...childrenGraphs] : childrenGraphs;
     }
     async getTopicGraphs(parentGraphId) {
         const pipeline = [

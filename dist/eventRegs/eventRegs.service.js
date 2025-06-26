@@ -26,7 +26,6 @@ let EventRegsService = class EventRegsService {
     }
     async toggleEvent(userId, eventId) {
         const deletedEvent = await this.EventRegsModel.findOneAndDelete({ userId, eventId }).lean();
-        console.log(!!deletedEvent);
         if (deletedEvent) {
             await Promise.all([
                 this.UserModel.findOneAndUpdate({ _id: userId }, { $inc: { attentedEventsNum: -1 } }),
@@ -46,7 +45,6 @@ let EventRegsService = class EventRegsService {
         return !!eventReg;
     }
     async getEventsByUserId(userId) {
-        console.log('userId', userId);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const regs = await this.EventRegsModel
@@ -60,7 +58,6 @@ let EventRegsService = class EventRegsService {
             }
         })
             .lean();
-        console.log(regs);
         const upcomingEvents = regs
             .filter(reg => reg.eventId && new Date(reg.eventId.eventDate) >= today)
             .map(reg => ({

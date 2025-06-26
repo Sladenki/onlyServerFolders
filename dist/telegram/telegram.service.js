@@ -47,7 +47,6 @@ let TelegramBotService = class TelegramBotService {
                     description: '🔐 Авторизация'
                 }
             ]);
-            console.log('Bot commands set successfully');
         }
         catch (error) {
             console.error('Error setting bot commands:', error);

@@ -28,7 +28,6 @@ let GraphSubsController = class GraphSubsController {
         return this.graphSubsService.toggleSub(currentUserId, graphIdObjectId);
     }
     async getSubsSchedule(userId) {
-        console.log('Controller getSubsSchedule вызван для userId:', userId);
         return this.graphSubsService.getSubsSchedule(userId);
     }
     async getSubsEvents(userId) {

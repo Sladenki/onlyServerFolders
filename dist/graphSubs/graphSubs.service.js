@@ -34,7 +34,6 @@ let GraphSubsService = class GraphSubsService {
         this.eventRegsService = eventRegsService;
     }
     async toggleSub(user, graph) {
-        console.log('toggleSub', user, graph);
         const session = await this.graphSubsModel.db.startSession();
         try {
             return await session.withTransaction(async () => {
@@ -140,7 +139,6 @@ let GraphSubsService = class GraphSubsService {
         }
     }
     async toggleSubBulk(user, graph) {
-        console.log('toggleSubBulk', user, graph);
         const session = await this.graphSubsModel.db.startSession();
         try {
             return await session.withTransaction(async () => {
