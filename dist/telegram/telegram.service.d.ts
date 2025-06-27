@@ -9,7 +9,10 @@ export declare class TelegramBotService implements OnModuleInit {
     constructor(configService: ConfigService);
     onModuleInit(): void;
     getUserProfilePhotos(id: number): Promise<any>;
+    getBotInfo(): Promise<any>;
+    changeBotName(newName: string): Promise<boolean>;
     setupBotCommands(): Promise<void>;
+    setupBotInfo(): Promise<void>;
     handleStartCommand(): void;
     handleAuthCommand(): void;
     sendAuthMessage(chatId: number): void;

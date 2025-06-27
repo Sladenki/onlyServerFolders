@@ -35,6 +35,28 @@ let TelegramBotService = class TelegramBotService {
     async getUserProfilePhotos(id) {
         return await this.bot.getUserProfilePhotos(id);
     }
+    async getBotInfo() {
+        try {
+            const botInfo = await this.bot.getMe();
+            console.log('Bot info:', botInfo);
+            return botInfo;
+        }
+        catch (error) {
+            console.error('Error getting bot info:', error);
+            return null;
+        }
+    }
+    async changeBotName(newName) {
+        try {
+            await this.bot.setMyName(newName);
+            console.log(`Bot name changed to: ${newName}`);
+            return true;
+        }
+        catch (error) {
+            console.error('Error changing bot name:', error);
+            return false;
+        }
+    }
     async setupBotCommands() {
         try {
             await this.bot.setMyCommands([
@@ -47,9 +69,20 @@ let TelegramBotService = class TelegramBotService {
                     description: '🔐 Авторизация'
                 }
             ]);
+            await this.setupBotInfo();
         }
         catch (error) {
             console.error('Error setting bot commands:', error);
+        }
+    }
+    async setupBotInfo() {
+        try {
+            await this.bot.setMyName('GraphON');
+            await this.bot.setMyShortDescription('Ваш личный гид по менеджменту внеучебных мероприятий');
+            await this.bot.setMyDescription('GraphON - система управления внеучебными мероприятиями. Создавайте события, управляйте регистрацией участников и отслеживайте активность.');
+        }
+        catch (error) {
+            console.error('Error setting bot info:', error);
         }
     }
     handleStartCommand() {
@@ -72,8 +105,7 @@ let TelegramBotService = class TelegramBotService {
                             {
                                 text: '🌐 Открыть приложение',
                                 web_app: {
-                                    url: this.WEB_APP_URL,
-                                    hide_webapp_header: true
+                                    url: `${this.WEB_APP_URL}?tgWebAppHideHeader=1`
                                 },
                             },
                         ],
