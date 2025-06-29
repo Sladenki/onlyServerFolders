@@ -30,32 +30,11 @@ let TelegramBotService = class TelegramBotService {
             this.setupBotCommands();
             this.handleStartCommand();
             this.handleAuthCommand();
+            this.handleSupportCommand();
         }, 1000);
     }
     async getUserProfilePhotos(id) {
         return await this.bot.getUserProfilePhotos(id);
-    }
-    async getBotInfo() {
-        try {
-            const botInfo = await this.bot.getMe();
-            console.log('Bot info:', botInfo);
-            return botInfo;
-        }
-        catch (error) {
-            console.error('Error getting bot info:', error);
-            return null;
-        }
-    }
-    async changeBotName(newName) {
-        try {
-            await this.bot.setMyName(newName);
-            console.log(`Bot name changed to: ${newName}`);
-            return true;
-        }
-        catch (error) {
-            console.error('Error changing bot name:', error);
-            return false;
-        }
     }
     async setupBotCommands() {
         try {
@@ -67,22 +46,15 @@ let TelegramBotService = class TelegramBotService {
                 {
                     command: 'auth',
                     description: '🔐 Авторизация'
+                },
+                {
+                    command: 'support',
+                    description: '🛠 Техподдержка'
                 }
             ]);
-            await this.setupBotInfo();
         }
         catch (error) {
             console.error('Error setting bot commands:', error);
-        }
-    }
-    async setupBotInfo() {
-        try {
-            await this.bot.setMyName('GraphON');
-            await this.bot.setMyShortDescription('Ваш личный гид по менеджменту внеучебных мероприятий');
-            await this.bot.setMyDescription('GraphON - система управления внеучебными мероприятиями. Создавайте события, управляйте регистрацией участников и отслеживайте активность.');
-        }
-        catch (error) {
-            console.error('Error setting bot info:', error);
         }
     }
     handleStartCommand() {
@@ -94,10 +66,7 @@ let TelegramBotService = class TelegramBotService {
                 return;
             }
             this.bot.sendMessage(chatId, '🌟 *Добро пожаловать в GraphON!* 🌟\n\n' +
-                'Ваш личный гид по менеджменту внеучебных мероприятий.\n\n' +
-                'Используйте команды:\n' +
-                '• `/auth` - для авторизации\n' +
-                '• Кнопку ниже - для открытия приложения', {
+                'Ваш личный гид по менеджменту внеучебных мероприятий.\n\n', {
                 parse_mode: "Markdown",
                 reply_markup: {
                     inline_keyboard: [
@@ -105,7 +74,8 @@ let TelegramBotService = class TelegramBotService {
                             {
                                 text: '🌐 Открыть приложение',
                                 web_app: {
-                                    url: `${this.WEB_APP_URL}?tgWebAppHideHeader=1`
+                                    url: this.WEB_APP_URL,
+                                    hide_webapp_header: true
                                 },
                             },
                         ],
@@ -124,6 +94,12 @@ let TelegramBotService = class TelegramBotService {
         this.bot.onText(/\/auth/, (msg) => {
             const chatId = msg.chat.id;
             this.sendAuthMessage(chatId);
+        });
+    }
+    handleSupportCommand() {
+        this.bot.onText(/\/support/, (msg) => {
+            const chatId = msg.chat.id;
+            this.sendSupportMessage(chatId);
         });
     }
     sendAuthMessage(chatId) {
@@ -145,6 +121,24 @@ let TelegramBotService = class TelegramBotService {
                             login_url: {
                                 url: `${this.SERVER_URL}/auth/telegram/callback`,
                             },
+                        },
+                    ],
+                ],
+            },
+        });
+    }
+    sendSupportMessage(chatId) {
+        this.bot.sendMessage(chatId, '🛠 *Техподдержка GraphON*\n\n' +
+            '📞 *Как получить помощь?*\n\n' +
+            '• Посетите наш канал для новостей\n' +
+            '• Или опишите проблему в чате поддержки\n\n', {
+            parse_mode: "Markdown",
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        {
+                            text: '💬 Чат поддержки',
+                            url: 'https://t.me/graph_ON',
                         },
                     ],
                 ],
