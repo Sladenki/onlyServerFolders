@@ -23,6 +23,8 @@ let TelegramBotService = class TelegramBotService {
         this.WEB_APP_URL = webAppString;
         const authLoginString = this.configService.get('SERVER_URL');
         this.SERVER_URL = authLoginString;
+        const supportUrlString = this.configService.get('SUPPORT_URL');
+        this.SUPPORT_URL = supportUrlString;
     }
     onModuleInit() {
         console.log('Bot initialized');
@@ -130,15 +132,14 @@ let TelegramBotService = class TelegramBotService {
     sendSupportMessage(chatId) {
         this.bot.sendMessage(chatId, '🛠 *Техподдержка GraphON*\n\n' +
             '📞 *Как получить помощь?*\n\n' +
-            '• Посетите наш канал для новостей\n' +
-            '• Или опишите проблему в чате поддержки\n\n', {
+            '• Опишите проблему в чате поддержки\n\n', {
             parse_mode: "Markdown",
             reply_markup: {
                 inline_keyboard: [
                     [
                         {
                             text: '💬 Чат поддержки',
-                            url: 'https://t.me/graph_ON',
+                            url: this.SUPPORT_URL,
                         },
                     ],
                 ],

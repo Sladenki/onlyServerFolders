@@ -6,6 +6,7 @@ export declare class TelegramBotService implements OnModuleInit {
     bot: TelegramBot;
     private WEB_APP_URL;
     private SERVER_URL;
+    private SUPPORT_URL;
     constructor(configService: ConfigService);
     onModuleInit(): void;
     getUserProfilePhotos(id: number): Promise<any>;
