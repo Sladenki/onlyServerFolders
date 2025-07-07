@@ -26,6 +26,7 @@ const telegram_module_1 = require("./telegram/telegram.module");
 const admin_module_1 = require("./admin/admin.module");
 const eventRegs_module_1 = require("./eventRegs/eventRegs.module");
 const jwt_module_1 = require("./jwt/jwt.module");
+const redis_config_1 = require("./config/redis.config");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(logging_middleware_1.LogginMiddleware).forRoutes('*');
@@ -35,7 +36,9 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot(),
+            config_1.ConfigModule.forRoot({
+                load: [redis_config_1.default],
+            }),
             nestjs_typegoose_1.TypegooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],

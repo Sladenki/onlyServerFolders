@@ -19,6 +19,7 @@ const user_model_1 = require("../user/user.model");
 const graphSubs_module_1 = require("../graphSubs/graphSubs.module");
 const optionalAuth_guard_1 = require("../guards/optionalAuth.guard");
 const s3_module_1 = require("../s3/s3.module");
+const redis_module_1 = require("../redis/redis.module");
 let GraphModule = class GraphModule {
 };
 exports.GraphModule = GraphModule;
@@ -29,6 +30,7 @@ exports.GraphModule = GraphModule = __decorate([
         imports: [
             config_1.ConfigModule,
             s3_module_1.S3Module,
+            redis_module_1.RedisModule,
             nestjs_typegoose_1.TypegooseModule.forFeature([
                 {
                     typegooseClass: graph_model_1.GraphModel,

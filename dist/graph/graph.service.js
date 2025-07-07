@@ -19,12 +19,21 @@ const graph_model_1 = require("./graph.model");
 const graphSubs_model_1 = require("../graphSubs/graphSubs.model");
 const graphSubs_service_1 = require("../graphSubs/graphSubs.service");
 const s3_service_1 = require("../s3/s3.service");
+const redis_service_1 = require("../redis/redis.service");
 let GraphService = class GraphService {
-    constructor(GraphModel, graphSubsModel, graphSubsService, s3Service) {
+    constructor(GraphModel, graphSubsModel, graphSubsService, s3Service, redisService) {
         this.GraphModel = GraphModel;
         this.graphSubsModel = graphSubsModel;
         this.graphSubsService = graphSubsService;
         this.s3Service = s3Service;
+        this.redisService = redisService;
+    }
+    generateCacheKey(method, params) {
+        const paramsString = JSON.stringify(params);
+        return `graph:${method}:${paramsString}`;
+    }
+    async invalidateGraphCache() {
+        await this.redisService.delPattern('graph:*');
     }
     async createGraph(dto, userId, image) {
         let imgPath;
@@ -47,18 +56,38 @@ let GraphService = class GraphService {
                 $inc: { childGraphNum: 1 },
             }).exec();
         }
+        await this.invalidateGraphCache();
         return graph;
     }
     async getGraphById(id) {
-        return this.GraphModel.findById(id).populate('parentGraphId', 'name');
+        const cacheKey = this.generateCacheKey('getGraphById', { id: id.toString() });
+        const cachedGraph = await this.redisService.get(cacheKey);
+        if (cachedGraph) {
+            return cachedGraph;
+        }
+        const graph = await this.GraphModel.findById(id).populate('parentGraphId', 'name');
+        if (graph) {
+            await this.redisService.set(cacheKey, graph, 86400);
+        }
+        return graph;
     }
     async getParentGraphs(skip, userId) {
+        const cacheKey = this.generateCacheKey('getParentGraphs', {
+            skip: Number(skip) || 0,
+            userId: userId?.toString() || 'anonymous'
+        });
+        const cachedGraphs = await this.redisService.get(cacheKey);
+        if (cachedGraphs) {
+            return cachedGraphs;
+        }
         if (!userId) {
-            return this.GraphModel
+            const graphs = await this.GraphModel
                 .find()
                 .skip(Number(skip) || 0)
                 .lean()
                 .exec();
+            await this.redisService.set(cacheKey, graphs, 86400);
+            return graphs;
         }
         const [graphs, userSubscriptions] = await Promise.all([
             this.GraphModel
@@ -77,11 +106,21 @@ let GraphService = class GraphService {
             ...graph,
             isSubscribed: subscribedGraphIds.has(graph._id.toString())
         }));
+        await this.redisService.set(cacheKey, graphsWithSubscription, 86400);
         return graphsWithSubscription;
     }
     async getAllChildrenGraphs(parentGraphId, skip, userId) {
+        const cacheKey = this.generateCacheKey('getAllChildrenGraphs', {
+            parentGraphId: parentGraphId.toString(),
+            skip: Number(skip) || 0,
+            userId: userId?.toString() || 'anonymous'
+        });
+        const cachedGraphs = await this.redisService.get(cacheKey);
+        if (cachedGraphs) {
+            return cachedGraphs;
+        }
         if (!userId) {
-            return this.GraphModel
+            const graphs = await this.GraphModel
                 .find({
                 globalGraphId: parentGraphId,
                 graphType: 'default'
@@ -89,6 +128,8 @@ let GraphService = class GraphService {
                 .skip(Number(skip) || 0)
                 .lean()
                 .exec();
+            await this.redisService.set(cacheKey, graphs, 86400);
+            return graphs;
         }
         const [graphs, userSubscriptions] = await Promise.all([
             this.GraphModel
@@ -110,6 +151,7 @@ let GraphService = class GraphService {
             ...graph,
             isSubscribed: subscribedGraphIds.has(graph._id.toString())
         }));
+        await this.redisService.set(cacheKey, graphsWithSubscription, 86400);
         return graphsWithSubscription;
     }
     async getAllChildrenByTopic(parentGraphId) {
@@ -159,6 +201,7 @@ let GraphService = class GraphService {
             imgPath,
             graphType: "global"
         });
+        await this.invalidateGraphCache();
         return graph;
     }
     async createTopicGraph(dto, userId, image) {
@@ -180,15 +223,30 @@ let GraphService = class GraphService {
         await this.GraphModel.findByIdAndUpdate(dto.parentGraphId, {
             $inc: { childGraphNum: 1 },
         }).exec();
+        await this.invalidateGraphCache();
         return graph;
     }
     async getGlobalGraphs() {
-        return this.GraphModel.find({ graphType: 'global' })
+        const cacheKey = this.generateCacheKey('getGlobalGraphs', {});
+        const cachedGraphs = await this.redisService.get(cacheKey);
+        if (cachedGraphs) {
+            return cachedGraphs;
+        }
+        const graphs = await this.GraphModel.find({ graphType: 'global' })
             .sort({ name: 1 })
             .lean()
             .exec();
+        await this.redisService.set(cacheKey, graphs, 86400);
+        return graphs;
     }
     async getTopicGraphsWithMain(globalGraphId) {
+        const cacheKey = this.generateCacheKey('getTopicGraphsWithMain', {
+            globalGraphId: globalGraphId.toString()
+        });
+        const cachedResult = await this.redisService.get(cacheKey);
+        if (cachedResult) {
+            return cachedResult;
+        }
         const [globalGraph, topicGraphs] = await Promise.all([
             this.GraphModel.findOne({
                 _id: globalGraphId,
@@ -199,10 +257,12 @@ let GraphService = class GraphService {
                 graphType: 'topic'
             }).sort({ name: 1 }).lean()
         ]);
-        return {
+        const result = {
             globalGraph,
             topicGraphs
         };
+        await this.redisService.set(cacheKey, result, 86400);
+        return result;
     }
 };
 exports.GraphService = GraphService;
@@ -211,6 +271,7 @@ exports.GraphService = GraphService = __decorate([
     __param(0, (0, nestjs_typegoose_1.InjectModel)(graph_model_1.GraphModel)),
     __param(1, (0, nestjs_typegoose_1.InjectModel)(graphSubs_model_1.GraphSubsModel)),
     __metadata("design:paramtypes", [Object, Object, graphSubs_service_1.GraphSubsService,
-        s3_service_1.S3Service])
+        s3_service_1.S3Service,
+        redis_service_1.RedisService])
 ], GraphService);
 //# sourceMappingURL=graph.service.js.map
