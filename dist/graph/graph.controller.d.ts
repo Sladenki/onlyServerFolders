@@ -31,8 +31,8 @@ export declare class GraphController {
     private readonly graphService;
     constructor(graphService: GraphService);
     getGraphById(id: string): Promise<unknown>;
-    getParentGraphs(skip: any, authContext: OptionalAuthContext): Promise<unknown>;
-    getAllChildrenGraphs(parentGraphId: string, skip: any, authContext: OptionalAuthContext): Promise<unknown>;
+    getParentGraphs(skip: any, authContext: OptionalAuthContext): Promise<any[]>;
+    getAllChildrenGraphs(parentGraphId: string, skip: any, authContext: OptionalAuthContext): Promise<any[]>;
     getAllChildrenByGlobal(globalGraphId: string): Promise<({
         graphType: "default" | "global" | "topic";
         globalGraphId?: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose").DocumentType<import("./graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;

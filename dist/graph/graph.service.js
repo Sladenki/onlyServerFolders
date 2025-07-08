@@ -27,6 +27,8 @@ let GraphService = class GraphService {
         this.graphSubsService = graphSubsService;
         this.s3Service = s3Service;
         this.redisService = redisService;
+        this.GRAPH_CACHE_TTL = 7 * 24 * 60 * 60;
+        this.USER_SUBS_CACHE_TTL = 5 * 60;
     }
     generateCacheKey(method, params) {
         const paramsString = JSON.stringify(params);
@@ -34,6 +36,33 @@ let GraphService = class GraphService {
     }
     async invalidateGraphCache() {
         await this.redisService.delPattern('graph:*');
+    }
+    async getUserSubscriptions(userId) {
+        const cacheKey = `userSubs:${userId.toString()}`;
+        const cachedSubs = await this.redisService.get(cacheKey);
+        if (cachedSubs && Array.isArray(cachedSubs)) {
+            console.log(`📖 Redis CACHE HIT: ${cacheKey} (${cachedSubs.length} подписок)`);
+            return new Set(cachedSubs);
+        }
+        const userSubscriptions = await this.graphSubsModel
+            .find({ user: userId })
+            .select('graph')
+            .lean()
+            .exec();
+        const subscribedGraphIds = userSubscriptions.map(sub => sub.graph.toString());
+        await this.redisService.set(cacheKey, subscribedGraphIds, this.USER_SUBS_CACHE_TTL);
+        console.log(`📝 Redis CACHE MISS: ${cacheKey} (${subscribedGraphIds.length} подписок сохранено в кэш)`);
+        return new Set(subscribedGraphIds);
+    }
+    async invalidateUserSubscriptionsCache(userId) {
+        const cacheKey = `userSubs:${userId.toString()}`;
+        await this.redisService.del(cacheKey);
+    }
+    addSubscriptionInfo(graphs, subscribedGraphIds) {
+        return graphs.map(graph => ({
+            ...graph,
+            isSubscribed: subscribedGraphIds.has(graph._id.toString())
+        }));
     }
     async createGraph(dto, userId, image) {
         let imgPath;
@@ -67,60 +96,37 @@ let GraphService = class GraphService {
         }
         const graph = await this.GraphModel.findById(id).populate('parentGraphId', 'name');
         if (graph) {
-            await this.redisService.set(cacheKey, graph, 86400);
+            await this.redisService.set(cacheKey, graph, this.GRAPH_CACHE_TTL);
         }
         return graph;
     }
     async getParentGraphs(skip, userId) {
         const cacheKey = this.generateCacheKey('getParentGraphs', {
-            skip: Number(skip) || 0,
-            userId: userId?.toString() || 'anonymous'
+            skip: Number(skip) || 0
         });
-        const cachedGraphs = await this.redisService.get(cacheKey);
-        if (cachedGraphs) {
-            return cachedGraphs;
-        }
-        if (!userId) {
-            const graphs = await this.GraphModel
+        let graphs = await this.redisService.get(cacheKey);
+        if (!graphs || !Array.isArray(graphs)) {
+            graphs = await this.GraphModel
                 .find()
                 .skip(Number(skip) || 0)
                 .lean()
                 .exec();
             await this.redisService.set(cacheKey, graphs, 86400);
+        }
+        if (!userId) {
             return graphs;
         }
-        const [graphs, userSubscriptions] = await Promise.all([
-            this.GraphModel
-                .find()
-                .skip(Number(skip) || 0)
-                .lean()
-                .exec(),
-            this.graphSubsModel
-                .find({ user: userId })
-                .select('graph')
-                .lean()
-                .exec()
-        ]);
-        const subscribedGraphIds = new Set(userSubscriptions.map(sub => sub.graph.toString()));
-        const graphsWithSubscription = graphs.map(graph => ({
-            ...graph,
-            isSubscribed: subscribedGraphIds.has(graph._id.toString())
-        }));
-        await this.redisService.set(cacheKey, graphsWithSubscription, 86400);
-        return graphsWithSubscription;
+        const subscribedGraphIds = await this.getUserSubscriptions(userId);
+        return this.addSubscriptionInfo(graphs, subscribedGraphIds);
     }
     async getAllChildrenGraphs(parentGraphId, skip, userId) {
         const cacheKey = this.generateCacheKey('getAllChildrenGraphs', {
             parentGraphId: parentGraphId.toString(),
-            skip: Number(skip) || 0,
-            userId: userId?.toString() || 'anonymous'
+            skip: Number(skip) || 0
         });
-        const cachedGraphs = await this.redisService.get(cacheKey);
-        if (cachedGraphs) {
-            return cachedGraphs;
-        }
-        if (!userId) {
-            const graphs = await this.GraphModel
+        let graphs = await this.redisService.get(cacheKey);
+        if (!graphs || !Array.isArray(graphs)) {
+            graphs = await this.GraphModel
                 .find({
                 globalGraphId: parentGraphId,
                 graphType: 'default'
@@ -129,30 +135,12 @@ let GraphService = class GraphService {
                 .lean()
                 .exec();
             await this.redisService.set(cacheKey, graphs, 86400);
+        }
+        if (!userId) {
             return graphs;
         }
-        const [graphs, userSubscriptions] = await Promise.all([
-            this.GraphModel
-                .find({
-                globalGraphId: parentGraphId,
-                graphType: 'default'
-            })
-                .skip(Number(skip) || 0)
-                .lean()
-                .exec(),
-            this.graphSubsModel
-                .find({ user: userId })
-                .select('graph')
-                .lean()
-                .exec()
-        ]);
-        const subscribedGraphIds = new Set(userSubscriptions.map(sub => sub.graph.toString()));
-        const graphsWithSubscription = graphs.map(graph => ({
-            ...graph,
-            isSubscribed: subscribedGraphIds.has(graph._id.toString())
-        }));
-        await this.redisService.set(cacheKey, graphsWithSubscription, 86400);
-        return graphsWithSubscription;
+        const subscribedGraphIds = await this.getUserSubscriptions(userId);
+        return this.addSubscriptionInfo(graphs, subscribedGraphIds);
     }
     async getAllChildrenByTopic(parentGraphId) {
         const childrenGraphs = this.GraphModel.find({

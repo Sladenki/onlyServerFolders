@@ -21,6 +21,7 @@ const graph_model_1 = require("../graph/graph.model");
 const event_module_1 = require("../event/event.module");
 const eventRegs_module_1 = require("../eventRegs/eventRegs.module");
 const user_model_1 = require("../user/user.model");
+const redis_module_1 = require("../redis/redis.module");
 let GraphSubsModule = class GraphSubsModule {
 };
 exports.GraphSubsModule = GraphSubsModule;
@@ -54,7 +55,8 @@ exports.GraphSubsModule = GraphSubsModule = __decorate([
             ]),
             schedule_module_1.ScheduleModule,
             event_module_1.EventModule,
-            eventRegs_module_1.EventRegsModule
+            eventRegs_module_1.EventRegsModule,
+            redis_module_1.RedisModule
         ],
         exports: [graphSubs_service_1.GraphSubsService]
     })

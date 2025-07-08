@@ -23,8 +23,9 @@ const graph_model_1 = require("../graph/graph.model");
 const event_service_1 = require("../event/event.service");
 const eventRegs_service_1 = require("../eventRegs/eventRegs.service");
 const user_model_1 = require("../user/user.model");
+const redis_service_1 = require("../redis/redis.service");
 let GraphSubsService = class GraphSubsService {
-    constructor(graphSubsModel, GraphModel, UserModel, eventRegsModel, scheduleService, eventService, eventRegsService) {
+    constructor(graphSubsModel, GraphModel, UserModel, eventRegsModel, scheduleService, eventService, eventRegsService, redisService) {
         this.graphSubsModel = graphSubsModel;
         this.GraphModel = GraphModel;
         this.UserModel = UserModel;
@@ -32,6 +33,12 @@ let GraphSubsService = class GraphSubsService {
         this.scheduleService = scheduleService;
         this.eventService = eventService;
         this.eventRegsService = eventRegsService;
+        this.redisService = redisService;
+    }
+    async invalidateUserSubscriptionsCache(userId) {
+        const cacheKey = `userSubs:${userId.toString()}`;
+        await this.redisService.del(cacheKey);
+        console.log(`🗑️ Redis CACHE INVALIDATED: ${cacheKey}`);
     }
     async toggleSub(user, graph) {
         const session = await this.graphSubsModel.db.startSession();
@@ -47,6 +54,7 @@ let GraphSubsService = class GraphSubsService {
                         this.GraphModel.findByIdAndUpdate(graph, { $inc: { subsNum: -1 } }, { session, lean: true }).exec(),
                         this.UserModel.findByIdAndUpdate(user, { $inc: { graphSubsNum: -1 } }, { session, lean: true }).exec()
                     ]);
+                    await this.invalidateUserSubscriptionsCache(user);
                     return { subscribed: false };
                 }
                 else {
@@ -55,6 +63,7 @@ let GraphSubsService = class GraphSubsService {
                         this.GraphModel.findByIdAndUpdate(graph, { $inc: { subsNum: 1 } }, { session, lean: true }).exec(),
                         this.UserModel.findByIdAndUpdate(user, { $inc: { graphSubsNum: 1 } }, { session, lean: true }).exec()
                     ]);
+                    await this.invalidateUserSubscriptionsCache(user);
                     return { subscribed: true };
                 }
             });
@@ -167,6 +176,7 @@ let GraphSubsService = class GraphSubsService {
                         this.GraphModel.bulkWrite(bulkOps, { session }),
                         this.UserModel.bulkWrite(userBulkOps, { session })
                     ]);
+                    await this.invalidateUserSubscriptionsCache(user);
                     return { subscribed: false };
                 }
                 else {
@@ -191,6 +201,7 @@ let GraphSubsService = class GraphSubsService {
                         this.GraphModel.bulkWrite(bulkOps, { session }),
                         this.UserModel.bulkWrite(userBulkOps, { session })
                     ]);
+                    await this.invalidateUserSubscriptionsCache(user);
                     return { subscribed: true };
                 }
             });
@@ -213,6 +224,7 @@ exports.GraphSubsService = GraphSubsService = __decorate([
     __param(3, (0, nestjs_typegoose_1.InjectModel)(eventRegs_model_1.EventRegsModel)),
     __metadata("design:paramtypes", [Object, Object, Object, Object, schedule_service_1.ScheduleService,
         event_service_1.EventService,
-        eventRegs_service_1.EventRegsService])
+        eventRegs_service_1.EventRegsService,
+        redis_service_1.RedisService])
 ], GraphSubsService);
 //# sourceMappingURL=graphSubs.service.js.map

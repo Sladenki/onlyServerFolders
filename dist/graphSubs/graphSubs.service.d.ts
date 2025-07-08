@@ -33,6 +33,7 @@ import { GraphModel } from 'src/graph/graph.model';
 import { EventService } from 'src/event/event.service';
 import { EventRegsService } from 'src/eventRegs/eventRegs.service';
 import { UserModel } from 'src/user/user.model';
+import { RedisService } from 'src/redis/redis.service';
 export declare class GraphSubsService {
     private readonly graphSubsModel;
     private readonly GraphModel;
@@ -41,7 +42,9 @@ export declare class GraphSubsService {
     private readonly scheduleService;
     private readonly eventService;
     private readonly eventRegsService;
-    constructor(graphSubsModel: ModelType<GraphSubsModel>, GraphModel: ModelType<GraphModel>, UserModel: ModelType<UserModel>, eventRegsModel: ModelType<EventRegsModel>, scheduleService: ScheduleService, eventService: EventService, eventRegsService: EventRegsService);
+    private readonly redisService;
+    constructor(graphSubsModel: ModelType<GraphSubsModel>, GraphModel: ModelType<GraphModel>, UserModel: ModelType<UserModel>, eventRegsModel: ModelType<EventRegsModel>, scheduleService: ScheduleService, eventService: EventService, eventRegsService: EventRegsService, redisService: RedisService);
+    private invalidateUserSubscriptionsCache;
     toggleSub(user: string | Types.ObjectId, graph: string | Types.ObjectId): Promise<{
         subscribed: boolean;
     }>;
