@@ -10,7 +10,7 @@ export declare class UserModel extends TimeStamps {
     lastName: string;
     username: string;
     avaPath: string;
-    telegramId: any;
+    telegramId: string;
     graphSubsNum: number;
     postsNum: number;
     attentedEventsNum: number;

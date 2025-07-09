@@ -42,7 +42,7 @@ __decorate([
 ], UserModel.prototype, "avaPath", void 0);
 __decorate([
     (0, typegoose_1.prop)(),
-    __metadata("design:type", Object)
+    __metadata("design:type", String)
 ], UserModel.prototype, "telegramId", void 0);
 __decorate([
     (0, typegoose_1.prop)({ default: 0 }),

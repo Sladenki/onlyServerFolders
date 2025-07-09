@@ -38,7 +38,7 @@ export declare class UserController {
         lastName: string;
         username: string;
         avaPath: string;
-        telegramId: any;
+        telegramId: string;
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;
@@ -61,7 +61,7 @@ export declare class UserController {
             lastName: string;
             username: string;
             avaPath: string;
-            telegramId: any;
+            telegramId: string;
             graphSubsNum: number;
             postsNum: number;
             attentedEventsNum: number;
@@ -86,7 +86,7 @@ export declare class UserController {
         lastName: string;
         username: string;
         avaPath: string;
-        telegramId: any;
+        telegramId: string;
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;

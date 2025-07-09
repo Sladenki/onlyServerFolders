@@ -83,7 +83,12 @@ let UserService = class UserService {
     }
     async findByTelegramId(telegramId) {
         try {
-            const user = await this.UserModel.findOne({ telegramId })
+            const user = await this.UserModel.findOne({
+                $or: [
+                    { telegramId: telegramId },
+                    { telegramId: telegramId.toString() }
+                ]
+            })
                 .lean()
                 .exec();
             return user;
@@ -96,16 +101,30 @@ let UserService = class UserService {
     async acceptCopyrightAgreement(telegramId) {
         try {
             const now = new Date();
-            const user = await this.UserModel.findOneAndUpdate({ telegramId }, {
-                $set: {
-                    copyrightAgreementAccepted: true,
-                    copyrightAgreementAcceptedAt: now
-                }
-            }, {
-                new: true,
-                upsert: true
+            let user = await this.UserModel.findOne({
+                $or: [
+                    { telegramId: telegramId },
+                    { telegramId: telegramId.toString() }
+                ]
             }).lean();
-            console.log(`User ${telegramId} accepted copyright agreement at ${now}`);
+            if (user) {
+                user = await this.UserModel.findByIdAndUpdate(user._id, {
+                    $set: {
+                        copyrightAgreementAccepted: true,
+                        copyrightAgreementAcceptedAt: now
+                    }
+                }, { new: true }).lean();
+                console.log(`Existing user ${user._id} (telegramId: ${telegramId}) accepted copyright agreement at ${now}`);
+            }
+            else {
+                user = await this.UserModel.create({
+                    telegramId: telegramId.toString(),
+                    copyrightAgreementAccepted: true,
+                    copyrightAgreementAcceptedAt: now,
+                    role: 'user'
+                });
+                console.log(`New user created for telegramId ${telegramId} with copyright agreement accepted at ${now}`);
+            }
             return user;
         }
         catch (error) {
@@ -115,7 +134,12 @@ let UserService = class UserService {
     }
     async hasAcceptedCopyrightAgreement(telegramId) {
         try {
-            const user = await this.UserModel.findOne({ telegramId })
+            const user = await this.UserModel.findOne({
+                $or: [
+                    { telegramId: telegramId },
+                    { telegramId: telegramId.toString() }
+                ]
+            })
                 .select('copyrightAgreementAccepted')
                 .lean()
                 .exec();
@@ -124,6 +148,22 @@ let UserService = class UserService {
         catch (error) {
             console.error('Error checking copyright agreement:', error);
             return false;
+        }
+    }
+    async migrateTelegramIdsToString() {
+        try {
+            const usersWithNumericTelegramId = await this.UserModel.find({
+                telegramId: { $type: 'number' }
+            }).lean();
+            console.log(`Found ${usersWithNumericTelegramId.length} users with numeric telegramId`);
+            for (const user of usersWithNumericTelegramId) {
+                await this.UserModel.findByIdAndUpdate(user._id, { telegramId: user.telegramId.toString() });
+                console.log(`Migrated user ${user._id}: telegramId ${user.telegramId} -> "${user.telegramId}"`);
+            }
+            console.log('TelegramId migration completed');
+        }
+        catch (error) {
+            console.error('Error during telegramId migration:', error);
         }
     }
 };

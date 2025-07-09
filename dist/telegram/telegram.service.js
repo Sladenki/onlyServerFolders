@@ -233,7 +233,6 @@ let TelegramBotService = class TelegramBotService {
         try {
             await this.userService.acceptCopyrightAgreement(telegramId);
             this.bot.sendMessage(chatId, '✅ *Соглашение принято!*\n\n' +
-                'Спасибо за принятие соглашения об авторских правах.\n\n' +
                 'Теперь вы можете продолжить авторизацию.', {
                 parse_mode: "Markdown",
                 reply_markup: {

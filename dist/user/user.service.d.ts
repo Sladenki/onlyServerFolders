@@ -41,7 +41,7 @@ export declare class UserService {
         lastName: string;
         username: string;
         avaPath: string;
-        telegramId: any;
+        telegramId: string;
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;
@@ -64,7 +64,7 @@ export declare class UserService {
             lastName: string;
             username: string;
             avaPath: string;
-            telegramId: any;
+            telegramId: string;
             graphSubsNum: number;
             postsNum: number;
             attentedEventsNum: number;
@@ -89,7 +89,7 @@ export declare class UserService {
         lastName: string;
         username: string;
         avaPath: string;
-        telegramId: any;
+        telegramId: string;
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;
@@ -111,7 +111,7 @@ export declare class UserService {
         lastName: string;
         username: string;
         avaPath: string;
-        telegramId: any;
+        telegramId: string;
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;
@@ -133,7 +133,7 @@ export declare class UserService {
         lastName: string;
         username: string;
         avaPath: string;
-        telegramId: any;
+        telegramId: string;
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;
@@ -149,4 +149,5 @@ export declare class UserService {
         __v: number;
     }>;
     hasAcceptedCopyrightAgreement(telegramId: number): Promise<boolean>;
+    migrateTelegramIdsToString(): Promise<void>;
 }
