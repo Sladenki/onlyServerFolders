@@ -56,6 +56,14 @@ __decorate([
     (0, typegoose_1.prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], UserModel.prototype, "attentedEventsNum", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], UserModel.prototype, "copyrightAgreementAccepted", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", Date)
+], UserModel.prototype, "copyrightAgreementAcceptedAt", void 0);
 exports.UserModel = UserModel = __decorate([
     (0, typegoose_1.modelOptions)({
         schemaOptions: {

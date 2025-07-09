@@ -81,6 +81,51 @@ let UserService = class UserService {
             throw new common_1.InternalServerErrorException('Ошибка при обновлении выбранного графа');
         }
     }
+    async findByTelegramId(telegramId) {
+        try {
+            const user = await this.UserModel.findOne({ telegramId })
+                .lean()
+                .exec();
+            return user;
+        }
+        catch (error) {
+            console.error('Error finding user by Telegram ID:', error);
+            return null;
+        }
+    }
+    async acceptCopyrightAgreement(telegramId) {
+        try {
+            const now = new Date();
+            const user = await this.UserModel.findOneAndUpdate({ telegramId }, {
+                $set: {
+                    copyrightAgreementAccepted: true,
+                    copyrightAgreementAcceptedAt: now
+                }
+            }, {
+                new: true,
+                upsert: true
+            }).lean();
+            console.log(`User ${telegramId} accepted copyright agreement at ${now}`);
+            return user;
+        }
+        catch (error) {
+            console.error('Error accepting copyright agreement:', error);
+            throw new common_1.InternalServerErrorException('Ошибка при сохранении принятия соглашения');
+        }
+    }
+    async hasAcceptedCopyrightAgreement(telegramId) {
+        try {
+            const user = await this.UserModel.findOne({ telegramId })
+                .select('copyrightAgreementAccepted')
+                .lean()
+                .exec();
+            return user?.copyrightAgreementAccepted || false;
+        }
+        catch (error) {
+            console.error('Error checking copyright agreement:', error);
+            return false;
+        }
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([

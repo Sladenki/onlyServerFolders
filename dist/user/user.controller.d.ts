@@ -42,6 +42,8 @@ export declare class UserController {
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;
+        copyrightAgreementAccepted: boolean;
+        copyrightAgreementAcceptedAt: Date;
         createdAt?: Date;
         updatedAt?: Date;
         _id: Types.ObjectId;
@@ -63,6 +65,8 @@ export declare class UserController {
             graphSubsNum: number;
             postsNum: number;
             attentedEventsNum: number;
+            copyrightAgreementAccepted: boolean;
+            copyrightAgreementAcceptedAt: Date;
             createdAt?: Date;
             updatedAt?: Date;
             _id: Types.ObjectId;
@@ -86,6 +90,8 @@ export declare class UserController {
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;
+        copyrightAgreementAccepted: boolean;
+        copyrightAgreementAcceptedAt: Date;
         createdAt?: Date;
         updatedAt?: Date;
         _id: Types.ObjectId;

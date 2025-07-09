@@ -45,6 +45,8 @@ export declare class UserService {
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;
+        copyrightAgreementAccepted: boolean;
+        copyrightAgreementAcceptedAt: Date;
         createdAt?: Date;
         updatedAt?: Date;
         _id: Types.ObjectId;
@@ -66,6 +68,8 @@ export declare class UserService {
             graphSubsNum: number;
             postsNum: number;
             attentedEventsNum: number;
+            copyrightAgreementAccepted: boolean;
+            copyrightAgreementAcceptedAt: Date;
             createdAt?: Date;
             updatedAt?: Date;
             _id: Types.ObjectId;
@@ -89,6 +93,8 @@ export declare class UserService {
         graphSubsNum: number;
         postsNum: number;
         attentedEventsNum: number;
+        copyrightAgreementAccepted: boolean;
+        copyrightAgreementAcceptedAt: Date;
         createdAt?: Date;
         updatedAt?: Date;
         _id: Types.ObjectId;
@@ -98,4 +104,49 @@ export declare class UserService {
     }> & {
         __v: number;
     }>;
+    findByTelegramId(telegramId: number): Promise<{
+        role: "create" | "admin" | "editor" | "sysadmin" | "user";
+        selectedGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        firstName: string;
+        lastName: string;
+        username: string;
+        avaPath: string;
+        telegramId: any;
+        graphSubsNum: number;
+        postsNum: number;
+        attentedEventsNum: number;
+        copyrightAgreementAccepted: boolean;
+        copyrightAgreementAcceptedAt: Date;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }>;
+    acceptCopyrightAgreement(telegramId: number): Promise<{
+        role: "create" | "admin" | "editor" | "sysadmin" | "user";
+        selectedGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        firstName: string;
+        lastName: string;
+        username: string;
+        avaPath: string;
+        telegramId: any;
+        graphSubsNum: number;
+        postsNum: number;
+        attentedEventsNum: number;
+        copyrightAgreementAccepted: boolean;
+        copyrightAgreementAcceptedAt: Date;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    }>;
+    hasAcceptedCopyrightAgreement(telegramId: number): Promise<boolean>;
 }

@@ -14,4 +14,6 @@ export declare class UserModel extends TimeStamps {
     graphSubsNum: number;
     postsNum: number;
     attentedEventsNum: number;
+    copyrightAgreementAccepted: boolean;
+    copyrightAgreementAcceptedAt: Date;
 }

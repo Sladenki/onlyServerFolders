@@ -10,6 +10,7 @@ exports.TelegramBotModule = void 0;
 const common_1 = require("@nestjs/common");
 const telegram_service_1 = require("./telegram.service");
 const config_1 = require("@nestjs/config");
+const user_module_1 = require("../user/user.module");
 let TelegramBotModule = class TelegramBotModule {
 };
 exports.TelegramBotModule = TelegramBotModule;
@@ -17,6 +18,7 @@ exports.TelegramBotModule = TelegramBotModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule,
+            user_module_1.UserModule,
         ],
         providers: [telegram_service_1.TelegramBotService],
         exports: [telegram_service_1.TelegramBotService],
