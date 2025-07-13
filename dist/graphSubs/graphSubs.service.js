@@ -40,6 +40,14 @@ let GraphSubsService = class GraphSubsService {
         await this.redisService.del(cacheKey);
         console.log(`🗑️ Redis CACHE INVALIDATED: ${cacheKey}`);
     }
+    async invalidateGraphCache(graphId) {
+        const graphCacheKey = `graph:getGraphById:{"id":"${graphId.toString()}"}`;
+        await this.redisService.del(graphCacheKey);
+        console.log(`🗑️ Redis GRAPH CACHE INVALIDATED: ${graphCacheKey}`);
+        await this.redisService.delPattern('graph:getParentGraphs:*');
+        await this.redisService.delPattern('graph:getGlobalGraphs:*');
+        console.log(`🗑️ Redis GRAPH LISTS CACHE INVALIDATED: All graph lists`);
+    }
     async toggleSub(user, graph) {
         const session = await this.graphSubsModel.db.startSession();
         try {
@@ -54,7 +62,10 @@ let GraphSubsService = class GraphSubsService {
                         this.GraphModel.findByIdAndUpdate(graph, { $inc: { subsNum: -1 } }, { session, lean: true }).exec(),
                         this.UserModel.findByIdAndUpdate(user, { $inc: { graphSubsNum: -1 } }, { session, lean: true }).exec()
                     ]);
-                    await this.invalidateUserSubscriptionsCache(user);
+                    await Promise.all([
+                        this.invalidateUserSubscriptionsCache(user),
+                        this.invalidateGraphCache(graph)
+                    ]);
                     return { subscribed: false };
                 }
                 else {
@@ -63,7 +74,10 @@ let GraphSubsService = class GraphSubsService {
                         this.GraphModel.findByIdAndUpdate(graph, { $inc: { subsNum: 1 } }, { session, lean: true }).exec(),
                         this.UserModel.findByIdAndUpdate(user, { $inc: { graphSubsNum: 1 } }, { session, lean: true }).exec()
                     ]);
-                    await this.invalidateUserSubscriptionsCache(user);
+                    await Promise.all([
+                        this.invalidateUserSubscriptionsCache(user),
+                        this.invalidateGraphCache(graph)
+                    ]);
                     return { subscribed: true };
                 }
             });
@@ -176,7 +190,10 @@ let GraphSubsService = class GraphSubsService {
                         this.GraphModel.bulkWrite(bulkOps, { session }),
                         this.UserModel.bulkWrite(userBulkOps, { session })
                     ]);
-                    await this.invalidateUserSubscriptionsCache(user);
+                    await Promise.all([
+                        this.invalidateUserSubscriptionsCache(user),
+                        this.invalidateGraphCache(graph)
+                    ]);
                     return { subscribed: false };
                 }
                 else {
@@ -201,7 +218,10 @@ let GraphSubsService = class GraphSubsService {
                         this.GraphModel.bulkWrite(bulkOps, { session }),
                         this.UserModel.bulkWrite(userBulkOps, { session })
                     ]);
-                    await this.invalidateUserSubscriptionsCache(user);
+                    await Promise.all([
+                        this.invalidateUserSubscriptionsCache(user),
+                        this.invalidateGraphCache(graph)
+                    ]);
                     return { subscribed: true };
                 }
             });

@@ -45,6 +45,7 @@ export declare class GraphSubsService {
     private readonly redisService;
     constructor(graphSubsModel: ModelType<GraphSubsModel>, GraphModel: ModelType<GraphModel>, UserModel: ModelType<UserModel>, eventRegsModel: ModelType<EventRegsModel>, scheduleService: ScheduleService, eventService: EventService, eventRegsService: EventRegsService, redisService: RedisService);
     private invalidateUserSubscriptionsCache;
+    private invalidateGraphCache;
     toggleSub(user: string | Types.ObjectId, graph: string | Types.ObjectId): Promise<{
         subscribed: boolean;
     }>;
