@@ -18,7 +18,6 @@ const nestjs_typegoose_1 = require("@m8a/nestjs-typegoose");
 const user_model_1 = require("./user.model");
 const jwt_service_1 = require("../jwt/jwt.service");
 const mongoose_1 = require("mongoose");
-const user_constants_1 = require("../constants/user.constants");
 let UserService = class UserService {
     constructor(UserModel, jwtAuthService) {
         this.UserModel = UserModel;
@@ -47,21 +46,13 @@ let UserService = class UserService {
             .select({ _id: 0, email: 0, __v: 0, createdAt: 0, updatedAt: 0 });
         return user;
     }
-    async getAllUsers(lastId, limit = user_constants_1.USER_CONSTANTS.DEFAULT_USERS_LIMIT) {
-        const query = {};
-        if (lastId) {
-            query._id = { $gt: new mongoose_1.Types.ObjectId(lastId) };
-        }
+    async getAllUsers() {
         const users = await this.UserModel
-            .find(query)
+            .find()
             .sort({ _id: 1 })
-            .limit(limit)
             .lean()
             .select({ createdAt: 0, updatedAt: 0 });
-        return {
-            users,
-            hasMore: users.length === limit
-        };
+        return users;
     }
     async generateToken(userId, role) {
         return this.jwtAuthService.generateToken(new mongoose_1.Types.ObjectId(userId), role);

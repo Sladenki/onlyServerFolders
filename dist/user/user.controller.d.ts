@@ -53,31 +53,28 @@ export declare class UserController {
     }> & {
         __v: number;
     }>;
-    getAllUsers(lastId?: string, limit?: string): Promise<{
-        users: ({
-            role: "create" | "admin" | "editor" | "sysadmin" | "user";
-            selectedGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
-            firstName: string;
-            lastName: string;
-            username: string;
-            avaPath: string;
-            telegramId: string;
-            graphSubsNum: number;
-            postsNum: number;
-            attentedEventsNum: number;
-            copyrightAgreementAccepted: boolean;
-            copyrightAgreementAcceptedAt: Date;
-            createdAt?: Date;
-            updatedAt?: Date;
-            _id: Types.ObjectId;
-            id: string;
-        } & Required<{
-            _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        })[];
-        hasMore: boolean;
-    }>;
+    getAllUsers(): Promise<({
+        role: "create" | "admin" | "editor" | "sysadmin" | "user";
+        selectedGraphId: Types.ObjectId | import("mongoose").FlattenMaps<import("@typegoose/typegoose/lib/types").DocumentType<import("../graph/graph.model").GraphModel, import("@typegoose/typegoose/lib/types").BeAnObject>>;
+        firstName: string;
+        lastName: string;
+        username: string;
+        avaPath: string;
+        telegramId: string;
+        graphSubsNum: number;
+        postsNum: number;
+        attentedEventsNum: number;
+        copyrightAgreementAccepted: boolean;
+        copyrightAgreementAcceptedAt: Date;
+        createdAt?: Date;
+        updatedAt?: Date;
+        _id: Types.ObjectId;
+        id: string;
+    } & Required<{
+        _id: Types.ObjectId;
+    }> & {
+        __v: number;
+    })[]>;
     getMe(req: any): Promise<any>;
     updateSelectedGraph(userId: Types.ObjectId, selectedGraphId: string): Promise<{
         role: "create" | "admin" | "editor" | "sysadmin" | "user";
